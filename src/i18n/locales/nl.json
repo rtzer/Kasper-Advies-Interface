@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "title": "Multi-Channel Communicatie Platform"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "unifiedInbox": "Unified Inbox",
+    "channels": "Kanalen",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "messenger": "Messenger",
+    "instagram": "Instagram",
+    "twitter": "Twitter",
+    "linkedin": "LinkedIn",
+    "telegram": "Telegram",
+    "sms": "SMS",
+    "phone": "Telefoon",
+    "analytics": "Analytics",
+    "settings": "Instellingen"
+  },
+  "inbox": {
+    "search": "Zoek conversaties...",
+    "typing": "Aan het typen...",
+    "online": "Online",
+    "offline": "Offline",
+    "typeMessage": "Type een bericht...",
+    "send": "Verzenden",
+    "noConversation": "Selecteer een conversatie om te beginnen",
+    "newMessage": "Nieuw bericht",
+    "filter": "Filter",
+    "allConversations": "Alle conversaties",
+    "unread": "Ongelezen",
+    "archived": "Gearchiveerd"
+  },
+  "customer": {
+    "info": "Klant Informatie",
+    "email": "Email",
+    "phone": "Telefoon",
+    "location": "Locatie",
+    "statistics": "Statistieken",
+    "totalMessages": "Totaal Berichten",
+    "avgResponseTime": "Gem. Reactietijd",
+    "satisfaction": "Tevredenheid",
+    "tags": "Tags",
+    "vip": "VIP",
+    "active": "Actief"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "profile": "Profiel",
+    "notifications": "Notificaties",
+    "appearance": "Weergave",
+    "language": "Taal",
+    "theme": "Thema"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "overview": "Overzicht",
+    "messages": "Berichten",
+    "responseTime": "Reactietijd",
+    "satisfaction": "Tevredenheid"
+  },
+  "common": {
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "close": "Sluiten",
+    "loading": "Laden...",
+    "error": "Fout",
+    "success": "Succes"
+  }
+}

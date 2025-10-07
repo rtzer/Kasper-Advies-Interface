@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { 
   Home, 
   Inbox, 
@@ -14,27 +15,8 @@ import {
   Linkedin, 
   MessageCircle,
   ChevronDown,
-  Menu,
   X
 } from "lucide-react";
-
-const mainRoutes = [
-  { title: "Home", url: "/", icon: Home },
-  { title: "Unified Inbox", url: "/unified-inbox", icon: Inbox, badge: 8 },
-  { title: "Analytics", url: "/analytics", icon: BarChart3 },
-  { title: "Instellingen", url: "/settings", icon: Settings },
-];
-
-const channelRoutes = [
-  { title: "WhatsApp", url: "/channels/whatsapp", icon: MessageSquare, badge: 3 },
-  { title: "Email", url: "/channels/email", icon: Mail, badge: 2 },
-  { title: "SMS", url: "/channels/sms", icon: MessageCircle, badge: 1 },
-  { title: "Telefoon", url: "/channels/phone", icon: Phone },
-  { title: "Video", url: "/channels/video", icon: Video },
-  { title: "Facebook", url: "/channels/facebook", icon: Facebook, badge: 5 },
-  { title: "Instagram", url: "/channels/instagram", icon: Instagram, badge: 2 },
-  { title: "LinkedIn", url: "/channels/linkedin", icon: Linkedin },
-];
 
 interface FlowbiteSidebarProps {
   isOpen: boolean;
@@ -43,6 +25,25 @@ interface FlowbiteSidebarProps {
 
 export function FlowbiteSidebar({ isOpen, onToggle }: FlowbiteSidebarProps) {
   const [channelsOpen, setChannelsOpen] = useState(true);
+  const { t } = useTranslation();
+
+  const translatedMainRoutes = [
+    { title: t('sidebar.dashboard'), url: "/", icon: Home },
+    { title: t('sidebar.unifiedInbox'), url: "/unified-inbox", icon: Inbox, badge: 8 },
+    { title: t('sidebar.analytics'), url: "/analytics", icon: BarChart3 },
+    { title: t('sidebar.settings'), url: "/settings", icon: Settings },
+  ];
+
+  const translatedChannelRoutes = [
+    { title: t('sidebar.whatsapp'), url: "/channels/whatsapp", icon: MessageSquare, badge: 3 },
+    { title: t('sidebar.email'), url: "/channels/email", icon: Mail, badge: 2 },
+    { title: t('sidebar.sms'), url: "/channels/sms", icon: MessageCircle, badge: 1 },
+    { title: t('sidebar.phone'), url: "/channels/phone", icon: Phone },
+    { title: "Video", url: "/channels/video", icon: Video },
+    { title: "Facebook", url: "/channels/facebook", icon: Facebook, badge: 5 },
+    { title: t('sidebar.instagram'), url: "/channels/instagram", icon: Instagram, badge: 2 },
+    { title: t('sidebar.linkedin'), url: "/channels/linkedin", icon: Linkedin },
+  ];
 
   return (
     <>
@@ -76,7 +77,7 @@ export function FlowbiteSidebar({ isOpen, onToggle }: FlowbiteSidebarProps) {
 
           {/* Main Navigation */}
           <ul className="space-y-2 font-medium">
-            {mainRoutes.map((route) => (
+            {translatedMainRoutes.map((route) => (
               <li key={route.url}>
                 <NavLink
                   to={route.url}
@@ -110,7 +111,7 @@ export function FlowbiteSidebar({ isOpen, onToggle }: FlowbiteSidebarProps) {
               className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
             >
               <MessageSquare className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span className="flex-1 ms-3 text-left">Kanalen</span>
+              <span className="flex-1 ms-3 text-left">{t('sidebar.channels')}</span>
               <ChevronDown
                 className={`w-5 h-5 transition-transform ${
                   channelsOpen ? 'rotate-180' : ''
@@ -120,7 +121,7 @@ export function FlowbiteSidebar({ isOpen, onToggle }: FlowbiteSidebarProps) {
 
             {/* Channels List */}
             <ul className={`${channelsOpen ? 'block' : 'hidden'} space-y-2 ps-6`}>
-              {channelRoutes.map((route) => (
+              {translatedChannelRoutes.map((route) => (
                 <li key={route.url}>
                   <NavLink
                     to={route.url}

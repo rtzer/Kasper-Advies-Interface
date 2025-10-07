@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { FlowbiteSidebar } from "./FlowbiteSidebar";
 import { Menu } from "lucide-react";
+import { ThemeSwitcher } from "./ThemeSwitcher";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 interface FlowbiteLayoutProps {
   children: React.ReactNode;
@@ -8,6 +11,7 @@ interface FlowbiteLayoutProps {
 
 export function FlowbiteLayout({ children }: FlowbiteLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="antialiased bg-gray-50 dark:bg-gray-900">
@@ -27,11 +31,12 @@ export function FlowbiteLayout({ children }: FlowbiteLayoutProps) {
                 <Menu className="w-6 h-6" />
               </button>
               <span className="text-xl font-semibold dark:text-white">
-                Multi-Channel Communication Platform
+                {t('nav.title')}
               </span>
             </div>
-            <div className="flex items-center lg:order-2">
-              {/* User menu can go here */}
+            <div className="flex items-center gap-2 lg:order-2">
+              <ThemeSwitcher />
+              <LanguageSwitcher />
             </div>
           </div>
         </nav>

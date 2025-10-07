@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "title": "Multi-Channel Communication Platform"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "unifiedInbox": "Unified Inbox",
+    "channels": "Channels",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "messenger": "Messenger",
+    "instagram": "Instagram",
+    "twitter": "Twitter",
+    "linkedin": "LinkedIn",
+    "telegram": "Telegram",
+    "sms": "SMS",
+    "phone": "Phone",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "inbox": {
+    "search": "Search conversations...",
+    "typing": "Typing...",
+    "online": "Online",
+    "offline": "Offline",
+    "typeMessage": "Type a message...",
+    "send": "Send",
+    "noConversation": "Select a conversation to start",
+    "newMessage": "New message",
+    "filter": "Filter",
+    "allConversations": "All conversations",
+    "unread": "Unread",
+    "archived": "Archived"
+  },
+  "customer": {
+    "info": "Customer Information",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "statistics": "Statistics",
+    "totalMessages": "Total Messages",
+    "avgResponseTime": "Avg Response Time",
+    "satisfaction": "Satisfaction",
+    "tags": "Tags",
+    "vip": "VIP",
+    "active": "Active"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "appearance": "Appearance",
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "overview": "Overview",
+    "messages": "Messages",
+    "responseTime": "Response Time",
+    "satisfaction": "Satisfaction"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  }
+}

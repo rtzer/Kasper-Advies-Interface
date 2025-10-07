@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MessageSquare, MessageCircle, Phone, Video, Facebook, Instagram, Linkedin } from "lucide-react";
 import { FlowbiteLayout } from "./components/layout/FlowbiteLayout";
+import { useTheme } from "./hooks/useTheme";
 import FlowbiteIndex from "./pages/FlowbiteIndex";
 import FlowbiteUnifiedInbox from "./pages/FlowbiteUnifiedInbox";
 import FlowbiteWhatsAppChannel from "./pages/channels/FlowbiteWhatsAppChannel";
@@ -18,9 +19,12 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+const App = () => {
+  useTheme();
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -45,6 +49,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
