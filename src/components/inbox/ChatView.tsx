@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MessageBubble } from "./MessageBubble";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Send, Paperclip, MoreVertical, Phone, Video } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,6 +8,9 @@ import { ChannelIcon } from "./ChannelIcon";
 import { Badge } from "@/components/ui/badge";
 import { EmojiPicker } from "./EmojiPicker";
 import { QuickReplyPicker } from "./QuickReplyPicker";
+import { TypingIndicator } from "./TypingIndicator";
+import { FileUploadDialog } from "./FileUploadDialog";
+import { KeyboardShortcuts, useKeyboardShortcuts } from "./KeyboardShortcuts";
 import { useToast } from "@/hooks/use-toast";
 
 type ChannelType = "whatsapp" | "email" | "phone" | "video" | "facebook" | "instagram" | "linkedin" | "sms";
@@ -38,7 +41,15 @@ export const ChatView = ({
   isOnline = false 
 }: ChatViewProps) => {
   const [messageText, setMessageText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showFileDialog, setShowFileDialog] = useState(false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
   const { toast } = useToast();
+
+  useKeyboardShortcuts({
+    onUpload: () => setShowFileDialog(true),
+    onShowShortcuts: () => setShowShortcuts(true),
+  });
 
   const handleSend = () => {
     if (messageText.trim()) {
@@ -51,10 +62,7 @@ export const ChatView = ({
   };
 
   const handleFileUpload = () => {
-    toast({
-      title: "Bestand uploaden",
-      description: "Deze functie wordt binnenkort toegevoegd.",
-    });
+    setShowFileDialog(true);
   };
 
   const handleEmojiSelect = (emoji: string) => {
@@ -121,6 +129,7 @@ export const ChatView = ({
             status={message.status}
           />
         ))}
+        {isTyping && <TypingIndicator />}
       </div>
 
       {/* Message Input */}
@@ -138,7 +147,7 @@ export const ChatView = ({
           <QuickReplyPicker onSelect={handleQuickReply} />
           
           <div className="flex-1">
-            <Input
+            <Textarea
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
               onKeyDown={(e) => {
@@ -148,7 +157,8 @@ export const ChatView = ({
                 }
               }}
               placeholder="Typ een bericht..."
-              className="w-full resize-none min-h-10"
+              className="w-full resize-none min-h-[60px] max-h-32"
+              rows={2}
             />
           </div>
 
@@ -164,6 +174,9 @@ export const ChatView = ({
           </Button>
         </div>
       </div>
+
+      <FileUploadDialog open={showFileDialog} onOpenChange={setShowFileDialog} />
+      <KeyboardShortcuts open={showShortcuts} onOpenChange={setShowShortcuts} />
     </div>
   );
 };
