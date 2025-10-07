@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Inbox, Users, Phone, Video, Mail, MessageSquare, Search, Filter, Plus, ChevronLeft } from "lucide-react";
+import { Inbox, Users, Phone, Video, Mail, MessageSquare, Search, Plus, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,8 +9,11 @@ import { ConversationListItem } from "@/components/inbox/ConversationListItem";
 import { ChatView } from "@/components/inbox/ChatView";
 import { EmailThreadView } from "@/components/inbox/EmailThreadView";
 import { CustomerInfoPanel } from "@/components/inbox/CustomerInfoPanel";
+import { ConversationFilters } from "@/components/inbox/ConversationFilters";
 
 type ChannelType = "whatsapp" | "email" | "phone" | "video" | "facebook" | "instagram" | "linkedin" | "sms";
+type ChannelFilterType = ChannelType | "all";
+type StatusType = "active" | "pending" | "resolved" | "all";
 
 // Mock data
 const conversations = [
@@ -106,8 +109,37 @@ const emailMessages = [
 
 const UnifiedInbox = () => {
   const [selectedConversationId, setSelectedConversationId] = useState(conversations[0].id);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedChannels, setSelectedChannels] = useState<ChannelFilterType[]>(["all"]);
+  const [selectedStatus, setSelectedStatus] = useState<StatusType>("all");
   
   const selectedConversation = conversations.find(c => c.id === selectedConversationId) || conversations[0];
+
+  // Filter and search conversations
+  const filteredConversations = useMemo(() => {
+    return conversations.filter((conv) => {
+      // Search filter
+      const matchesSearch = 
+        conv.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        conv.lastMessage.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // Channel filter
+      const matchesChannel = 
+        selectedChannels.includes("all") || 
+        selectedChannels.includes(conv.channel);
+      
+      // Status filter (mock - in real app this would come from data)
+      const matchesStatus = selectedStatus === "all" || 
+        (selectedStatus === "active" && conv.unreadCount > 0) ||
+        (selectedStatus === "resolved" && conv.unreadCount === 0);
+      
+      return matchesSearch && matchesChannel && matchesStatus;
+    });
+  }, [searchQuery, selectedChannels, selectedStatus]);
+
+  const activeFiltersCount = 
+    (selectedChannels.includes("all") ? 0 : selectedChannels.length) +
+    (selectedStatus === "all" ? 0 : 1);
 
   return (
     <div className="flex h-screen bg-background">
@@ -137,13 +169,17 @@ const UnifiedInbox = () => {
 
       {/* Conversation List */}
       <div className="w-96 border-r bg-card flex flex-col">
-        <div className="border-b p-4">
-          <div className="mb-3 flex items-center justify-between">
+        <div className="border-b p-4 space-y-3">
+          <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">Alle Gesprekken</h2>
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Filter className="h-4 w-4" />
-              </Button>
+              <ConversationFilters
+                selectedChannels={selectedChannels}
+                selectedStatus={selectedStatus}
+                onChannelChange={setSelectedChannels}
+                onStatusChange={setSelectedStatus}
+                activeFiltersCount={activeFiltersCount}
+              />
               <Button variant="ghost" size="icon" className="h-8 w-8">
                 <Plus className="h-4 w-4" />
               </Button>
@@ -151,19 +187,34 @@ const UnifiedInbox = () => {
           </div>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Zoek gesprekken..." className="pl-9" />
+            <Input 
+              placeholder="Zoek gesprekken..." 
+              className="pl-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
         </div>
 
         <ScrollArea className="flex-1">
-          {conversations.map((conv) => (
-            <ConversationListItem
-              key={conv.id}
-              {...conv}
-              isActive={selectedConversationId === conv.id}
-              onClick={() => setSelectedConversationId(conv.id)}
-            />
-          ))}
+          {filteredConversations.length > 0 ? (
+            filteredConversations.map((conv) => (
+              <ConversationListItem
+                key={conv.id}
+                {...conv}
+                isActive={selectedConversationId === conv.id}
+                onClick={() => setSelectedConversationId(conv.id)}
+              />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center h-64 text-center p-6">
+              <MessageSquare className="h-12 w-12 text-muted-foreground mb-3" />
+              <h3 className="font-semibold mb-1">Geen gesprekken gevonden</h3>
+              <p className="text-sm text-muted-foreground">
+                Probeer uw zoekterm of filters aan te passen
+              </p>
+            </div>
+          )}
         </ScrollArea>
       </div>
 

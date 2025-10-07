@@ -2,10 +2,13 @@ import { useState } from "react";
 import { MessageBubble } from "./MessageBubble";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Send, Paperclip, Smile, MoreVertical, Phone, Video } from "lucide-react";
+import { Send, Paperclip, MoreVertical, Phone, Video } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChannelIcon } from "./ChannelIcon";
 import { Badge } from "@/components/ui/badge";
+import { EmojiPicker } from "./EmojiPicker";
+import { QuickReplyPicker } from "./QuickReplyPicker";
+import { useToast } from "@/hooks/use-toast";
 
 type ChannelType = "whatsapp" | "email" | "phone" | "video" | "facebook" | "instagram" | "linkedin" | "sms";
 
@@ -35,13 +38,31 @@ export const ChatView = ({
   isOnline = false 
 }: ChatViewProps) => {
   const [messageText, setMessageText] = useState("");
+  const { toast } = useToast();
 
   const handleSend = () => {
     if (messageText.trim()) {
-      // In a real app, this would send the message
-      console.log("Sending message:", messageText);
+      toast({
+        title: "Bericht verzonden",
+        description: "Uw bericht is succesvol verzonden.",
+      });
       setMessageText("");
     }
+  };
+
+  const handleFileUpload = () => {
+    toast({
+      title: "Bestand uploaden",
+      description: "Deze functie wordt binnenkort toegevoegd.",
+    });
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    setMessageText((prev) => prev + emoji);
+  };
+
+  const handleQuickReply = (content: string) => {
+    setMessageText(content);
   };
 
   return (
@@ -105,9 +126,16 @@ export const ChatView = ({
       {/* Message Input */}
       <div className="border-t border-border p-4 bg-card">
         <div className="flex items-end gap-2">
-          <Button variant="ghost" size="icon" className="h-10 w-10 flex-shrink-0">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-10 w-10 flex-shrink-0"
+            onClick={handleFileUpload}
+          >
             <Paperclip className="h-5 w-5" />
           </Button>
+          
+          <QuickReplyPicker onSelect={handleQuickReply} />
           
           <div className="flex-1">
             <Input
@@ -124,9 +152,7 @@ export const ChatView = ({
             />
           </div>
 
-          <Button variant="ghost" size="icon" className="h-10 w-10 flex-shrink-0">
-            <Smile className="h-5 w-5" />
-          </Button>
+          <EmojiPicker onSelect={handleEmojiSelect} />
 
           <Button 
             size="icon" 
