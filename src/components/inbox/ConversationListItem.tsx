@@ -31,9 +31,9 @@ export const ConversationListItem = ({
     <div
       onClick={onClick}
       className={cn(
-        "flex items-start gap-3 p-4 cursor-pointer transition-all border-b border-border",
-        "hover:bg-conversation-hover",
-        isActive && "bg-conversation-active border-l-4 border-l-inbox-unread"
+        "flex items-start gap-3 p-4 cursor-pointer transition-all duration-200 border-b border-border",
+        "hover:bg-conversation-hover hover:scale-[1.01]",
+        isActive && "bg-conversation-active border-l-4 border-l-inbox-unread animate-fade-in"
       )}
     >
       <div className="relative flex-shrink-0">

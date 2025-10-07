@@ -3,7 +3,7 @@ import { ConversationListItem } from "@/components/inbox/ConversationListItem";
 import { EmailThreadView } from "@/components/inbox/EmailThreadView";
 import { CustomerInfoPanel } from "@/components/inbox/CustomerInfoPanel";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Mail } from "lucide-react";
 
 const conversations = [
   {
@@ -73,7 +73,7 @@ export default function EmailChannel() {
   const selectedConversation = conversations.find((c) => c.id === selectedConversationId);
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)]">
+    <div className="flex h-[calc(100vh-3.5rem)] animate-fade-in">
       {/* Conversation List */}
       <div className="w-80 border-r bg-card flex flex-col">
         <div className="p-4 border-b space-y-3">
@@ -89,14 +89,22 @@ export default function EmailChannel() {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {filteredConversations.map((conversation) => (
-            <ConversationListItem
-              key={conversation.id}
-              {...conversation}
-              isActive={conversation.id === selectedConversationId}
-              onClick={() => setSelectedConversationId(conversation.id)}
-            />
-          ))}
+          {filteredConversations.length > 0 ? (
+            filteredConversations.map((conversation) => (
+              <ConversationListItem
+                key={conversation.id}
+                {...conversation}
+                isActive={conversation.id === selectedConversationId}
+                onClick={() => setSelectedConversationId(conversation.id)}
+              />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full p-8 text-center animate-fade-in">
+              <Mail className="h-12 w-12 text-muted-foreground/50 mb-4" />
+              <p className="text-sm font-medium text-muted-foreground">Geen emails gevonden</p>
+              <p className="text-xs text-muted-foreground/70 mt-1">Probeer een andere zoekterm</p>
+            </div>
+          )}
         </div>
       </div>
 

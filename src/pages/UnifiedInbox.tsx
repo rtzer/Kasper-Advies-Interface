@@ -142,7 +142,7 @@ const UnifiedInbox = () => {
     (selectedStatus === "all" ? 0 : 1);
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background animate-fade-in">
       {/* Sidebar */}
       <div className="w-16 border-r bg-sidebar">
         <div className="flex flex-col items-center py-4">

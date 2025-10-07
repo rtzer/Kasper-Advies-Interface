@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="min-h-screen bg-background p-8 animate-fade-in">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 text-center">
           <h1 className="mb-4 text-4xl font-bold">Multi-Channel Communication Platform</h1>
@@ -16,7 +16,7 @@ const Index = () => {
 
         <div className="grid gap-8 md:grid-cols-2">
           {/* Unified Inbox Option */}
-          <Card className="border-2 transition-all hover:border-primary">
+          <Card className="border-2 transition-all duration-300 hover:border-primary hover:shadow-lg hover:scale-[1.02]">
             <CardHeader>
               <div className="mb-4 flex items-center gap-3">
                 <div className="rounded-lg bg-primary p-3 text-primary-foreground">
@@ -64,7 +64,7 @@ const Index = () => {
           </Card>
 
           {/* Channel-Specific Option */}
-          <Card className="border-2 transition-all hover:border-primary">
+          <Card className="border-2 transition-all duration-300 hover:border-primary hover:shadow-lg hover:scale-[1.02]">
             <CardHeader>
               <div className="mb-4 flex items-center gap-3">
                 <div className="rounded-lg bg-secondary p-3 text-secondary-foreground">
