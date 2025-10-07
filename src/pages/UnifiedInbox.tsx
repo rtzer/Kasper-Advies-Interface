@@ -187,18 +187,17 @@ const UnifiedInbox = () => {
 
       {/* Right Sidebar - Customer Info */}
       <CustomerInfoPanel
-        customerName={selectedConversation.name}
-        customerEmail={`${selectedConversation.name.toLowerCase().replace(' ', '.')}@example.com`}
-        customerAvatar={selectedConversation.avatarUrl}
-        assignedAgent="Lola"
-        location="London, UK"
-        timezone="9:41am (UTC)"
-        segments={["chat", "whatsapp", "2FA", "issue"]}
-        visitorData={{
-          ticket_category: "support",
-          account_status: "locked",
-          last_login: "2024-10-30",
-          membership: "premium",
+        customer={{
+          name: selectedConversation.name,
+          email: `${selectedConversation.name.toLowerCase().replace(' ', '.')}@example.com`,
+          phone: "+31 6 12345678",
+          avatar: selectedConversation.avatarUrl,
+          company: "Acme Corp",
+          location: "London, UK",
+          tags: ["chat", "whatsapp", "2FA", "issue"],
+          firstContact: "2024-10-01",
+          lastContact: "2024-10-30",
+          totalConversations: 12,
         }}
       />
     </div>
