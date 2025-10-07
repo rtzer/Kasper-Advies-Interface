@@ -1,7 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ConversationListItem } from "@/components/inbox/ConversationListItem";
 import { EmailThreadView } from "@/components/inbox/EmailThreadView";
 import { CustomerInfoPanel } from "@/components/inbox/CustomerInfoPanel";
+import { ConversationListSkeleton } from "@/components/inbox/ConversationListSkeleton";
+import { ChatViewSkeleton } from "@/components/inbox/ChatViewSkeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Mail } from "lucide-react";
 
@@ -61,6 +63,13 @@ const customer = {
 export default function EmailChannel() {
   const [selectedConversationId, setSelectedConversationId] = useState<string>(conversations[0].id);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate loading
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const filteredConversations = useMemo(() => {
     return conversations.filter((conv) => {
@@ -89,7 +98,9 @@ export default function EmailChannel() {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {filteredConversations.length > 0 ? (
+          {isLoading ? (
+            <ConversationListSkeleton />
+          ) : filteredConversations.length > 0 ? (
             filteredConversations.map((conversation) => (
               <ConversationListItem
                 key={conversation.id}
@@ -110,12 +121,14 @@ export default function EmailChannel() {
 
       {/* Email Thread View */}
       <div className="flex-1">
-        {selectedConversation && (
+        {isLoading ? (
+          <ChatViewSkeleton />
+        ) : selectedConversation ? (
           <EmailThreadView
             subject={selectedConversation.lastMessage}
             messages={emailMessages}
           />
-        )}
+        ) : null}
       </div>
 
       {/* Customer Info */}
