@@ -57,6 +57,32 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        inbox: {
+          unread: "hsl(var(--inbox-unread))",
+          "unread-bg": "hsl(var(--inbox-unread-bg))",
+        },
+        channel: {
+          whatsapp: "hsl(var(--channel-whatsapp))",
+          email: "hsl(var(--channel-email))",
+          phone: "hsl(var(--channel-phone))",
+          video: "hsl(var(--channel-video))",
+          social: "hsl(var(--channel-social))",
+        },
+        status: {
+          online: "hsl(var(--status-online))",
+          away: "hsl(var(--status-away))",
+          offline: "hsl(var(--status-offline))",
+        },
+        message: {
+          sent: "hsl(var(--message-sent))",
+          "sent-bg": "hsl(var(--message-sent-bg))",
+          received: "hsl(var(--message-received))",
+          "received-bg": "hsl(var(--message-received-bg))",
+        },
+        conversation: {
+          hover: "hsl(var(--conversation-hover))",
+          active: "hsl(var(--conversation-active))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
