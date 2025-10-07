@@ -3,6 +3,7 @@ import { FlowbiteSidebar } from "./FlowbiteSidebar";
 import { Menu } from "lucide-react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { FloatingThemeToggle } from "./FloatingThemeToggle";
 import { useTranslation } from "react-i18next";
 
 interface FlowbiteLayoutProps {
@@ -46,6 +47,9 @@ export function FlowbiteLayout({ children }: FlowbiteLayoutProps) {
           {children}
         </main>
       </div>
+
+      {/* Floating Theme Toggle */}
+      <FloatingThemeToggle />
     </div>
   );
 }
