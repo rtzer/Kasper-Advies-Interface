@@ -1,8 +1,10 @@
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Mail, Phone, MapPin, Building, Calendar, Tag } from "lucide-react";
+import { Mail, Phone, MapPin, Building, Calendar, Tag, ExternalLink } from "lucide-react";
 
 interface CustomerInfoPanelProps {
   customer: {
@@ -35,6 +37,12 @@ export const CustomerInfoPanel = ({ customer }: CustomerInfoPanelProps) => {
           <Badge variant="secondary" className="mb-3">
             Actieve klant
           </Badge>
+          <Link to="/customer/1">
+            <Button variant="outline" size="sm" className="w-full">
+              <ExternalLink className="h-3 w-3 mr-2" />
+              Volledige Profiel
+            </Button>
+          </Link>
         </div>
       </div>
 

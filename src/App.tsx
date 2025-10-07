@@ -10,6 +10,10 @@ import UnifiedInbox from "./pages/UnifiedInbox";
 import WhatsAppChannel from "./pages/channels/WhatsAppChannel";
 import EmailChannel from "./pages/channels/EmailChannel";
 import GenericChannel from "./pages/channels/GenericChannel";
+import ConversationDetail from "./pages/ConversationDetail";
+import CustomerDetail from "./pages/CustomerDetail";
+import Settings from "./pages/Settings";
+import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +27,10 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/unified-inbox" element={<MainLayout><UnifiedInbox /></MainLayout>} />
+          <Route path="/unified-inbox/conversation/:id" element={<MainLayout><ConversationDetail /></MainLayout>} />
+          <Route path="/customer/:id" element={<MainLayout><CustomerDetail /></MainLayout>} />
+          <Route path="/settings" element={<MainLayout><Settings /></MainLayout>} />
+          <Route path="/analytics" element={<MainLayout><Analytics /></MainLayout>} />
           <Route path="/channels/whatsapp" element={<MainLayout><WhatsAppChannel /></MainLayout>} />
           <Route path="/channels/email" element={<MainLayout><EmailChannel /></MainLayout>} />
           <Route path="/channels/sms" element={<MainLayout><GenericChannel channelName="SMS" icon={MessageCircle} color="text-channel-phone" /></MainLayout>} />

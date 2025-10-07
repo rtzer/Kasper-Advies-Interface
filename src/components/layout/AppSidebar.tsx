@@ -1,4 +1,4 @@
-import { MessageSquare, Mail, Phone, Video, Inbox, Home, Facebook, Instagram, Linkedin, MessageCircle } from "lucide-react";
+import { MessageSquare, Mail, Phone, Video, Inbox, Home, Facebook, Instagram, Linkedin, MessageCircle, Settings, BarChart3, Users } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -17,6 +17,8 @@ import { Separator } from "@/components/ui/separator";
 const mainRoutes = [
   { title: "Home", url: "/", icon: Home },
   { title: "Unified Inbox", url: "/unified-inbox", icon: Inbox, badge: 8 },
+  { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Instellingen", url: "/settings", icon: Settings },
 ];
 
 const channelRoutes = [

@@ -199,12 +199,13 @@ const UnifiedInbox = () => {
         <ScrollArea className="flex-1">
           {filteredConversations.length > 0 ? (
             filteredConversations.map((conv) => (
-              <ConversationListItem
-                key={conv.id}
-                {...conv}
-                isActive={selectedConversationId === conv.id}
-                onClick={() => setSelectedConversationId(conv.id)}
-              />
+              <Link key={conv.id} to={`/unified-inbox/conversation/${conv.id}`}>
+                <ConversationListItem
+                  {...conv}
+                  isActive={selectedConversationId === conv.id}
+                  onClick={() => setSelectedConversationId(conv.id)}
+                />
+              </Link>
             ))
           ) : (
             <div className="flex flex-col items-center justify-center h-64 text-center p-6">
