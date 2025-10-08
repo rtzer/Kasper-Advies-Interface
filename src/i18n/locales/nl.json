@@ -69,5 +69,38 @@
     "loading": "Laden...",
     "error": "Fout",
     "success": "Succes"
+  },
+  "home": {
+    "hero": {
+      "title": "Multi-Channel Communicatie Platform",
+      "subtitle": "Beheer alle klantgesprekken vanuit één interface. WhatsApp, Email, Social Media en meer."
+    },
+    "features": {
+      "title": "Kies je oplossing",
+      "subtitle": "Twee krachtige interfaces voor optimale communicatie"
+    },
+    "unified": {
+      "title": "Versie 1: Unified Inbox",
+      "description": "Alle communicatiekanalen in één interface, zoals Crisp.chat",
+      "feature1": "WhatsApp & Social Media",
+      "feature2": "Email threads",
+      "feature3": "Telefoon & Video",
+      "button": "Bekijk Unified Inbox"
+    },
+    "perChannel": {
+      "title": "Versie 2: Per Kanaal",
+      "description": "Aparte interface voor elk communicatiekanaal",
+      "feature1": "Dedicated interface per kanaal",
+      "feature2": "Optimaal gebruik van schermruimte",
+      "feature3": "Minder visuele ruis",
+      "button": "Bekijk Per Kanaal"
+    },
+    "channels": {
+      "title": "Ondersteunde Kanalen",
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "phone": "Telefoon",
+      "video": "Video"
+    }
   }
 }

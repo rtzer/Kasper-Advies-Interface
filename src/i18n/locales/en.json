@@ -69,5 +69,38 @@
     "loading": "Loading...",
     "error": "Error",
     "success": "Success"
+  },
+  "home": {
+    "hero": {
+      "title": "Multi-Channel Communication Platform",
+      "subtitle": "Manage all customer conversations from one interface. WhatsApp, Email, Social Media and more."
+    },
+    "features": {
+      "title": "Choose your solution",
+      "subtitle": "Two powerful interfaces for optimal communication"
+    },
+    "unified": {
+      "title": "Version 1: Unified Inbox",
+      "description": "All communication channels in one interface, like Crisp.chat",
+      "feature1": "WhatsApp & Social Media",
+      "feature2": "Email threads",
+      "feature3": "Phone & Video",
+      "button": "View Unified Inbox"
+    },
+    "perChannel": {
+      "title": "Version 2: Per Channel",
+      "description": "Separate interface for each communication channel",
+      "feature1": "Dedicated interface per channel",
+      "feature2": "Optimal use of screen space",
+      "feature3": "Less visual noise",
+      "button": "View Per Channel"
+    },
+    "channels": {
+      "title": "Supported Channels",
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "phone": "Phone",
+      "video": "Video"
+    }
   }
 }
