@@ -11,11 +11,11 @@ import FlowbiteUnifiedInbox from "./pages/FlowbiteUnifiedInbox";
 import FlowbiteWhatsAppChannel from "./pages/channels/FlowbiteWhatsAppChannel";
 import FlowbiteEmailChannel from "./pages/channels/FlowbiteEmailChannel";
 import FlowbiteGenericChannel from "./pages/channels/FlowbiteGenericChannel";
-import ConversationDetail from "./pages/ConversationDetail";
-import CustomerDetail from "./pages/CustomerDetail";
+import FlowbiteConversationDetail from "./pages/FlowbiteConversationDetail";
+import FlowbiteCustomerDetail from "./pages/FlowbiteCustomerDetail";
 import FlowbiteSettings from "./pages/FlowbiteSettings";
 import FlowbiteAnalytics from "./pages/FlowbiteAnalytics";
-import NotFound from "./pages/NotFound";
+import FlowbiteNotFound from "./pages/FlowbiteNotFound";
 
 const queryClient = new QueryClient();
 
@@ -31,8 +31,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<FlowbiteIndex />} />
           <Route path="/unified-inbox" element={<FlowbiteLayout><FlowbiteUnifiedInbox /></FlowbiteLayout>} />
-          <Route path="/unified-inbox/conversation/:id" element={<FlowbiteLayout><ConversationDetail /></FlowbiteLayout>} />
-          <Route path="/customer/:id" element={<FlowbiteLayout><CustomerDetail /></FlowbiteLayout>} />
+          <Route path="/unified-inbox/conversation/:id" element={<FlowbiteLayout><FlowbiteConversationDetail /></FlowbiteLayout>} />
+          <Route path="/customer/:id" element={<FlowbiteLayout><FlowbiteCustomerDetail /></FlowbiteLayout>} />
           <Route path="/settings" element={<FlowbiteLayout><FlowbiteSettings /></FlowbiteLayout>} />
           <Route path="/analytics" element={<FlowbiteLayout><FlowbiteAnalytics /></FlowbiteLayout>} />
           <Route path="/channels/whatsapp" element={<FlowbiteLayout><FlowbiteWhatsAppChannel /></FlowbiteLayout>} />
@@ -44,7 +44,7 @@ const App = () => {
           <Route path="/channels/instagram" element={<FlowbiteLayout><FlowbiteGenericChannel channelName="Instagram" icon={Instagram} color="text-pink-600" /></FlowbiteLayout>} />
           <Route path="/channels/linkedin" element={<FlowbiteLayout><FlowbiteGenericChannel channelName="LinkedIn" icon={Linkedin} color="text-blue-600" /></FlowbiteLayout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<FlowbiteNotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
