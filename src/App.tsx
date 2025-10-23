@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from 'react-helmet-async';
 import { MessageSquare, MessageCircle, Phone, Video, Facebook, Instagram, Linkedin } from "lucide-react";
 import AppLayout from "./layouts/AppLayout";
 import BottomNav from "./layouts/BottomNav";
@@ -25,6 +26,7 @@ import ClientPortalPage from "./pages/ClientPortalPage";
 import BrandGuidePage from "./pages/BrandGuidePage";
 import BrandAuditPage from "./pages/BrandAuditPage";
 import ExtendedBrandGuidePage from "./pages/ExtendedBrandGuidePage";
+import HomePage from "./pages/HomePage";
 import ChannelWhatsAppPage from "./pages/channels/ChannelWhatsAppPage";
 import ChannelEmailPage from "./pages/channels/ChannelEmailPage";
 import ChannelPhonePage from "./pages/channels/ChannelPhonePage";
@@ -51,15 +53,17 @@ const App = () => {
   
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AuthProvider>
+      <HelmetProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AuthProvider>
             <AppContent />
             <Routes>
               {/* Public routes */}
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/kaspers-advies" element={<HomePage />} />
               
               {/* Protected routes */}
               <Route path="/" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
@@ -100,6 +104,7 @@ const App = () => {
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
+      </HelmetProvider>
     </QueryClientProvider>
   );
 };
