@@ -59,9 +59,9 @@ export default function ExtendedBrandGuidePage() {
             <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
               <ColorCard
                 name="Kaspers Red"
-                hsl="0, 84%, 60%"
-                hex="#EB5757"
-                usage="CTA buttons, wichtige acties, hover accenten, logo checkmark"
+                hsl="0, 85%, 52%"
+                hex="#E62A2A"
+                usage="CTA buttons, belangrijke acties, hover accenten, logo checkmark"
               />
             </div>
           </div>
