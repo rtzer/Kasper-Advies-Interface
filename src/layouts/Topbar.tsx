@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Menu, Globe } from 'lucide-react';
+import { Menu, Globe, LogOut, User as UserIcon, Settings, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +11,7 @@ import {
 import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
 import NotificationPanel from '@/components/notifications/NotificationPanel';
 import GlobalSearch from '@/components/search/GlobalSearch';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface TopbarProps {
   onMenuClick: () => void;
@@ -17,6 +19,7 @@ interface TopbarProps {
 
 export default function Topbar({ onMenuClick }: TopbarProps) {
   const { t, i18n } = useTranslation(['common']);
+  const { user, logout } = useAuth();
   
   const changeLanguage = (lang: 'nl' | 'en') => {
     i18n.changeLanguage(lang);
@@ -84,18 +87,39 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
           <DropdownMenuTrigger asChild>
             <button className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
               <div className="w-8 h-8 rounded-full bg-ka-navy dark:bg-ka-green text-white flex items-center justify-center text-sm font-medium">
-                HK
+                {user?.full_name?.substring(0, 2).toUpperCase() || 'HK'}
               </div>
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-ka-gray-900 dark:text-white">Harm-Jan Kaspers</p>
-                <p className="text-xs text-ka-gray-500 dark:text-gray-400">Administrator</p>
+                <div className="flex items-center space-x-2">
+                  <p className="text-sm font-medium text-ka-gray-900 dark:text-white">
+                    {user?.full_name || 'Gebruiker'}
+                  </p>
+                  {user?.role === 'admin' && (
+                    <Badge variant="secondary" className="text-xs py-0 px-1.5">
+                      <Shield className="w-3 h-3 mr-1" />
+                      Admin
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-xs text-ka-gray-500 dark:text-gray-400">
+                  {user?.email}
+                </p>
               </div>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border-ka-gray-200 dark:border-gray-700 z-50">
-            <DropdownMenuItem className="cursor-pointer">Profiel</DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">Instellingen</DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer text-red-600 dark:text-red-400">Uitloggen</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <UserIcon className="w-4 h-4 mr-2" />
+              Profiel
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <Settings className="w-4 h-4 mr-2" />
+              Instellingen
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 dark:text-red-400">
+              <LogOut className="w-4 h-4 mr-2" />
+              Uitloggen
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
