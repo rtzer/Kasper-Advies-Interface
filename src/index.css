@@ -60,6 +60,11 @@ All colors MUST be HSL.
     --ka-navy-light: 213 52% 35%;
     --ka-navy-dark: 213 52% 15%;
     
+    /* Kaspers Accent Color (red from logo checkmark) */
+    --ka-red: 0 84% 60%;
+    --ka-red-light: 0 84% 70%;
+    --ka-red-dark: 0 84% 50%;
+    
     /* Kaspers Gray Scale */
     --ka-gray-50: 210 40% 98%;
     --ka-gray-100: 214 32% 95%;
@@ -145,6 +150,11 @@ All colors MUST be HSL.
     --ka-navy: 213 52% 35%;
     --ka-navy-light: 213 52% 45%;
     --ka-navy-dark: 213 52% 25%;
+    
+    /* Kaspers Accent Color - dark mode */
+    --ka-red: 0 84% 65%;
+    --ka-red-light: 0 84% 75%;
+    --ka-red-dark: 0 84% 55%;
     
     /* Kaspers Gray Scale - dark mode */
     --ka-gray-50: 220 47% 9%;

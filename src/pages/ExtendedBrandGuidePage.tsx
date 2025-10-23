@@ -53,6 +53,19 @@ export default function ExtendedBrandGuidePage() {
             </div>
           </div>
 
+          {/* Accent kleur */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Accent Kleur (Logo Checkmark)</h3>
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+              <ColorCard
+                name="Kaspers Red"
+                hsl="0, 84%, 60%"
+                hex="#EB5757"
+                usage="CTA buttons, wichtige acties, hover accenten, logo checkmark"
+              />
+            </div>
+          </div>
+
           {/* Grayscale */}
           <div>
             <h3 className="text-xl font-semibold mb-4">Gray Scale</h3>

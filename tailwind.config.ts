@@ -108,6 +108,9 @@ export default {
         'ka-navy': 'hsl(var(--ka-navy))',
         'ka-navy-light': 'hsl(var(--ka-navy-light))',
         'ka-navy-dark': 'hsl(var(--ka-navy-dark))',
+        'ka-red': 'hsl(var(--ka-red))',
+        'ka-red-light': 'hsl(var(--ka-red-light))',
+        'ka-red-dark': 'hsl(var(--ka-red-dark))',
         'ka-gray': {
           50: 'hsl(var(--ka-gray-50))',
           100: 'hsl(var(--ka-gray-100))',

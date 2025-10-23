@@ -173,9 +173,9 @@ const HomePage = () => {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-                <Button 
+              <Button 
                   size="lg" 
-                  className="w-full sm:w-auto bg-[hsl(25,95%,53%)] hover:bg-[hsl(25,95%,48%)] text-white px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+                  className="w-full sm:w-auto bg-[hsl(0,84%,60%)] hover:bg-[hsl(0,84%,55%)] text-white px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
                   asChild
                 >
                   <Link to="/contact">
@@ -262,8 +262,8 @@ const HomePage = () => {
               {/* ZZP Card */}
               <Card className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 hover:border-ka-green bg-gradient-to-br from-white to-ka-gray-50">
                 <CardContent className="p-8">
-                  <div className="w-16 h-16 bg-[hsl(25,95%,53%)]/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-[hsl(25,95%,53%)]/20 transition-colors">
-                    <Lightbulb className="w-8 h-8 text-[hsl(25,95%,53%)]" />
+                  <div className="w-16 h-16 bg-[hsl(0,84%,60%)]/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-[hsl(0,84%,60%)]/20 transition-colors">
+                    <Lightbulb className="w-8 h-8 text-[hsl(0,84%,60%)]" />
                   </div>
                   <h3 className="text-2xl font-bold text-ka-navy mb-4">
                     ZZP-ers 💡
@@ -665,7 +665,7 @@ const HomePage = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <Button 
                   size="lg" 
-                  className="bg-[hsl(25,95%,53%)] hover:bg-[hsl(25,95%,48%)] text-white px-8 py-6 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all"
+                  className="bg-[hsl(0,84%,60%)] hover:bg-[hsl(0,84%,55%)] text-white px-8 py-6 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all"
                   asChild
                 >
                   <Link to="/contact">
@@ -709,7 +709,7 @@ const HomePage = () => {
         <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white border-t-2 border-ka-green shadow-2xl z-50">
           <Button 
             size="lg" 
-            className="w-full bg-[hsl(25,95%,53%)] hover:bg-[hsl(25,95%,48%)] text-white font-bold shadow-lg"
+            className="w-full bg-[hsl(0,84%,60%)] hover:bg-[hsl(0,84%,55%)] text-white font-bold shadow-lg"
             asChild
           >
             <a href="tel:+31599123456">
