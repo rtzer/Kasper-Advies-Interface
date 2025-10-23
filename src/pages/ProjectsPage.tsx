@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Plus, Filter, Calendar, LayoutGrid, List } from 'lucide-react';
+import { Filter, Calendar, LayoutGrid, List } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ProjectsKanban from '@/components/projects/ProjectsKanban';
 import ProjectsList from '@/components/projects/ProjectsList';
 import ProjectsCalendar from '@/components/projects/ProjectsCalendar';
 import ProjectsStats from '@/components/projects/ProjectsStats';
+import CreateProjectDialog from '@/components/projects/CreateProjectDialog';
 
 export default function ProjectsPage() {
   const [view, setView] = useState<'kanban' | 'list' | 'calendar'>('kanban');
@@ -28,10 +29,7 @@ export default function ProjectsPage() {
             <Filter className="w-4 h-4 mr-2" />
             Filters
           </Button>
-          <Button className="bg-ka-green hover:bg-ka-green/90">
-            <Plus className="w-4 h-4 mr-2" />
-            Nieuw Project
-          </Button>
+          <CreateProjectDialog />
         </div>
       </div>
 
