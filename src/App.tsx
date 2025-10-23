@@ -30,9 +30,13 @@ import FlowbiteNotFound from "./pages/FlowbiteNotFound";
 
 const queryClient = new QueryClient();
 
+const AppContent = () => {
+  useKeyboardShortcuts();
+  return null;
+};
+
 const App = () => {
   useTheme();
-  useKeyboardShortcuts();
   
   return (
     <QueryClientProvider client={queryClient}>
@@ -40,6 +44,7 @@ const App = () => {
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <AppContent />
         <Routes>
           <Route path="/" element={<FlowbiteIndex />} />
           <Route path="/inbox" element={<AppLayout><InboxPage /></AppLayout>} />
