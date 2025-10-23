@@ -1,0 +1,139 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Conversation, Message } from '@/types';
+import { mockConversations, mockMessages } from '@/lib/mockData';
+
+// Mock API calls - will be replaced with real Baserow API later
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export function useConversations(filters?: { status?: string; channel?: string }) {
+  return useQuery({
+    queryKey: ['conversations', filters],
+    queryFn: async () => {
+      await delay(300); // Simulate API delay
+      
+      let filtered = [...mockConversations];
+      
+      if (filters?.status) {
+        filtered = filtered.filter(c => c.status === filters.status);
+      }
+      
+      if (filters?.channel) {
+        filtered = filtered.filter(c => c.primary_channel === filters.channel);
+      }
+      
+      return {
+        results: filtered,
+        count: filtered.length,
+      };
+    },
+  });
+}
+
+export function useConversation(conversationId: string) {
+  return useQuery({
+    queryKey: ['conversations', conversationId],
+    queryFn: async () => {
+      await delay(200);
+      return mockConversations.find(c => c.id === conversationId) || null;
+    },
+    enabled: !!conversationId,
+  });
+}
+
+export function useConversationMessages(conversationId: string) {
+  return useQuery({
+    queryKey: ['conversations', conversationId, 'messages'],
+    queryFn: async () => {
+      await delay(300);
+      return {
+        results: mockMessages[conversationId] || [],
+        count: (mockMessages[conversationId] || []).length,
+      };
+    },
+    enabled: !!conversationId,
+  });
+}
+
+export function useUnreadConversations() {
+  return useQuery({
+    queryKey: ['conversations', 'unread'],
+    queryFn: async () => {
+      await delay(200);
+      const unread = mockConversations.filter(c => c.is_unread);
+      return {
+        results: unread,
+        count: unread.length,
+      };
+    },
+  });
+}
+
+export function useCreateMessage() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (data: { conversationId: string; content: string }) => {
+      await delay(500);
+      
+      const newMessage: Message = {
+        id: `m${Date.now()}`,
+        conversation_id: data.conversationId,
+        content: data.content,
+        timestamp: new Date().toISOString(),
+        channel: 'WhatsApp',
+        direction: 'outbound',
+        from: {
+          id: 'team1',
+          naam: 'Harm-Jan Kaspers',
+          type: 'team_member',
+        },
+        to: {
+          id: '1',
+          naam: 'Client',
+          type: 'client',
+        },
+        channel_metadata: {
+          channel: 'WhatsApp',
+          whatsapp_message_id: `wa_${Date.now()}`,
+          status: 'sent',
+        },
+        is_thread_start: false,
+        delivery_status: 'sent',
+        attachments: [],
+        contains_question: false,
+        action_required: false,
+        marked_important: false,
+      };
+      
+      return newMessage;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ 
+        queryKey: ['conversations', variables.conversationId, 'messages'] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ['conversations'] 
+      });
+    },
+  });
+}
+
+export function useUpdateConversation() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ 
+      id, 
+      data 
+    }: { 
+      id: string; 
+      data: Partial<Conversation> 
+    }) => {
+      await delay(300);
+      return { ...mockConversations.find(c => c.id === id)!, ...data };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+  });
+}
