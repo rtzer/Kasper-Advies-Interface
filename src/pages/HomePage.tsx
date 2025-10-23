@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import KaspersNavigation from '@/components/layout/KaspersNavigation';
 
 const testimonials = [
   {
@@ -125,7 +126,7 @@ const HomePage = () => {
   return (
     <>
       <Helmet>
-        <title>Kaspers Advies | Betrouwbare Belastingadviseur Stadskanaal | Trustoo 9,3</title>
+        <title>Kaspers Advies | Belastingadviseur Stadskanaal | Trustoo 9,3</title>
         <meta 
           name="description" 
           content="Belastingadviseur en boekhouder in Stadskanaal voor MKB, ZZP-ers en particulieren. 16+ jaar ervaring, Trustoo 9,3, ook aan huis. Gratis kennismaking." 
@@ -142,6 +143,7 @@ const HomePage = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background">
+        <KaspersNavigation />
         {/* Hero Section */}
         <section className="relative min-h-[70vh] lg:min-h-[80vh] flex items-center bg-gradient-to-br from-ka-gray-50 via-background to-ka-green/5">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSI4MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgxMjIsMTgxLDcxLDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
@@ -149,10 +151,10 @@ const HomePage = () => {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-ka-navy mb-6 leading-tight">
-                Uw Betrouwbare Belastingadviseur in Stadskanaal
+                Uw Belastingadviseur in Stadskanaal
               </h1>
               <p className="text-xl sm:text-2xl text-ka-gray-600 mb-8 leading-relaxed">
-                Ontzorgen in boekhouding, belastingen en groei - met persoonlijk contact
+                Boekhouding en belastingen uit handen - persoonlijk contact met Harm-Jan
               </p>
 
               {/* Trust Badges */}
@@ -234,7 +236,7 @@ const HomePage = () => {
                     MKB Ondernemers 🏢
                   </h3>
                   <p className="text-lg text-ka-gray-600 mb-6 font-medium">
-                    Complete ontzorging voor uw bedrijf
+                    Complete administratie uit handen
                   </p>
                   <ul className="space-y-3 mb-8">
                     <li className="flex items-start gap-2 text-ka-gray-700">
@@ -254,7 +256,7 @@ const HomePage = () => {
                     className="w-full bg-ka-green hover:bg-ka-green-dark text-white" 
                     asChild
                   >
-                    <Link to="/diensten/mkb">MKB Diensten</Link>
+                    <Link to="/diensten-mkb">MKB Diensten</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -289,7 +291,7 @@ const HomePage = () => {
                     className="w-full bg-ka-green hover:bg-ka-green-dark text-white" 
                     asChild
                   >
-                    <Link to="/diensten/zzp">ZZP Diensten</Link>
+                    <Link to="/diensten-zzp">ZZP Diensten</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -324,7 +326,7 @@ const HomePage = () => {
                     className="w-full bg-ka-green hover:bg-ka-green-dark text-white" 
                     asChild
                   >
-                    <Link to="/diensten/particulieren">Particulieren Diensten</Link>
+                    <Link to="/diensten-particulieren">Particulieren Diensten</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -599,13 +601,12 @@ const HomePage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Text Content */}
               <div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ka-navy mb-6">
-                  Actief in Groningen en omgeving
-                </h2>
-                <p className="text-lg text-ka-gray-700 mb-8 leading-relaxed">
-                  Vanuit ons kantoor in Stadskanaal bedienen we ondernemers en particulieren 
-                  binnen 50 kilometer. Ook aan huis mogelijk voor persoonlijk contact.
-                </p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ka-navy mb-6">
+                Actief in Groningen en Drenthe
+              </h2>
+              <p className="text-lg text-ka-gray-700 mb-8 leading-relaxed">
+                Kantoor in Stadskanaal. We werken binnen 50 kilometer. Ook aan huis wanneer het u uitkomt.
+              </p>
                 <div className="flex flex-wrap gap-3 mb-8">
                   {['Stadskanaal', 'Groningen', 'Assen', 'Veendam', 'Hoogezand', 'Winschoten', 'Emmen'].map((plaats) => (
                     <Badge 

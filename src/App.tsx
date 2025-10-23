@@ -27,6 +27,9 @@ import BrandGuidePage from "./pages/BrandGuidePage";
 import BrandAuditPage from "./pages/BrandAuditPage";
 import ExtendedBrandGuidePage from "./pages/ExtendedBrandGuidePage";
 import HomePage from "./pages/HomePage";
+import DienstenMKB from "./pages/DienstenMKB";
+import DienstenZZP from "./pages/DienstenZZP";
+import ContactKaspers from "./pages/ContactKaspers";
 import ChannelWhatsAppPage from "./pages/channels/ChannelWhatsAppPage";
 import ChannelEmailPage from "./pages/channels/ChannelEmailPage";
 import ChannelPhonePage from "./pages/channels/ChannelPhonePage";
@@ -64,6 +67,9 @@ const App = () => {
               {/* Public routes */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/kaspers-advies" element={<HomePage />} />
+              <Route path="/diensten-mkb" element={<DienstenMKB />} />
+              <Route path="/diensten-zzp" element={<DienstenZZP />} />
+              <Route path="/contact-kaspers" element={<ContactKaspers />} />
               
               {/* Protected routes */}
               <Route path="/" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
