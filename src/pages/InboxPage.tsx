@@ -12,7 +12,7 @@ export default function InboxPage() {
   const { data: conversations, isLoading } = useConversations();
   
   return (
-    <div className="h-full flex bg-ka-gray-50 dark:bg-gray-900">
+    <div className="flex bg-ka-gray-50 dark:bg-gray-900 h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] overflow-hidden">
       {/* LEFT: Conversation List */}
       <div className="w-80 lg:w-96 border-r border-ka-gray-200 dark:border-gray-700 flex flex-col bg-white dark:bg-gray-800">
         <ConversationList 
