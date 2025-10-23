@@ -10,7 +10,7 @@ export default function BottomNav() {
     { icon: Home, label: t('navigation:menu.dashboard'), href: '/', badge: null },
     { icon: Inbox, label: t('navigation:menu.inbox'), href: '/inbox', badge: 8 },
     { icon: Users, label: t('navigation:menu.clients'), href: '/clients', badge: null },
-    { icon: CheckSquare, label: t('navigation:menu.tasks'), href: '/tasks', badge: null },
+    { icon: CheckSquare, label: t('navigation:menu.tasks'), href: '/taken', badge: null },
     { icon: Menu, label: 'Meer', href: '/settings', badge: null },
   ];
   

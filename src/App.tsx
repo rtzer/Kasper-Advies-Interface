@@ -11,6 +11,8 @@ import { useTheme } from "./hooks/useTheme";
 import FlowbiteIndex from "./pages/FlowbiteIndex";
 import InboxPage from "./pages/InboxPage";
 import ClientDetailPage from "./pages/ClientDetailPage";
+import AssignmentsPage from "./pages/AssignmentsPage";
+import TasksPage from "./pages/TasksPage";
 import FlowbiteUnifiedInbox from "./pages/FlowbiteUnifiedInbox";
 import FlowbiteWhatsAppChannel from "./pages/channels/FlowbiteWhatsAppChannel";
 import FlowbiteEmailChannel from "./pages/channels/FlowbiteEmailChannel";
@@ -39,6 +41,8 @@ const App = () => {
           <Route path="/unified-inbox/conversation/:id" element={<AppLayout><FlowbiteConversationDetail /></AppLayout>} />
           <Route path="/customer/:id" element={<AppLayout><FlowbiteCustomerDetail /></AppLayout>} />
           <Route path="/clients/:id" element={<AppLayout><ClientDetailPage /></AppLayout>} />
+          <Route path="/assignments" element={<AppLayout><AssignmentsPage /></AppLayout>} />
+          <Route path="/tasks" element={<AppLayout><TasksPage /></AppLayout>} />
           <Route path="/settings" element={<AppLayout><FlowbiteSettings /></AppLayout>} />
           <Route path="/analytics" element={<AppLayout><FlowbiteAnalytics /></AppLayout>} />
           <Route path="/channels/whatsapp" element={<AppLayout><FlowbiteWhatsAppChannel /></AppLayout>} />
@@ -51,8 +55,8 @@ const App = () => {
           <Route path="/channels/linkedin" element={<AppLayout><FlowbiteGenericChannel channelName="LinkedIn" icon={Linkedin} color="text-blue-600" /></AppLayout>} />
           <Route path="/conversations" element={<AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Alle Gesprekken</h1></div></AppLayout>} />
           <Route path="/clients" element={<AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Klanten</h1></div></AppLayout>} />
-          <Route path="/assignments" element={<AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Opdrachten</h1></div></AppLayout>} />
-          <Route path="/tasks" element={<AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Taken</h1></div></AppLayout>} />
+          <Route path="/opdrachten" element={<AppLayout><AssignmentsPage /></AppLayout>} />
+          <Route path="/taken" element={<AppLayout><TasksPage /></AppLayout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<FlowbiteNotFound />} />
         </Routes>

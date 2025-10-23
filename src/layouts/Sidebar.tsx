@@ -16,8 +16,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     { icon: Inbox, label: t('navigation:menu.inbox'), href: '/inbox', badge: 8 },
     { icon: MessageSquare, label: t('navigation:menu.conversations'), href: '/conversations', badge: 23 },
     { icon: Users, label: t('navigation:menu.clients'), href: '/clients', badge: null },
-    { icon: FileText, label: t('navigation:menu.assignments'), href: '/assignments', badge: null },
-    { icon: CheckSquare, label: t('navigation:menu.tasks'), href: '/tasks', badge: null },
+    { icon: FileText, label: t('navigation:menu.assignments'), href: '/opdrachten', badge: null },
+    { icon: CheckSquare, label: t('navigation:menu.tasks'), href: '/taken', badge: null },
     { icon: BarChart3, label: t('navigation:menu.statistics'), href: '/analytics', badge: null },
     { icon: Settings, label: t('navigation:menu.settings'), href: '/settings', badge: null },
   ];
