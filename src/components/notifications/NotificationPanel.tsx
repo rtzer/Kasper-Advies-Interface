@@ -66,7 +66,7 @@ export default function NotificationPanel() {
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="w-5 h-5" />
           {unreadCount > 0 && (
-            <Badge className="absolute -top-1 -right-1 bg-ka-danger text-white px-1.5 py-0.5 text-xs min-w-[1.25rem] h-5 flex items-center justify-center">
+            <Badge className="absolute -top-1 -right-1 bg-destructive text-white px-1.5 py-0.5 text-xs min-w-[1.25rem] h-5 flex items-center justify-center">
               {unreadCount}
             </Badge>
           )}
