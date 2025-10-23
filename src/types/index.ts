@@ -475,3 +475,39 @@ export interface SocialMediaMetadata {
   is_dm: boolean;
   is_comment: boolean;
 }
+
+// ============================================
+// PROJECT MANAGEMENT TYPES
+// ============================================
+export interface ProjectTemplate {
+  id: string;
+  name: string;
+  category: 'BTW' | 'Jaarrekening' | 'Hypotheek' | 'Advies' | 'Other';
+  description: string;
+  default_duration_days: number;
+  task_templates: string; // JSON string
+  created_at: string;
+  created_by: string;
+  is_active: boolean;
+  use_count: number;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  template_id: string;
+  client_id: string;
+  client_name: string;
+  category: 'BTW' | 'Jaarrekening' | 'Hypotheek' | 'Advies' | 'Other';
+  status: 'niet-gestart' | 'in-uitvoering' | 'wacht-op-klant' | 'geblokkeerd' | 'afgerond';
+  start_date: string;
+  deadline: string;
+  completion_percentage: number;
+  responsible_team_member: string;
+  responsible_initials: string;
+  is_overdue: boolean;
+  blocked_reason: string | null;
+  last_reminder_sent: string | null;
+  reminder_count: number;
+  created_at: string;
+}

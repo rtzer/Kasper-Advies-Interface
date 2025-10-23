@@ -16,6 +16,8 @@ import InboxPage from "./pages/InboxPage";
 import ClientDetailPage from "./pages/ClientDetailPage";
 import AssignmentsPage from "./pages/AssignmentsPage";
 import TasksPage from "./pages/TasksPage";
+import ProjectsPage from "./pages/ProjectsPage";
+import ProjectDetailPage from "./pages/ProjectDetailPage";
 import ChannelWhatsAppPage from "./pages/channels/ChannelWhatsAppPage";
 import ChannelEmailPage from "./pages/channels/ChannelEmailPage";
 import ChannelPhonePage from "./pages/channels/ChannelPhonePage";
@@ -75,6 +77,8 @@ const App = () => {
               <Route path="/clients" element={<ProtectedRoute><AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Klanten</h1></div></AppLayout></ProtectedRoute>} />
               <Route path="/opdrachten" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
               <Route path="/taken" element={<ProtectedRoute><AppLayout><TasksPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/projects" element={<ProtectedRoute><AppLayout><ProjectsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/projects/:id" element={<ProtectedRoute><AppLayout><ProjectDetailPage /></AppLayout></ProtectedRoute>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<FlowbiteNotFound />} />
             </Routes>
