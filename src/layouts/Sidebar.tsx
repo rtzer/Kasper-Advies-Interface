@@ -8,7 +8,7 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-export default function Sidebar({ isOpen }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { t } = useTranslation(['navigation']);
   
   const mainNavigation = [
@@ -31,19 +31,36 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   ];
   
   return (
-    <aside className={`w-64 bg-white dark:bg-gray-800 border-r border-ka-gray-200 dark:border-gray-700 flex flex-col transition-all duration-300 ${isOpen ? '' : 'hidden lg:flex'}`}>
-      {/* Logo */}
-      <div className="h-16 flex items-center px-6 border-b border-ka-gray-200 dark:border-gray-700">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-ka-green rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">K</span>
-          </div>
-          <div>
-            <h1 className="text-sm font-semibold text-ka-navy dark:text-white">Kaspers Advies</h1>
-            <p className="text-xs text-ka-gray-500 dark:text-gray-400">Communication Hub</p>
+    <>
+      {/* Mobile overlay backdrop */}
+      {isOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40 animate-fade-in"
+          onClick={onClose}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <aside className={`
+        fixed lg:static inset-y-0 left-0 z-50 w-64 
+        bg-white dark:bg-gray-800 
+        border-r border-ka-gray-200 dark:border-gray-700 
+        flex flex-col 
+        transform transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        {/* Logo */}
+        <div className="h-16 flex items-center justify-between px-6 border-b border-ka-gray-200 dark:border-gray-700">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-ka-green rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">K</span>
+            </div>
+            <div>
+              <h1 className="text-sm font-semibold text-ka-navy dark:text-white">Kaspers Advies</h1>
+              <p className="text-xs text-ka-gray-500 dark:text-gray-400">Communication Hub</p>
+            </div>
           </div>
         </div>
-      </div>
       
       {/* Main Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-hide">
@@ -64,7 +81,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                 <span>{item.label}</span>
               </div>
               {item.badge && (
-                <Badge className="bg-ka-green text-white">{item.badge}</Badge>
+                <Badge className="bg-ka-green hover:bg-ka-green text-white border-ka-green">{item.badge}</Badge>
               )}
             </NavLink>
           );
@@ -98,6 +115,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
           </div>
         </div>
       </nav>
-    </aside>
+      </aside>
+    </>
   );
 }

@@ -55,11 +55,11 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
               <span className="text-sm">{t('common:actions.new')}</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800">
-            <DropdownMenuItem>Nieuwe conversatie</DropdownMenuItem>
-            <DropdownMenuItem>Nieuwe klant</DropdownMenuItem>
-            <DropdownMenuItem>Nieuwe opdracht</DropdownMenuItem>
-            <DropdownMenuItem>Nieuwe taak</DropdownMenuItem>
+          <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border-ka-gray-200 dark:border-gray-700 z-50">
+            <DropdownMenuItem className="cursor-pointer">Nieuwe conversatie</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Nieuwe klant</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Nieuwe opdracht</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Nieuwe taak</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         
@@ -73,11 +73,11 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
               <Globe className="w-5 h-5 text-ka-gray-600 dark:text-gray-300" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800">
-            <DropdownMenuItem onClick={() => changeLanguage('nl')}>
+          <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border-ka-gray-200 dark:border-gray-700 z-50">
+            <DropdownMenuItem onClick={() => changeLanguage('nl')} className="cursor-pointer">
               <span className="mr-2">🇳🇱</span> Nederlands
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => changeLanguage('en')}>
+            <DropdownMenuItem onClick={() => changeLanguage('en')} className="cursor-pointer">
               <span className="mr-2">🇬🇧</span> English
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -104,10 +104,10 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
               </div>
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800">
-            <DropdownMenuItem>Profiel</DropdownMenuItem>
-            <DropdownMenuItem>Instellingen</DropdownMenuItem>
-            <DropdownMenuItem>Uitloggen</DropdownMenuItem>
+          <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border-ka-gray-200 dark:border-gray-700 z-50">
+            <DropdownMenuItem className="cursor-pointer">Profiel</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Instellingen</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer text-red-600 dark:text-red-400">Uitloggen</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
