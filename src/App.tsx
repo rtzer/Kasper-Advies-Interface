@@ -8,6 +8,7 @@ import { FlowbiteLayout } from "./components/layout/FlowbiteLayout";
 import AppLayout from "./layouts/AppLayout";
 import BottomNav from "./layouts/BottomNav";
 import { useTheme } from "./hooks/useTheme";
+import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import FlowbiteIndex from "./pages/FlowbiteIndex";
 import InboxPage from "./pages/InboxPage";
 import ClientDetailPage from "./pages/ClientDetailPage";
@@ -31,6 +32,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   useTheme();
+  useKeyboardShortcuts();
   
   return (
     <QueryClientProvider client={queryClient}>

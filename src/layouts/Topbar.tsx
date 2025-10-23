@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Search, Menu, Globe } from 'lucide-react';
+import { Menu, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
 import NotificationPanel from '@/components/notifications/NotificationPanel';
+import GlobalSearch from '@/components/search/GlobalSearch';
 
 interface TopbarProps {
   onMenuClick: () => void;
@@ -36,15 +36,8 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
           <Menu className="w-5 h-5" />
         </Button>
         
-        {/* Search */}
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-ka-gray-500 dark:text-gray-400" />
-          <Input
-            type="text"
-            placeholder={t('common:actions.search') + ' klanten, gesprekken...'}
-            className="pl-10 bg-ka-gray-50 dark:bg-gray-700 border-ka-gray-200 dark:border-gray-600 focus:ring-ka-green focus:border-ka-green"
-          />
-        </div>
+        {/* Global Search */}
+        <GlobalSearch />
       </div>
       
       <div className="flex items-center space-x-4">
