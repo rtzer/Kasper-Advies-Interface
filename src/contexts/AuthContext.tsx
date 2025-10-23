@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const user = await mockAuth.login(email, password);
       setUser(user);
-      navigate('/unified-inbox');
+      navigate('/inbox');
     } catch (error) {
       throw error;
     }

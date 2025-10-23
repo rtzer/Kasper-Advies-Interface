@@ -11,10 +11,10 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-ka-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <Loader className="w-12 h-12 text-ka-green animate-spin mx-auto mb-4" />
-          <p className="text-ka-gray-600 dark:text-gray-400">Sessie controleren...</p>
+          <Loader className="w-12 h-12 text-ka-green dark:text-ka-green animate-spin mx-auto mb-4" />
+          <p className="text-foreground">Sessie controleren...</p>
         </div>
       </div>
     );
