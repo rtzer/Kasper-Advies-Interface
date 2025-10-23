@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Filter, Calendar, LayoutGrid, List } from 'lucide-react';
+import { Filter, Calendar, LayoutGrid, List, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import ProjectsKanban from '@/components/projects/ProjectsKanban';
 import ProjectsList from '@/components/projects/ProjectsList';
 import ProjectsCalendar from '@/components/projects/ProjectsCalendar';
@@ -25,6 +26,12 @@ export default function ProjectsPage() {
         </div>
 
         <div className="flex items-center space-x-3">
+          <Link to="/projects/bulk">
+            <Button variant="outline" size="sm">
+              <Zap className="w-4 h-4 mr-2" />
+              Bulk BTW
+            </Button>
+          </Link>
           <Button variant="outline" size="sm">
             <Filter className="w-4 h-4 mr-2" />
             Filters
