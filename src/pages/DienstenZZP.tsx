@@ -14,6 +14,7 @@ import {
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import KaspersNavigation from '@/components/layout/KaspersNavigation';
+import KaspersFooter from '@/components/layout/KaspersFooter';
 
 const DienstenZZP = () => {
   return (
@@ -267,7 +268,7 @@ const DienstenZZP = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg" 
-                  className="bg-ka-red hover:bg-ka-red-dark text-white px-8 py-6 text-lg"
+                  className="bg-ka-green hover:bg-ka-green-dark text-white px-8 py-6 text-lg"
                   asChild
                 >
                   <Link to="/contact-kaspers">
@@ -290,6 +291,8 @@ const DienstenZZP = () => {
             </div>
           </div>
         </section>
+        
+        <KaspersFooter />
       </div>
     </>
   );

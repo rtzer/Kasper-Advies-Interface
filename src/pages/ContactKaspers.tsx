@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import KaspersNavigation from '@/components/layout/KaspersNavigation';
+import KaspersFooter from '@/components/layout/KaspersFooter';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -264,6 +265,8 @@ const ContactKaspers = () => {
             </div>
           </div>
         </section>
+        
+        <KaspersFooter />
       </div>
     </>
   );

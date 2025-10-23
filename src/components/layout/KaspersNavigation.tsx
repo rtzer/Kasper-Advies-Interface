@@ -26,16 +26,24 @@ const KaspersNavigation = () => {
   ];
 
   return (
-    <nav className="bg-white border-b border-ka-gray-200 sticky top-0 z-50 shadow-sm">
+    <nav className="bg-white border-b-2 border-ka-green/20 sticky top-0 z-50 shadow-md">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 lg:h-20">
+        <div className="flex justify-between items-center h-20 lg:h-24">
           {/* Logo */}
-          <Link to="/kaspers-advies" className="flex items-center">
+          <Link to="/kaspers-advies" className="flex items-center gap-3 group">
             <img 
               src="/src/assets/logo-kaspers-advies.jpg" 
-              alt="Kaspers Advies Logo" 
-              className="h-10 lg:h-12 w-auto"
+              alt="Kaspers Advies - Belastingadviseur Stadskanaal" 
+              className="h-12 lg:h-16 w-auto transition-transform group-hover:scale-105"
             />
+            <div className="hidden md:block">
+              <div className="text-ka-navy font-bold text-lg lg:text-xl leading-tight">
+                Kaspers Advies
+              </div>
+              <div className="text-ka-gray-600 text-xs lg:text-sm">
+                Belastingadviseur Stadskanaal
+              </div>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
@@ -76,12 +84,12 @@ const KaspersNavigation = () => {
             ))}
 
             <Button 
-              size="sm" 
-              className="bg-ka-red hover:bg-ka-red-dark text-white"
+              size="lg" 
+              className="bg-ka-green hover:bg-ka-green-dark text-white font-semibold shadow-md hover:shadow-lg transition-all"
               asChild
             >
               <a href="tel:+31599123456">
-                <Phone className="mr-2 h-4 w-4" />
+                <Phone className="mr-2 h-5 w-5" />
                 0599-123 456
               </a>
             </Button>
@@ -143,7 +151,7 @@ const KaspersNavigation = () => {
             
             <div className="px-4 pt-4 border-t border-ka-gray-200 mt-4">
               <Button 
-                className="w-full bg-ka-red hover:bg-ka-red-dark text-white"
+                className="w-full bg-ka-green hover:bg-ka-green-dark text-white font-semibold"
                 asChild
               >
                 <a href="tel:+31599123456">

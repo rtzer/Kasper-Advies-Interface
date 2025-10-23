@@ -22,6 +22,7 @@ import {
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import KaspersNavigation from '@/components/layout/KaspersNavigation';
+import KaspersFooter from '@/components/layout/KaspersFooter';
 
 const testimonials = [
   {
@@ -150,11 +151,17 @@ const HomePage = () => {
           
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
+              <Badge variant="secondary" className="mb-4 px-4 py-2 text-sm bg-ka-green/10 text-ka-green border border-ka-green">
+                <Award className="w-4 h-4 mr-2" />
+                16+ jaar vertrouwd in Stadskanaal
+              </Badge>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-ka-navy mb-6 leading-tight">
-                Uw Belastingadviseur in Stadskanaal
+                Uw administratie volledig uit handen.<br />
+                <span className="text-ka-green">Direct contact met Harm-Jan.</span>
               </h1>
-              <p className="text-xl sm:text-2xl text-ka-gray-600 mb-8 leading-relaxed">
-                Boekhouding en belastingen uit handen - persoonlijk contact met Harm-Jan
+              <p className="text-xl sm:text-2xl text-ka-gray-700 mb-8 leading-relaxed font-medium">
+                Boekhouding, salarisadministratie en belastingadvies.<br />
+                Geen callcenter, maar direct met de ondernemer die u écht helpt.
               </p>
 
               {/* Trust Badges */}
@@ -177,10 +184,10 @@ const HomePage = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
               <Button 
                   size="lg" 
-                  className="w-full sm:w-auto bg-ka-red hover:bg-ka-red-dark text-white px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+                  className="w-full sm:w-auto bg-ka-green hover:bg-ka-green-dark text-white px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
                   asChild
                 >
-                  <Link to="/contact">
+                  <Link to="/contact-kaspers">
                     <Calendar className="mr-2 h-5 w-5" />
                     Gratis kennismakingsgesprek
                   </Link>
@@ -337,66 +344,53 @@ const HomePage = () => {
         {/* Waarom Kaspers Advies Section */}
         <section className="py-16 lg:py-24 bg-ka-gray-50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ka-navy text-center mb-16">
-              Waarom Kaspers Advies?
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ka-navy text-center mb-4">
+              Waarom klanten voor Harm-Jan kiezen
             </h2>
+            <p className="text-lg text-ka-gray-600 text-center mb-16 max-w-3xl mx-auto">
+              Geen callcenter, geen wachttijden. Direct contact met de ondernemer die uw zaken regelt.
+            </p>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
               {/* USP's */}
               <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                    <Award className="w-6 h-6 text-ka-green shrink-0 mt-1" />
-                    <div>
-                      <h4 className="font-semibold text-ka-navy mb-1">16+ jaar ervaring</h4>
-                      <p className="text-sm text-ka-gray-600">Sinds 2009 actief</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                    <CheckCircle className="w-6 h-6 text-ka-green shrink-0 mt-1" />
-                    <div>
-                      <h4 className="font-semibold text-ka-navy mb-1">Geregistreerd Belastingadviseur</h4>
-                      <p className="text-sm text-ka-gray-600">Officieel erkend</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                    <Clock className="w-6 h-6 text-ka-green shrink-0 mt-1" />
-                    <div>
-                      <h4 className="font-semibold text-ka-navy mb-1">Geen 9-tot-5 mentaliteit</h4>
-                      <p className="text-sm text-ka-gray-600">Ook 's avonds bereikbaar</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border-l-4 border-ka-green">
                     <Star className="w-6 h-6 text-amber-400 shrink-0 mt-1 fill-amber-400" />
                     <div>
-                      <h4 className="font-semibold text-ka-navy mb-1">Trustoo 9,3</h4>
-                      <p className="text-sm text-ka-gray-600">Uit 50+ reviews</p>
+                      <h4 className="font-bold text-ka-navy mb-1">Trustoo 9,3 ⭐</h4>
+                      <p className="text-sm text-ka-gray-700 font-medium">Hoger dan grotere kantoren</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                    <Users className="w-6 h-6 text-ka-green shrink-0 mt-1" />
+                  <div className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border-l-4 border-ka-green">
+                    <Clock className="w-6 h-6 text-ka-green shrink-0 mt-1" />
                     <div>
-                      <h4 className="font-semibold text-ka-navy mb-1">Persoonlijk contact</h4>
-                      <p className="text-sm text-ka-gray-600">Met Harm-Jan zelf</p>
+                      <h4 className="font-bold text-ka-navy mb-1">48-uurs garantie</h4>
+                      <p className="text-sm text-ka-gray-700 font-medium">Altijd snel antwoord</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border-l-4 border-ka-green">
                     <MapPin className="w-6 h-6 text-ka-green shrink-0 mt-1" />
                     <div>
-                      <h4 className="font-semibold text-ka-navy mb-1">Regionaal</h4>
-                      <p className="text-sm text-ka-gray-600">Binnen 50km ook aan huis</p>
+                      <h4 className="font-bold text-ka-navy mb-1">Ook aan huis</h4>
+                      <p className="text-sm text-ka-gray-700 font-medium">Wij komen naar u toe</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border-l-4 border-ka-green">
+                    <Phone className="w-6 h-6 text-ka-green shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-bold text-ka-navy mb-1">Direct Harm-Jan</h4>
+                      <p className="text-sm text-ka-gray-700 font-medium">Geen tussenpersonen</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Testimonials */}
-              <div 
+              <div
                 className="relative"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
@@ -733,6 +727,8 @@ const HomePage = () => {
             Chat via WhatsApp
           </span>
         </a>
+        
+        <KaspersFooter />
       </div>
     </>
   );
