@@ -102,13 +102,15 @@ export default function CreateProjectDialog() {
       });
 
       toast.success(`Project "${projectName}" aangemaakt!`);
-      setOpen(false);
       
       // Reset form
       setSelectedTemplate('');
       setSelectedClient('');
       setStartDate(format(new Date(), 'yyyy-MM-dd'));
       setQuarter('');
+      
+      // Small delay before closing so user sees the success toast
+      setTimeout(() => setOpen(false), 300);
     } catch (error) {
       toast.error('Fout bij aanmaken project');
       console.error(error);
