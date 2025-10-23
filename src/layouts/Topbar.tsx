@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Search, Bell, Menu, Globe } from 'lucide-react';
+import { Search, Menu, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -8,8 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
 import { ThemeSwitcher } from '@/components/layout/ThemeSwitcher';
+import NotificationPanel from '@/components/notifications/NotificationPanel';
 
 interface TopbarProps {
   onMenuClick: () => void;
@@ -84,12 +84,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         </DropdownMenu>
         
         {/* Notifications */}
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="w-5 h-5 text-ka-gray-600 dark:text-gray-300" />
-          <Badge className="absolute -top-1 -right-1 bg-red-600 text-white px-1.5 py-0.5 text-xs">
-            3
-          </Badge>
-        </Button>
+        <NotificationPanel />
         
         {/* User Menu */}
         <DropdownMenu>
