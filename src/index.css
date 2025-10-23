@@ -21,8 +21,9 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Kaspers Green als primary */
+    --primary: 89 44% 49%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -38,18 +39,38 @@ All colors MUST be HSL.
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 89 44% 49%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary: 89 44% 49%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 89 44% 49%;
+
+    /* Kaspers Advies Brand Colors */
+    --ka-green: 89 44% 49%;
+    --ka-green-light: 89 44% 60%;
+    --ka-green-dark: 89 44% 40%;
+    --ka-navy: 213 52% 25%;
+    --ka-navy-light: 213 52% 35%;
+    --ka-navy-dark: 213 52% 15%;
+    
+    /* Kaspers Gray Scale */
+    --ka-gray-50: 210 40% 98%;
+    --ka-gray-100: 214 32% 95%;
+    --ka-gray-200: 214 32% 91%;
+    --ka-gray-300: 215 28% 82%;
+    --ka-gray-400: 217 19% 69%;
+    --ka-gray-500: 220 14% 42%;
+    --ka-gray-600: 215 28% 35%;
+    --ka-gray-700: 217 33% 23%;
+    --ka-gray-800: 215 39% 15%;
+    --ka-gray-900: 220 47% 9%;
 
     /* Inbox-specific colors */
     --inbox-unread: 217.2 91.2% 59.8%;
@@ -88,8 +109,9 @@ All colors MUST be HSL.
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Kaspers Green als primary - dark mode */
+    --primary: 89 44% 55%;
+    --primary-foreground: 222.2 84% 4.9%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -105,16 +127,36 @@ All colors MUST be HSL.
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 89 44% 55%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 89 44% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 89 44% 55%;
+
+    /* Kaspers Advies Brand Colors - dark mode */
+    --ka-green: 89 44% 55%;
+    --ka-green-light: 89 44% 65%;
+    --ka-green-dark: 89 44% 45%;
+    --ka-navy: 213 52% 35%;
+    --ka-navy-light: 213 52% 45%;
+    --ka-navy-dark: 213 52% 25%;
+    
+    /* Kaspers Gray Scale - dark mode */
+    --ka-gray-50: 220 47% 9%;
+    --ka-gray-100: 215 39% 15%;
+    --ka-gray-200: 217 33% 23%;
+    --ka-gray-300: 215 28% 35%;
+    --ka-gray-400: 220 14% 42%;
+    --ka-gray-500: 217 19% 69%;
+    --ka-gray-600: 215 28% 82%;
+    --ka-gray-700: 214 32% 91%;
+    --ka-gray-800: 214 32% 95%;
+    --ka-gray-900: 210 40% 98%;
 
     /* Inbox-specific colors - dark mode */
     --inbox-unread: 217.2 91.2% 59.8%;
