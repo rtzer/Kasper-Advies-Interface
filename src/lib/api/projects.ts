@@ -105,3 +105,26 @@ export function useUpdateProjectStatus() {
     },
   });
 }
+
+export function useSendReminder() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ projectId }: { projectId: string }) => {
+      await delay(500);
+      // Mock reminder sending
+      const project = mockProjects.find(p => p.id === projectId);
+      if (!project) throw new Error('Project not found');
+      
+      // Update last reminder sent
+      return {
+        ...project,
+        last_reminder_sent: new Date().toISOString(),
+        reminder_count: (project.reminder_count || 0) + 1,
+      };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
+}

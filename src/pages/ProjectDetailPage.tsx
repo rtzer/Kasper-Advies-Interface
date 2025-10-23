@@ -1,15 +1,41 @@
 import { useParams, Link } from 'react-router-dom';
-import { useProject } from '@/lib/api/projects';
+import { useProject, useSendReminder } from '@/lib/api/projects';
 import { CheckCircle, Circle, Clock, AlertCircle, Send, ArrowLeft, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { getStatusColor, getStatusLabel, formatDeadline, getCategoryColor } from '@/lib/utils/projectHelpers';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: project, isLoading } = useProject(id || '');
+  const sendReminderMutation = useSendReminder();
+  const { toast } = useToast();
+
+  const handleSendReminder = () => {
+    if (!project) return;
+    
+    sendReminderMutation.mutate(
+      { projectId: project.id },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Herinnering verzonden",
+            description: `Herinnering verzonden naar ${project.client_name}`,
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Fout",
+            description: "Kon herinnering niet verzenden. Probeer opnieuw.",
+            variant: "destructive",
+          });
+        },
+      }
+    );
+  };
 
   if (isLoading) {
     return (
@@ -72,10 +98,15 @@ export default function ProjectDetailPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" size="sm">
-              <Send className="w-4 h-4 mr-2" />
-              Herinnering versturen
-            </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleSendReminder}
+                disabled={sendReminderMutation.isPending}
+              >
+                <Send className="w-4 h-4 mr-2" />
+                {sendReminderMutation.isPending ? 'Verzenden...' : 'Herinnering versturen'}
+              </Button>
             <Button className="bg-ka-green hover:bg-ka-green/90" size="sm">
               Status updaten
             </Button>
