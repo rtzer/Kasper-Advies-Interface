@@ -10,7 +10,6 @@ const KaspersNavigation = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const navLinks = [
-    { path: '/kaspers-advies', label: 'Home' },
     { path: '/over-kaspers-advies', label: 'Over Ons' },
     { 
       label: 'Diensten',
