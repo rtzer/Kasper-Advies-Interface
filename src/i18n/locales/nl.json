@@ -68,7 +68,14 @@
     "close": "Sluiten",
     "loading": "Laden...",
     "error": "Fout",
-    "success": "Succes"
+    "success": "Succes",
+    "actions": {
+      "reply": "Antwoorden"
+    },
+    "labels": {
+      "loading": "Laden...",
+      "no_results": "Geen resultaten gevonden"
+    }
   },
   "home": {
     "hero": {

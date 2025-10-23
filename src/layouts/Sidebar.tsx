@@ -13,7 +13,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   
   const mainNavigation = [
     { icon: Home, label: t('navigation:menu.dashboard'), href: '/', badge: null },
-    { icon: Inbox, label: t('navigation:menu.inbox'), href: '/unified-inbox', badge: 8 },
+    { icon: Inbox, label: t('navigation:menu.inbox'), href: '/inbox', badge: 8 },
     { icon: MessageSquare, label: t('navigation:menu.conversations'), href: '/conversations', badge: 23 },
     { icon: Users, label: t('navigation:menu.clients'), href: '/clients', badge: null },
     { icon: FileText, label: t('navigation:menu.assignments'), href: '/assignments', badge: null },

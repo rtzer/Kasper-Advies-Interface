@@ -1,118 +1,41 @@
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Filter } from "lucide-react";
+import { useTranslation } from 'react-i18next';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useConversationStore } from '@/store/conversationStore';
 
-type ChannelType = "whatsapp" | "email" | "phone" | "video" | "facebook" | "instagram" | "linkedin" | "sms";
-type ChannelFilterType = ChannelType | "all";
-type StatusType = "active" | "pending" | "resolved" | "all";
-
-interface ConversationFiltersProps {
-  selectedChannels: ChannelFilterType[];
-  selectedStatus: StatusType;
-  onChannelChange: (channels: ChannelFilterType[]) => void;
-  onStatusChange: (status: StatusType) => void;
-  activeFiltersCount: number;
-}
-
-const channels: { value: ChannelType; label: string }[] = [
-  { value: "whatsapp" as const, label: "WhatsApp" },
-  { value: "email" as const, label: "Email" },
-  { value: "phone" as const, label: "Telefoon" },
-  { value: "sms" as const, label: "SMS" },
-  { value: "facebook" as const, label: "Facebook" },
-  { value: "instagram" as const, label: "Instagram" },
-];
-
-const statuses = [
-  { value: "active" as const, label: "Actief" },
-  { value: "pending" as const, label: "In afwachting" },
-  { value: "resolved" as const, label: "Opgelost" },
-];
-
-export const ConversationFilters = ({
-  selectedChannels,
-  selectedStatus,
-  onChannelChange,
-  onStatusChange,
-  activeFiltersCount,
-}: ConversationFiltersProps) => {
-  const toggleChannel = (channel: ChannelType) => {
-    if (selectedChannels.includes(channel)) {
-      const newChannels = selectedChannels.filter((c) => c !== channel);
-      onChannelChange(newChannels.length === 0 ? ["all"] : newChannels);
-    } else {
-      const newChannels = selectedChannels.filter((c) => c !== "all") as ChannelFilterType[];
-      onChannelChange([...newChannels, channel]);
-    }
-  };
-
-  const clearFilters = () => {
-    onChannelChange(["all"]);
-    onStatusChange("all");
-  };
-
+export default function ConversationFilters() {
+  const { t } = useTranslation(['navigation']);
+  const { filterChannel, setFilterChannel, filterStatus, setFilterStatus } = useConversationStore();
+  
   return (
-    <div className="flex items-center gap-2">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="h-8">
-            <Filter className="h-4 w-4 mr-2" />
-            Filters
-            {activeFiltersCount > 0 && (
-              <Badge variant="secondary" className="ml-2 h-5 px-1.5">
-                {activeFiltersCount}
-              </Badge>
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-56">
-          <DropdownMenuLabel>Status</DropdownMenuLabel>
-          {statuses.map((status) => (
-            <DropdownMenuCheckboxItem
-              key={status.value}
-              checked={selectedStatus === status.value}
-              onCheckedChange={() => onStatusChange(status.value)}
-            >
-              {status.label}
-            </DropdownMenuCheckboxItem>
-          ))}
-          
-          <DropdownMenuSeparator />
-          
-          <DropdownMenuLabel>Kanalen</DropdownMenuLabel>
-          {channels.map((channel) => (
-            <DropdownMenuCheckboxItem
-              key={channel.value}
-              checked={selectedChannels.includes(channel.value)}
-              onCheckedChange={() => toggleChannel(channel.value)}
-            >
-              {channel.label}
-            </DropdownMenuCheckboxItem>
-          ))}
-          
-          {activeFiltersCount > 0 && (
-            <>
-              <DropdownMenuSeparator />
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-                onClick={clearFilters}
-              >
-                Filters wissen
-              </Button>
-            </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <div className="mt-3 space-y-2">
+      {/* Channel filter */}
+      <Select value={filterChannel || 'all'} onValueChange={(v) => setFilterChannel(v === 'all' ? null : v)}>
+        <SelectTrigger className="w-full bg-white dark:bg-gray-700">
+          <SelectValue placeholder={t('navigation:channels.all')} />
+        </SelectTrigger>
+        <SelectContent className="bg-white dark:bg-gray-800 z-50">
+          <SelectItem value="all">{t('navigation:channels.all')}</SelectItem>
+          <SelectItem value="WhatsApp">{t('navigation:channels.whatsapp')}</SelectItem>
+          <SelectItem value="E-mail">{t('navigation:channels.email')}</SelectItem>
+          <SelectItem value="Telefoon">{t('navigation:channels.phone')}</SelectItem>
+          <SelectItem value="Zoom">{t('navigation:channels.video')}</SelectItem>
+          <SelectItem value="SMS">{t('navigation:channels.sms')}</SelectItem>
+        </SelectContent>
+      </Select>
+      
+      {/* Status filter */}
+      <Select value={filterStatus || 'all'} onValueChange={(v) => setFilterStatus(v === 'all' ? null : v)}>
+        <SelectTrigger className="w-full bg-white dark:bg-gray-700">
+          <SelectValue placeholder="Alle statussen" />
+        </SelectTrigger>
+        <SelectContent className="bg-white dark:bg-gray-800 z-50">
+          <SelectItem value="all">Alle statussen</SelectItem>
+          <SelectItem value="open">Open</SelectItem>
+          <SelectItem value="pending">In behandeling</SelectItem>
+          <SelectItem value="resolved">Afgerond</SelectItem>
+          <SelectItem value="archived">Gearchiveerd</SelectItem>
+        </SelectContent>
+      </Select>
     </div>
   );
-};
+}
