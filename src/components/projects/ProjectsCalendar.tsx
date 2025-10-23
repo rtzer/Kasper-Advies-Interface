@@ -1,11 +1,13 @@
 import { useProjects } from '@/lib/api/projects';
 import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { nl } from 'date-fns/locale';
-import { getCategoryColor } from '@/lib/utils/projectHelpers';
+import { getCategoryColor, getStatusColor, getStatusLabel, formatDeadline } from '@/lib/utils/projectHelpers';
 import { Link } from 'react-router-dom';
+import { Clock, User } from 'lucide-react';
 
 interface ProjectsCalendarProps {
   filterStatus: string;
@@ -61,23 +63,57 @@ export default function ProjectsCalendar({ filterStatus, filterCategory }: Proje
             Geen projecten op deze datum
           </p>
         ) : (
-          <div className="space-y-3">
-            {projectsOnDate.map((project) => (
-              <Link key={project.id} to={`/projects/${project.id}`}>
-                <div className="border rounded-lg p-3 hover:bg-muted/50 transition-colors cursor-pointer">
-                  <Badge variant="outline" className={`${getCategoryColor(project.category)} mb-2`}>
-                    {project.category}
-                  </Badge>
-                  <h4 className="font-medium text-sm text-foreground mb-1">
-                    {project.name}
-                  </h4>
-                  <p className="text-xs text-muted-foreground">
-                    {project.client_name}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <TooltipProvider>
+            <div className="space-y-3">
+              {projectsOnDate.map((project) => (
+                <Tooltip key={project.id}>
+                  <TooltipTrigger asChild>
+                    <Link to={`/projects/${project.id}`}>
+                      <div className="border rounded-lg p-3 hover:bg-muted/50 hover:shadow-md transition-all duration-200 cursor-pointer">
+                        <div className="flex items-start justify-between mb-2">
+                          <Badge variant="outline" className={getCategoryColor(project.category)}>
+                            {project.category}
+                          </Badge>
+                          <Badge className={getStatusColor(project.status)} variant="outline">
+                            {getStatusLabel(project.status)}
+                          </Badge>
+                        </div>
+                        <h4 className="font-medium text-sm text-foreground mb-1">
+                          {project.name}
+                        </h4>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                          <User className="w-3 h-3" />
+                          {project.client_name}
+                        </p>
+                      </div>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="left" className="max-w-xs">
+                    <div className="space-y-2">
+                      <p className="font-medium">{project.name}</p>
+                      <div className="space-y-1 text-xs">
+                        <p className="flex items-center gap-2">
+                          <Clock className="w-3 h-3" />
+                          <span>Deadline: {formatDeadline(project.deadline)}</span>
+                        </p>
+                        <p className="flex items-center gap-2">
+                          <User className="w-3 h-3" />
+                          <span>Klant: {project.client_name}</span>
+                        </p>
+                        <p>Voortgang: {project.completion_percentage}%</p>
+                        <p>Verantwoordelijk: {project.responsible_team_member}</p>
+                      </div>
+                      {project.blocked_reason && (
+                        <p className="text-red-600 text-xs">
+                          Geblokkeerd: {project.blocked_reason}
+                        </p>
+                      )}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+          </TooltipProvider>
         )}
       </div>
     </div>
