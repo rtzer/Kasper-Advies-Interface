@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Home, Inbox, MessageSquare, Users, FileText, CheckSquare, BarChart3, Settings, FolderKanban } from 'lucide-react';
+import { Home, Inbox, MessageSquare, Users, FileText, CheckSquare, BarChart3, Settings, FolderKanban, Palette } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { NavLink } from 'react-router-dom';
 
@@ -20,6 +20,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     { icon: FileText, label: t('navigation:menu.assignments'), href: '/opdrachten', badge: null },
     { icon: CheckSquare, label: t('navigation:menu.tasks'), href: '/taken', badge: null },
     { icon: BarChart3, label: t('navigation:menu.statistics'), href: '/analytics', badge: null },
+    { icon: Palette, label: 'Brand Guide', href: '/brand-guide-extended', badge: null },
     { icon: Settings, label: t('navigation:menu.settings'), href: '/settings', badge: null },
   ];
   

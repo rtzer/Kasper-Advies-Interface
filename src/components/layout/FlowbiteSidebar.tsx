@@ -15,7 +15,8 @@ import {
   Linkedin, 
   MessageCircle,
   ChevronDown,
-  X
+  X,
+  Palette
 } from "lucide-react";
 
 interface FlowbiteSidebarProps {
@@ -31,6 +32,7 @@ export function FlowbiteSidebar({ isOpen, onToggle }: FlowbiteSidebarProps) {
     { title: t('sidebar.dashboard'), url: "/", icon: Home },
     { title: t('sidebar.unifiedInbox'), url: "/unified-inbox", icon: Inbox, badge: 8 },
     { title: t('sidebar.analytics'), url: "/analytics", icon: BarChart3 },
+    { title: "Brand Guide", url: "/brand-guide-extended", icon: Palette },
     { title: t('sidebar.settings'), url: "/settings", icon: Settings },
   ];
 
