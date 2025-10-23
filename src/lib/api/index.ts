@@ -4,3 +4,5 @@ export * from './interacties';
 export * from './klanten';
 export * from './opdrachten';
 export * from './taken';
+export * from './projects';
+export * from './projectTemplates';
