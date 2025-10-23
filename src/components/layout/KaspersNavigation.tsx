@@ -27,27 +27,27 @@ const KaspersNavigation = () => {
   return (
     <>
       {/* USP Top Bar */}
-      <div className="bg-ka-green text-white py-2 text-xs sm:text-sm">
+      <div className="bg-ka-navy text-white py-2 text-xs sm:text-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6">
             <div className="flex items-center gap-1.5">
-              <Star className="w-4 h-4 fill-white" />
+              <Star className="w-4 h-4 fill-ka-green text-ka-green" />
               <span className="font-medium">Trustoo 9,3</span>
             </div>
             <div className="hidden sm:flex items-center gap-1.5">
-              <Clock className="w-4 h-4" />
+              <Clock className="w-4 h-4 text-ka-green" />
               <span>48-uurs reactie</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <MapPin className="w-4 h-4" />
+              <MapPin className="w-4 h-4 text-ka-green" />
               <span>Ook aan huis</span>
             </div>
             <div className="hidden md:flex items-center gap-1.5">
-              <Award className="w-4 h-4" />
+              <Award className="w-4 h-4 text-ka-green" />
               <span>16+ jaar ervaring</span>
             </div>
             <div className="hidden lg:flex items-center gap-1.5">
-              <CheckCircle className="w-4 h-4" />
+              <CheckCircle className="w-4 h-4 text-ka-green" />
               <span>Geregistreerd Belastingadviseur</span>
             </div>
           </div>
