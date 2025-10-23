@@ -10,6 +10,7 @@ import BottomNav from "./layouts/BottomNav";
 import { useTheme } from "./hooks/useTheme";
 import FlowbiteIndex from "./pages/FlowbiteIndex";
 import InboxPage from "./pages/InboxPage";
+import ClientDetailPage from "./pages/ClientDetailPage";
 import FlowbiteUnifiedInbox from "./pages/FlowbiteUnifiedInbox";
 import FlowbiteWhatsAppChannel from "./pages/channels/FlowbiteWhatsAppChannel";
 import FlowbiteEmailChannel from "./pages/channels/FlowbiteEmailChannel";
@@ -37,6 +38,7 @@ const App = () => {
           <Route path="/unified-inbox" element={<AppLayout><FlowbiteUnifiedInbox /></AppLayout>} />
           <Route path="/unified-inbox/conversation/:id" element={<AppLayout><FlowbiteConversationDetail /></AppLayout>} />
           <Route path="/customer/:id" element={<AppLayout><FlowbiteCustomerDetail /></AppLayout>} />
+          <Route path="/clients/:id" element={<AppLayout><ClientDetailPage /></AppLayout>} />
           <Route path="/settings" element={<AppLayout><FlowbiteSettings /></AppLayout>} />
           <Route path="/analytics" element={<AppLayout><FlowbiteAnalytics /></AppLayout>} />
           <Route path="/channels/whatsapp" element={<AppLayout><FlowbiteWhatsAppChannel /></AppLayout>} />
