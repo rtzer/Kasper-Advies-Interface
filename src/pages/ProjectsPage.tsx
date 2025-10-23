@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Filter, Calendar, LayoutGrid, List, Zap } from 'lucide-react';
+import { Filter, Calendar, LayoutGrid, List, Zap, AlertCircle, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import ProjectsKanban from '@/components/projects/ProjectsKanban';
@@ -26,6 +26,18 @@ export default function ProjectsPage() {
         </div>
 
         <div className="flex items-center space-x-3">
+          <Link to="/projects/late-clients">
+            <Button variant="outline" size="sm">
+              <AlertCircle className="w-4 h-4 mr-2 text-yellow-600" />
+              Late Klanten
+            </Button>
+          </Link>
+          <Link to="/projects/team-workload">
+            <Button variant="outline" size="sm">
+              <Users className="w-4 h-4 mr-2" />
+              Team Workload
+            </Button>
+          </Link>
           <Link to="/projects/bulk">
             <Button variant="outline" size="sm">
               <Zap className="w-4 h-4 mr-2" />

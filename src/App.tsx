@@ -19,6 +19,8 @@ import TasksPage from "./pages/TasksPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
 import BulkProjectsPage from "./pages/BulkProjectsPage";
+import LateClientsPage from "./pages/LateClientsPage";
+import TeamWorkloadPage from "./pages/TeamWorkloadPage";
 import ChannelWhatsAppPage from "./pages/channels/ChannelWhatsAppPage";
 import ChannelEmailPage from "./pages/channels/ChannelEmailPage";
 import ChannelPhonePage from "./pages/channels/ChannelPhonePage";
@@ -80,6 +82,8 @@ const App = () => {
               <Route path="/taken" element={<ProtectedRoute><AppLayout><TasksPage /></AppLayout></ProtectedRoute>} />
               <Route path="/projects" element={<ProtectedRoute><AppLayout><ProjectsPage /></AppLayout></ProtectedRoute>} />
               <Route path="/projects/bulk" element={<ProtectedRoute><AppLayout><BulkProjectsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/projects/late-clients" element={<ProtectedRoute><AppLayout><LateClientsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/projects/team-workload" element={<ProtectedRoute><AppLayout><TeamWorkloadPage /></AppLayout></ProtectedRoute>} />
               <Route path="/projects/:id" element={<ProtectedRoute><AppLayout><ProjectDetailPage /></AppLayout></ProtectedRoute>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<FlowbiteNotFound />} />

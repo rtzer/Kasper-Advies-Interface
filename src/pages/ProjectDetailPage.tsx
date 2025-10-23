@@ -7,12 +7,16 @@ import { Progress } from '@/components/ui/progress';
 import { getStatusColor, getStatusLabel, formatDeadline, getCategoryColor } from '@/lib/utils/projectHelpers';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import UpdateStatusDialog from '@/components/projects/UpdateStatusDialog';
+import ProjectStageTracker from '@/components/projects/ProjectStageTracker';
+import { useState } from 'react';
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: project, isLoading } = useProject(id || '');
   const sendReminderMutation = useSendReminder();
   const { toast } = useToast();
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
 
   const handleSendReminder = () => {
     if (!project) return;
@@ -107,7 +111,11 @@ export default function ProjectDetailPage() {
                 <Send className="w-4 h-4 mr-2" />
                 {sendReminderMutation.isPending ? 'Verzenden...' : 'Herinnering versturen'}
               </Button>
-            <Button className="bg-ka-green hover:bg-ka-green/90" size="sm">
+            <Button 
+              className="bg-ka-green hover:bg-ka-green/90" 
+              size="sm"
+              onClick={() => setStatusDialogOpen(true)}
+            >
               Status updaten
             </Button>
           </div>
@@ -129,99 +137,56 @@ export default function ProjectDetailPage() {
               Workflow Stadia
             </h2>
 
-            <div className="space-y-6">
-              <div className="flex items-start">
-                <CheckCircle className="w-6 h-6 text-green-500 mr-3 mt-1 flex-shrink-0" />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-foreground">
-                      1. Documentatie aanvragen
-                    </h3>
-                    <Badge className="bg-green-100 text-green-800">
-                      Compleet
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Afgerond op 5 oktober 2025
-                  </p>
-                  <div className="space-y-2">
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                      Verkoopfacturen verzameld
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                      Aankoopfacturen verzameld
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                      Bankafschriften ontvangen
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-blue-50 -mx-6 px-6 py-4 flex items-start">
-                <Circle className="w-6 h-6 text-blue-500 mr-3 mt-1 flex-shrink-0" />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-foreground">
-                      2. Controle & Verwerking
-                    </h3>
-                    <Badge className="bg-blue-100 text-blue-800">
-                      In uitvoering
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Gestart op 6 oktober • Verwacht klaar: 13 oktober
-                  </p>
-                  <div className="space-y-2">
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                      Facturen verwerkt in systeem
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <Circle className="w-4 h-4 text-gray-400 mr-2" />
-                      BTW berekend (bezig)
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <Circle className="w-4 h-4 text-gray-400 mr-2" />
-                      Controle op fouten
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="opacity-60 flex items-start">
-                <Circle className="w-6 h-6 text-gray-400 mr-3 mt-1 flex-shrink-0" />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-foreground">
-                      3. Aangifte indienen
-                    </h3>
-                    <Badge variant="outline">Nog niet gestart</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Start verwacht: 14 oktober
-                  </p>
-                </div>
-              </div>
-
-              <div className="opacity-60 flex items-start">
-                <Circle className="w-6 h-6 text-gray-400 mr-3 mt-1 flex-shrink-0" />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-medium text-foreground">
-                      4. Betaling & Afsluiting
-                    </h3>
-                    <Badge variant="outline">Nog niet gestart</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Start verwacht: 17 oktober
-                  </p>
-                </div>
-              </div>
-            </div>
+            <ProjectStageTracker 
+              stages={[
+                {
+                  id: 1,
+                  name: 'Documentatie aanvragen',
+                  completed: true,
+                  completedDate: '5 oktober 2025',
+                  checklist: [
+                    { id: '1-1', text: 'Verkoopfacturen verzameld', completed: true },
+                    { id: '1-2', text: 'Aankoopfacturen verzameld', completed: true },
+                    { id: '1-3', text: 'Bankafschriften ontvangen', completed: true },
+                  ]
+                },
+                {
+                  id: 2,
+                  name: 'Controle & Verwerking',
+                  completed: false,
+                  startDate: '6 oktober',
+                  expectedCompletion: '13 oktober',
+                  checklist: [
+                    { id: '2-1', text: 'Facturen verwerkt in systeem', completed: true },
+                    { id: '2-2', text: 'BTW berekend (bezig)', completed: false },
+                    { id: '2-3', text: 'Controle op fouten', completed: false },
+                  ]
+                },
+                {
+                  id: 3,
+                  name: 'Aangifte indienen',
+                  completed: false,
+                  startDate: '14 oktober',
+                  checklist: [
+                    { id: '3-1', text: 'Definitieve controle', completed: false },
+                    { id: '3-2', text: 'BTW aangifte indienen bij Belastingdienst', completed: false },
+                    { id: '3-3', text: 'Bevestiging ontvangen', completed: false },
+                  ]
+                },
+                {
+                  id: 4,
+                  name: 'Betaling & Afsluiting',
+                  completed: false,
+                  startDate: '17 oktober',
+                  checklist: [
+                    { id: '4-1', text: 'Betaling gecontroleerd', completed: false },
+                    { id: '4-2', text: 'Klant geïnformeerd', completed: false },
+                    { id: '4-3', text: 'Project afgesloten', completed: false },
+                  ]
+                }
+              ]}
+              projectId={project.id}
+            />
           </div>
         </div>
 
@@ -293,6 +258,14 @@ export default function ProjectDetailPage() {
           )}
         </div>
       </div>
+
+      {project && (
+        <UpdateStatusDialog 
+          project={project}
+          open={statusDialogOpen}
+          onOpenChange={setStatusDialogOpen}
+        />
+      )}
     </div>
   );
 }

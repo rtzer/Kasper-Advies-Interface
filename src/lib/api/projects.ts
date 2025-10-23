@@ -95,10 +95,22 @@ export function useUpdateProjectStatus() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: Project['status'] }) => {
+    mutationFn: async ({ 
+      id, 
+      status, 
+      blocked_reason 
+    }: { 
+      id: string; 
+      status: Project['status'];
+      blocked_reason?: string | null;
+    }) => {
       await delay(300);
       const project = mockProjects.find(p => p.id === id);
-      return { ...project, status } as Project;
+      return { 
+        ...project, 
+        status,
+        blocked_reason: blocked_reason !== undefined ? blocked_reason : project?.blocked_reason 
+      } as Project;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
