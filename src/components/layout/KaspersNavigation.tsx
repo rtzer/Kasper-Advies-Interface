@@ -30,20 +30,12 @@ const KaspersNavigation = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20 lg:h-24">
           {/* Logo */}
-          <Link to="/kaspers-advies" className="flex items-center gap-3 group">
+          <Link to="/kaspers-advies" className="flex items-center group">
             <img 
               src="/src/assets/logo-kaspers-advies.jpg" 
               alt="Kaspers Advies - Belastingadviseur Stadskanaal" 
               className="h-12 lg:h-16 w-auto transition-transform group-hover:scale-105"
             />
-            <div className="hidden md:block">
-              <div className="text-ka-navy font-bold text-lg lg:text-xl leading-tight">
-                Kaspers Advies
-              </div>
-              <div className="text-ka-gray-600 text-xs lg:text-sm">
-                Belastingadviseur Stadskanaal
-              </div>
-            </div>
           </Link>
 
           {/* Desktop Navigation */}
