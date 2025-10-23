@@ -145,107 +145,123 @@ const HomePage = () => {
 
       <div className="min-h-screen bg-background">
         <KaspersNavigation />
-        {/* Hero Section */}
-        <section className="relative min-h-[70vh] lg:min-h-[80vh] flex items-center bg-gradient-to-br from-ka-gray-50 via-background to-ka-green/5">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSI4MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgxMjIsMTgxLDcxLDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
-          
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-4xl mx-auto text-center">
-              <Badge variant="secondary" className="mb-4 px-4 py-2 text-sm bg-ka-green/10 text-ka-green border border-ka-green">
-                <Award className="w-4 h-4 mr-2" />
-                16+ jaar vertrouwd in Stadskanaal
-              </Badge>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-ka-navy mb-6 leading-tight">
-                Uw administratie volledig uit handen.<br />
-                <span className="text-ka-green">Direct contact met Harm-Jan.</span>
-              </h1>
-              <p className="text-xl sm:text-2xl text-ka-gray-700 mb-8 leading-relaxed font-medium">
-                Boekhouding, salarisadministratie en belastingadvies.<br />
-                Geen callcenter, maar direct met de ondernemer die u écht helpt.
-              </p>
+        {/* Hero Section - Professional & Clean */}
+        <section className="relative py-20 lg:py-32 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
+              {/* Left: Content */}
+              <div>
+                <div className="mb-6">
+                  <Badge variant="outline" className="px-4 py-2 text-sm border-ka-navy text-ka-navy">
+                    <Award className="w-4 h-4 mr-2" />
+                    Geregistreerd Belastingadviseur sinds 2009
+                  </Badge>
+                </div>
+                
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-ka-navy mb-6 leading-tight">
+                  Uw administratie<br />
+                  in vertrouwde handen
+                </h1>
+                
+                <p className="text-xl text-ka-gray-700 mb-8 leading-relaxed">
+                  Kaspers Advies biedt al 16 jaar betrouwbare boekhouding en belastingadvies 
+                  voor ondernemers in Stadskanaal en omgeving. Persoonlijk contact, 
+                  duidelijke communicatie, geen verrassingen.
+                </p>
 
-              {/* Trust Badges */}
-              <div className="flex flex-wrap justify-center gap-4 mb-10">
-                <Badge variant="secondary" className="px-4 py-2 text-base bg-white border-2 border-ka-green hover:bg-ka-green/10 transition-colors cursor-pointer">
-                  <Star className="w-5 h-5 mr-2 fill-amber-400 text-amber-400" />
-                  Trustoo 9,3 ⭐
-                </Badge>
-                <Badge variant="secondary" className="px-4 py-2 text-base bg-white border-2 border-ka-navy hover:bg-ka-navy/10 transition-colors">
-                  <Clock className="w-5 h-5 mr-2" />
-                  48 uur reactiegarantie
-                </Badge>
-                <Badge variant="secondary" className="px-4 py-2 text-base bg-white border-2 border-ka-green-dark hover:bg-ka-green/10 transition-colors">
-                  <MapPin className="w-5 h-5 mr-2" />
-                  Ook aan huis mogelijk
-                </Badge>
+                <div className="grid grid-cols-2 gap-6 mb-10 py-8 border-y border-ka-gray-200">
+                  <div>
+                    <div className="flex items-center gap-2 text-amber-500 mb-2">
+                      <Star className="w-5 h-5 fill-current" />
+                      <Star className="w-5 h-5 fill-current" />
+                      <Star className="w-5 h-5 fill-current" />
+                      <Star className="w-5 h-5 fill-current" />
+                      <Star className="w-5 h-5 fill-current" />
+                    </div>
+                    <p className="text-2xl font-bold text-ka-navy">9,3</p>
+                    <p className="text-sm text-ka-gray-600">Trustoo beoordeling</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-ka-navy">16+</p>
+                    <p className="text-sm text-ka-gray-600">Jaar ervaring</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-ka-navy">48u</p>
+                    <p className="text-sm text-ka-gray-600">Reactiegarantie</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-ka-navy">200+</p>
+                    <p className="text-sm text-ka-gray-600">Tevreden klanten</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button 
+                    size="lg" 
+                    className="bg-ka-navy hover:bg-ka-navy/90 text-white px-8 py-6 text-base font-medium"
+                    asChild
+                  >
+                    <Link to="/contact-kaspers">
+                      <Calendar className="mr-2 h-5 w-5" />
+                      Plan een kennismaking
+                    </Link>
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="border-2 border-ka-navy text-ka-navy hover:bg-ka-navy/5 px-8 py-6 text-base font-medium"
+                    asChild
+                  >
+                    <a href="tel:+31599123456">
+                      <Phone className="mr-2 h-5 w-5" />
+                      0599-123 456
+                    </a>
+                  </Button>
+                </div>
               </div>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-              <Button 
-                  size="lg" 
-                  className="w-full sm:w-auto bg-ka-green hover:bg-ka-green-dark text-white px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
-                  asChild
-                >
-                  <Link to="/contact-kaspers">
-                    <Calendar className="mr-2 h-5 w-5" />
-                    Gratis kennismakingsgesprek
-                  </Link>
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="w-full sm:w-auto border-2 border-ka-navy text-ka-navy hover:bg-ka-navy hover:text-white px-8 py-6 text-lg font-semibold transition-all"
-                  asChild
-                >
-                  <Link to="/diensten">
-                    Bekijk onze diensten
-                  </Link>
-                </Button>
-              </div>
-
-              {/* Contact Icons */}
-              <div className="flex justify-center gap-6 text-ka-gray-600">
-                <a 
-                  href="tel:+31599123456" 
-                  className="flex items-center gap-2 hover:text-ka-green transition-colors group"
-                  aria-label="Bel ons direct"
-                >
-                  <Phone className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span className="hidden sm:inline">0599-123 456</span>
-                </a>
-                <a 
-                  href="https://wa.me/31599123456" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-ka-green transition-colors group"
-                  aria-label="Stuur een WhatsApp bericht"
-                >
-                  <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span className="hidden sm:inline">WhatsApp</span>
-                </a>
+              {/* Right: Image placeholder */}
+              <div className="relative hidden lg:block">
+                <div className="aspect-[4/3] bg-gradient-to-br from-ka-gray-100 to-ka-gray-200 rounded-lg shadow-xl relative overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center text-ka-gray-400">
+                    <div className="text-center p-8">
+                      <Building2 className="w-20 h-20 mx-auto mb-4 opacity-20" />
+                      <p className="text-sm font-medium">Foto van Harm-Jan of kantoor</p>
+                      <p className="text-xs mt-2">Dit maakt de pagina persoonlijker en betrouwbaarder</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Doelgroepen Section */}
-        <section className="py-16 lg:py-24 bg-background">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Diensten Section - Clean Grid */}
+        <section className="py-20 lg:py-28 bg-ka-gray-50">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-ka-navy mb-4">
+                Onze Dienstverlening
+              </h2>
+              <p className="text-lg text-ka-gray-600 max-w-2xl mx-auto">
+                Wij helpen ondernemers en particulieren met complete administratieve ondersteuning
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* MKB Card */}
-              <Card className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 hover:border-ka-green bg-gradient-to-br from-white to-ka-gray-50">
+              <Card className="bg-white hover:shadow-xl transition-all duration-300 border border-ka-gray-200">
                 <CardContent className="p-8">
-                  <div className="w-16 h-16 bg-ka-green/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-ka-green/20 transition-colors">
-                    <Building2 className="w-8 h-8 text-ka-green" />
+                  <div className="w-14 h-14 bg-ka-navy/5 rounded-lg flex items-center justify-center mb-6">
+                    <Building2 className="w-7 h-7 text-ka-navy" />
                   </div>
-                  <h3 className="text-2xl font-bold text-ka-navy mb-4">
-                    MKB Ondernemers 🏢
+                  <h3 className="text-2xl font-bold text-ka-navy mb-3">
+                    MKB
                   </h3>
-                  <p className="text-lg text-ka-gray-600 mb-6 font-medium">
-                    Complete administratie uit handen
+                  <p className="text-ka-gray-600 mb-6">
+                    Volledige administratieve ondersteuning voor bedrijven tot 10 medewerkers
                   </p>
-                  <ul className="space-y-3 mb-8">
+                  <ul className="space-y-3 mb-8 text-sm">
                     <li className="flex items-start gap-2 text-ka-gray-700">
                       <CheckCircle className="w-5 h-5 text-ka-green shrink-0 mt-0.5" />
                       <span>Boekhouding & salarisadministratie</span>
@@ -260,30 +276,31 @@ const HomePage = () => {
                     </li>
                   </ul>
                   <Button 
-                    className="w-full bg-ka-green hover:bg-ka-green-dark text-white" 
+                    variant="outline"
+                    className="w-full border-ka-navy text-ka-navy hover:bg-ka-navy hover:text-white" 
                     asChild
                   >
-                    <Link to="/diensten-mkb">MKB Diensten</Link>
+                    <Link to="/diensten-mkb">Meer informatie</Link>
                   </Button>
                 </CardContent>
               </Card>
 
               {/* ZZP Card */}
-              <Card className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 hover:border-ka-green bg-gradient-to-br from-white to-ka-gray-50">
+              <Card className="bg-white hover:shadow-xl transition-all duration-300 border-2 border-ka-green">
                 <CardContent className="p-8">
-                  <div className="w-16 h-16 bg-ka-red/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-ka-red/20 transition-colors">
-                    <Lightbulb className="w-8 h-8 text-ka-red" />
+                  <div className="w-14 h-14 bg-ka-green/10 rounded-lg flex items-center justify-center mb-6">
+                    <Lightbulb className="w-7 h-7 text-ka-green" />
                   </div>
-                  <h3 className="text-2xl font-bold text-ka-navy mb-4">
-                    ZZP-ers 💡
+                  <h3 className="text-2xl font-bold text-ka-navy mb-3">
+                    ZZP
                   </h3>
-                  <p className="text-lg text-ka-gray-600 mb-6 font-medium">
-                    Groeibegeleiding voor gevestigde ZZP-ers
+                  <p className="text-ka-gray-600 mb-6">
+                    Groeibegeleiding voor gevestigde zelfstandigen (3-5+ jaar)
                   </p>
-                  <ul className="space-y-3 mb-8">
+                  <ul className="space-y-3 mb-8 text-sm">
                     <li className="flex items-start gap-2 text-ka-gray-700">
                       <CheckCircle className="w-5 h-5 text-ka-green shrink-0 mt-0.5" />
-                      <span>Administratie vanaf 3-5 jaar ervaring</span>
+                      <span>Administratie & fiscaal advies</span>
                     </li>
                     <li className="flex items-start gap-2 text-ka-gray-700">
                       <CheckCircle className="w-5 h-5 text-ka-green shrink-0 mt-0.5" />
@@ -298,24 +315,24 @@ const HomePage = () => {
                     className="w-full bg-ka-green hover:bg-ka-green-dark text-white" 
                     asChild
                   >
-                    <Link to="/diensten-zzp">ZZP Diensten</Link>
+                    <Link to="/diensten-zzp">Meer informatie</Link>
                   </Button>
                 </CardContent>
               </Card>
 
               {/* Particulieren Card */}
-              <Card className="group hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border-2 hover:border-ka-green bg-gradient-to-br from-white to-ka-gray-50">
+              <Card className="bg-white hover:shadow-xl transition-all duration-300 border border-ka-gray-200">
                 <CardContent className="p-8">
-                  <div className="w-16 h-16 bg-ka-navy/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-ka-navy/20 transition-colors">
-                    <Home className="w-8 h-8 text-ka-navy" />
+                  <div className="w-14 h-14 bg-ka-navy/5 rounded-lg flex items-center justify-center mb-6">
+                    <Home className="w-7 h-7 text-ka-navy" />
                   </div>
-                  <h3 className="text-2xl font-bold text-ka-navy mb-4">
-                    Particulieren 🏡
+                  <h3 className="text-2xl font-bold text-ka-navy mb-3">
+                    Particulieren
                   </h3>
-                  <p className="text-lg text-ka-gray-600 mb-6 font-medium">
-                    Persoonlijk advies voor uw situatie
+                  <p className="text-ka-gray-600 mb-6">
+                    Persoonlijk advies voor uw fiscale situatie
                   </p>
-                  <ul className="space-y-3 mb-8">
+                  <ul className="space-y-3 mb-8 text-sm">
                     <li className="flex items-start gap-2 text-ka-gray-700">
                       <CheckCircle className="w-5 h-5 text-ka-green shrink-0 mt-0.5" />
                       <span>Belastingaangifte</span>
@@ -330,10 +347,11 @@ const HomePage = () => {
                     </li>
                   </ul>
                   <Button 
-                    className="w-full bg-ka-green hover:bg-ka-green-dark text-white" 
+                    variant="outline"
+                    className="w-full border-ka-navy text-ka-navy hover:bg-ka-navy hover:text-white" 
                     asChild
                   >
-                    <Link to="/diensten-particulieren">Particulieren Diensten</Link>
+                    <Link to="/diensten-particulieren">Meer informatie</Link>
                   </Button>
                 </CardContent>
               </Card>
