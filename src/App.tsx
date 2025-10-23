@@ -13,6 +13,10 @@ import InboxPage from "./pages/InboxPage";
 import ClientDetailPage from "./pages/ClientDetailPage";
 import AssignmentsPage from "./pages/AssignmentsPage";
 import TasksPage from "./pages/TasksPage";
+import ChannelWhatsAppPage from "./pages/channels/ChannelWhatsAppPage";
+import ChannelEmailPage from "./pages/channels/ChannelEmailPage";
+import ChannelPhonePage from "./pages/channels/ChannelPhonePage";
+import ChannelVideoPage from "./pages/channels/ChannelVideoPage";
 import FlowbiteUnifiedInbox from "./pages/FlowbiteUnifiedInbox";
 import FlowbiteWhatsAppChannel from "./pages/channels/FlowbiteWhatsAppChannel";
 import FlowbiteEmailChannel from "./pages/channels/FlowbiteEmailChannel";
@@ -45,11 +49,11 @@ const App = () => {
           <Route path="/tasks" element={<AppLayout><TasksPage /></AppLayout>} />
           <Route path="/settings" element={<AppLayout><FlowbiteSettings /></AppLayout>} />
           <Route path="/analytics" element={<AppLayout><FlowbiteAnalytics /></AppLayout>} />
-          <Route path="/channels/whatsapp" element={<AppLayout><FlowbiteWhatsAppChannel /></AppLayout>} />
-          <Route path="/channels/email" element={<AppLayout><FlowbiteEmailChannel /></AppLayout>} />
+          <Route path="/channels/whatsapp" element={<AppLayout><ChannelWhatsAppPage /></AppLayout>} />
+          <Route path="/channels/email" element={<AppLayout><ChannelEmailPage /></AppLayout>} />
+          <Route path="/channels/phone" element={<AppLayout><ChannelPhonePage /></AppLayout>} />
+          <Route path="/channels/video" element={<AppLayout><ChannelVideoPage /></AppLayout>} />
           <Route path="/channels/sms" element={<AppLayout><FlowbiteGenericChannel channelName="SMS" icon={MessageCircle} color="text-blue-600" /></AppLayout>} />
-          <Route path="/channels/phone" element={<AppLayout><FlowbiteGenericChannel channelName="Telefoon" icon={Phone} color="text-purple-600" /></AppLayout>} />
-          <Route path="/channels/video" element={<AppLayout><FlowbiteGenericChannel channelName="Video" icon={Video} color="text-red-600" /></AppLayout>} />
           <Route path="/channels/facebook" element={<AppLayout><FlowbiteGenericChannel channelName="Facebook" icon={Facebook} color="text-indigo-600" /></AppLayout>} />
           <Route path="/channels/instagram" element={<AppLayout><FlowbiteGenericChannel channelName="Instagram" icon={Instagram} color="text-pink-600" /></AppLayout>} />
           <Route path="/channels/linkedin" element={<AppLayout><FlowbiteGenericChannel channelName="LinkedIn" icon={Linkedin} color="text-blue-600" /></AppLayout>} />
