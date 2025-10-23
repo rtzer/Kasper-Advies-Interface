@@ -1,0 +1,16 @@
+{
+  "app": {
+    "name": "Kaspers Advies",
+    "tagline": "Communication Hub"
+  },
+  "actions": {
+    "search": "Zoeken",
+    "new": "Nieuw",
+    "save": "Opslaan",
+    "cancel": "Annuleren"
+  },
+  "time": {
+    "today": "Vandaag",
+    "yesterday": "Gisteren"
+  }
+}

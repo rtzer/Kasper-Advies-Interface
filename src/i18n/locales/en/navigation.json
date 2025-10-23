@@ -1,0 +1,20 @@
+{
+  "menu": {
+    "dashboard": "Overview",
+    "inbox": "Inbox",
+    "conversations": "Conversations",
+    "clients": "Clients",
+    "assignments": "Assignments",
+    "tasks": "Tasks",
+    "statistics": "Statistics",
+    "settings": "Settings"
+  },
+  "channels": {
+    "all": "All channels",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "phone": "Phone",
+    "video": "Video",
+    "sms": "SMS"
+  }
+}

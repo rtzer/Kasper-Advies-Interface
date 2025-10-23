@@ -1,0 +1,16 @@
+{
+  "app": {
+    "name": "Kaspers Advies",
+    "tagline": "Communication Hub"
+  },
+  "actions": {
+    "search": "Search",
+    "new": "New",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "time": {
+    "today": "Today",
+    "yesterday": "Yesterday"
+  }
+}

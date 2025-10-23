@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MessageSquare, MessageCircle, Phone, Video, Facebook, Instagram, Linkedin } from "lucide-react";
 import { FlowbiteLayout } from "./components/layout/FlowbiteLayout";
+import AppLayout from "./layouts/AppLayout";
+import BottomNav from "./layouts/BottomNav";
 import { useTheme } from "./hooks/useTheme";
 import FlowbiteIndex from "./pages/FlowbiteIndex";
 import FlowbiteUnifiedInbox from "./pages/FlowbiteUnifiedInbox";
@@ -30,22 +32,27 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<FlowbiteIndex />} />
-          <Route path="/unified-inbox" element={<FlowbiteLayout><FlowbiteUnifiedInbox /></FlowbiteLayout>} />
-          <Route path="/unified-inbox/conversation/:id" element={<FlowbiteLayout><FlowbiteConversationDetail /></FlowbiteLayout>} />
-          <Route path="/customer/:id" element={<FlowbiteLayout><FlowbiteCustomerDetail /></FlowbiteLayout>} />
-          <Route path="/settings" element={<FlowbiteLayout><FlowbiteSettings /></FlowbiteLayout>} />
-          <Route path="/analytics" element={<FlowbiteLayout><FlowbiteAnalytics /></FlowbiteLayout>} />
-          <Route path="/channels/whatsapp" element={<FlowbiteLayout><FlowbiteWhatsAppChannel /></FlowbiteLayout>} />
-          <Route path="/channels/email" element={<FlowbiteLayout><FlowbiteEmailChannel /></FlowbiteLayout>} />
-          <Route path="/channels/sms" element={<FlowbiteLayout><FlowbiteGenericChannel channelName="SMS" icon={MessageCircle} color="text-blue-600" /></FlowbiteLayout>} />
-          <Route path="/channels/phone" element={<FlowbiteLayout><FlowbiteGenericChannel channelName="Telefoon" icon={Phone} color="text-purple-600" /></FlowbiteLayout>} />
-          <Route path="/channels/video" element={<FlowbiteLayout><FlowbiteGenericChannel channelName="Video" icon={Video} color="text-red-600" /></FlowbiteLayout>} />
-          <Route path="/channels/facebook" element={<FlowbiteLayout><FlowbiteGenericChannel channelName="Facebook" icon={Facebook} color="text-indigo-600" /></FlowbiteLayout>} />
-          <Route path="/channels/instagram" element={<FlowbiteLayout><FlowbiteGenericChannel channelName="Instagram" icon={Instagram} color="text-pink-600" /></FlowbiteLayout>} />
-          <Route path="/channels/linkedin" element={<FlowbiteLayout><FlowbiteGenericChannel channelName="LinkedIn" icon={Linkedin} color="text-blue-600" /></FlowbiteLayout>} />
+          <Route path="/unified-inbox" element={<AppLayout><FlowbiteUnifiedInbox /></AppLayout>} />
+          <Route path="/unified-inbox/conversation/:id" element={<AppLayout><FlowbiteConversationDetail /></AppLayout>} />
+          <Route path="/customer/:id" element={<AppLayout><FlowbiteCustomerDetail /></AppLayout>} />
+          <Route path="/settings" element={<AppLayout><FlowbiteSettings /></AppLayout>} />
+          <Route path="/analytics" element={<AppLayout><FlowbiteAnalytics /></AppLayout>} />
+          <Route path="/channels/whatsapp" element={<AppLayout><FlowbiteWhatsAppChannel /></AppLayout>} />
+          <Route path="/channels/email" element={<AppLayout><FlowbiteEmailChannel /></AppLayout>} />
+          <Route path="/channels/sms" element={<AppLayout><FlowbiteGenericChannel channelName="SMS" icon={MessageCircle} color="text-blue-600" /></AppLayout>} />
+          <Route path="/channels/phone" element={<AppLayout><FlowbiteGenericChannel channelName="Telefoon" icon={Phone} color="text-purple-600" /></AppLayout>} />
+          <Route path="/channels/video" element={<AppLayout><FlowbiteGenericChannel channelName="Video" icon={Video} color="text-red-600" /></AppLayout>} />
+          <Route path="/channels/facebook" element={<AppLayout><FlowbiteGenericChannel channelName="Facebook" icon={Facebook} color="text-indigo-600" /></AppLayout>} />
+          <Route path="/channels/instagram" element={<AppLayout><FlowbiteGenericChannel channelName="Instagram" icon={Instagram} color="text-pink-600" /></AppLayout>} />
+          <Route path="/channels/linkedin" element={<AppLayout><FlowbiteGenericChannel channelName="LinkedIn" icon={Linkedin} color="text-blue-600" /></AppLayout>} />
+          <Route path="/conversations" element={<AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Alle Gesprekken</h1></div></AppLayout>} />
+          <Route path="/clients" element={<AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Klanten</h1></div></AppLayout>} />
+          <Route path="/assignments" element={<AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Opdrachten</h1></div></AppLayout>} />
+          <Route path="/tasks" element={<AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Taken</h1></div></AppLayout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<FlowbiteNotFound />} />
         </Routes>
+        <BottomNav />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

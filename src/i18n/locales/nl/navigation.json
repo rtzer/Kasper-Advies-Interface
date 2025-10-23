@@ -1,0 +1,20 @@
+{
+  "menu": {
+    "dashboard": "Overzicht",
+    "inbox": "Inbox",
+    "conversations": "Gesprekken",
+    "clients": "Klanten",
+    "assignments": "Opdrachten",
+    "tasks": "Taken",
+    "statistics": "Statistieken",
+    "settings": "Instellingen"
+  },
+  "channels": {
+    "all": "Alle kanalen",
+    "whatsapp": "WhatsApp",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "video": "Video",
+    "sms": "SMS"
+  }
+}
