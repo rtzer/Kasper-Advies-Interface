@@ -125,6 +125,10 @@ export default {
         'channel-phone-2': 'hsl(var(--channel-phone))',
         'channel-video-2': 'hsl(var(--channel-video))',
       },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['Playfair Display', 'Georgia', 'serif'],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
