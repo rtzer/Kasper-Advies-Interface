@@ -496,6 +496,142 @@ WHATSAPP BUSINESS API:
 - Thread tracking via phone number + conversation_id
 - Can be integrated via n8n WhatsApp Business node
 - See: https://developers.facebook.com/docs/whatsapp/cloud-api`
+  },
+  {
+    id: 'task-10',
+    title: '🔴 CRITICAL: Project → Opdracht → Taak Hierarchy',
+    description: 'Implement 3-level hierarchy: Klant → Project → Opdracht → Taak',
+    priority: 'critical',
+    table: 'Projecten + Opdrachten + Taken',
+    fields: [
+      {
+        name: '📊 NEW TABLE: Projecten',
+        type: '---',
+        required: false,
+        example: 'High-level container for multiple Opdrachten'
+      },
+      {
+        name: 'project_nummer',
+        type: 'Auto-number with prefix',
+        config: 'Prefix: "PROJ-", Format: PROJ-2024-001',
+        required: true,
+        example: 'PROJ-2024-001'
+      },
+      {
+        name: 'name',
+        type: 'Text',
+        required: true,
+        example: 'Fiscale begeleiding Hans Mulder 2024'
+      },
+      {
+        name: 'client_id',
+        type: 'Link to Klanten table',
+        required: true,
+        example: 'Link to Hans Mulder'
+      },
+      {
+        name: 'category',
+        type: 'Single select',
+        config: 'Options: "Fiscale begeleiding", "Groeibegeleiding", "BTW Bulk", "Jaarrekening", "Hypotheek", "Advies", "Other"',
+        required: true,
+        example: '"Fiscale begeleiding"'
+      },
+      {
+        name: 'status',
+        type: 'Single select',
+        config: 'Options: "niet-gestart", "in-uitvoering", "wacht-op-klant", "geblokkeerd", "afgerond"',
+        required: true,
+        example: '"in-uitvoering"'
+      },
+      {
+        name: 'start_date',
+        type: 'Date',
+        required: true,
+        example: '2024-01-01'
+      },
+      {
+        name: 'deadline',
+        type: 'Date',
+        required: true,
+        example: '2024-12-31'
+      },
+      {
+        name: 'assigned_to',
+        type: 'Text',
+        required: true,
+        example: 'Harm-Jan Kaspers'
+      },
+      {
+        name: 'beschrijving',
+        type: 'Long Text',
+        required: false,
+        example: 'Volledige fiscale begeleiding inclusief IB, BTW en groeibegeleiding'
+      },
+      {
+        name: '📊 UPDATED TABLE: Opdrachten',
+        type: '---',
+        required: false,
+        example: 'Add link to parent Project'
+      },
+      {
+        name: 'project_id',
+        type: 'Link to Projecten table',
+        required: false,
+        example: 'Link to PROJ-2024-001'
+      },
+      {
+        name: 'project_naam',
+        type: 'Lookup from Projecten',
+        config: 'Lookup field from project_id → name',
+        required: false,
+        example: 'Fiscale begeleiding Hans Mulder 2024'
+      },
+      {
+        name: '📊 NO CHANGES: Taken',
+        type: '---',
+        required: false,
+        example: 'Taken table already links to Opdrachten via gerelateerde_opdracht_id'
+      }
+    ],
+    testPage: '/projects',
+    notes: `🔴 CRITICAL HIERARCHY CHANGE
+
+STRUCTURE:
+Klant (Hans Mulder)
+  └─ Project (Fiscale begeleiding 2024)
+       ├─ Opdracht 1: IB 2024
+       │    ├─ Taak: Gegevens verzamelen
+       │    └─ Taak: Balans opstellen
+       └─ Opdracht 2: BTW Q1
+            └─ Taak: BTW aangifte indienen
+
+WHY THIS STRUCTURE?
+- Project = long-term container (e.g., "Fiscale begeleiding 2024")
+- Opdracht = specific deliverable (e.g., "IB 2024", "BTW Q1")
+- Taak = concrete action by team member
+
+BASEROW IMPLEMENTATION:
+1. Create NEW table "Projecten" with fields above
+2. Add "project_id" link field to EXISTING "Opdrachten" table
+3. Link from Opdrachten → Projecten (many-to-one)
+4. Taken already link to Opdrachten (no changes needed)
+
+EXAMPLE DATA:
+Project: "Fiscale begeleiding Hans Mulder 2024" (PROJ-2024-001)
+  ├─ Opdracht: "IB-aangifte 2024" (OPD-2024-001) → project_id = PROJ-2024-001
+  └─ Opdracht: "Groeibegeleiding Q2-Q4" (OPD-2024-002) → project_id = PROJ-2024-001
+
+NAVIGATION IN LOVABLE:
+- /projects → All projects
+- /projects/:id → Project detail (shows all linked Opdrachten)
+- /opdrachten → All opdrachten (can filter by project)
+- /opdrachten/:id → Opdracht detail (shows parent project + all tasks)
+
+MIGRATION STRATEGY:
+1. Create Projecten table first
+2. For each existing Opdracht, decide if it needs a parent Project
+3. Some Opdrachten can exist WITHOUT project (standalone)
+4. project_id is OPTIONAL - backward compatible`
   }
 ];
 
