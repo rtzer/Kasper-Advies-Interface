@@ -515,7 +515,7 @@ export const mockMessages: Record<string, Message[]> = {
       channel_metadata: {
         channel: 'Telefoon',
         call_type: 'missed',
-        call_duration_seconds: 0,
+        duration_seconds: 0,
       },
       is_thread_start: true,
       delivery_status: 'delivered',
@@ -549,8 +549,8 @@ export const mockMessages: Record<string, Message[]> = {
       channel_metadata: {
         channel: 'Telefoon',
         call_type: 'completed',
-        call_duration_seconds: 1080,
-        call_duration_formatted: '18:00',
+        duration_seconds: 1080,
+        duration_formatted: '18:00',
       },
       is_thread_start: true,
       delivery_status: 'delivered',

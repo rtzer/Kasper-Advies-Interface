@@ -530,6 +530,7 @@ export interface EmailMetadata {
   channel: 'E-mail';
   email_message_id: string;
   subject: string;
+  thread_id?: string;
   cc?: string[];
   bcc?: string[];
   in_reply_to?: string;
@@ -541,7 +542,8 @@ export interface PhoneMetadata {
   channel: 'Telefoon';
   call_id?: string;
   duration_seconds: number;
-  call_type: 'inbound' | 'outbound' | 'missed';
+  duration_formatted?: string;
+  call_type: 'inbound' | 'outbound' | 'missed' | 'completed';
   recording_url?: string;
   transcription?: string;
 }
@@ -551,9 +553,12 @@ export interface VideoMetadata {
   meeting_id: string;
   meeting_url?: string;
   platform: 'zoom' | 'teams' | 'meet' | 'other';
-  duration_minutes: number;
+  duration_minutes?: number;
+  duration_formatted?: string;
+  scheduled_duration_minutes?: number;
+  call_type?: 'completed' | 'missed';
   recording_url?: string;
-  participants: string[];
+  participants?: string[];
   summary?: string;
 }
 
