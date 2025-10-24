@@ -292,7 +292,7 @@ export interface Klant {
 }
 
 // ============================================
-// OPDRACHT (Assignment) - Parent of Tasks
+// OPDRACHT (Assignment) - Parent of Tasks, Child of Project
 // ============================================
 export interface Opdracht {
   // Identificatie
@@ -300,6 +300,10 @@ export interface Opdracht {
   opdracht_nummer: string;               // "OPD-2024-0001"
   opdracht_naam: string;
   beschrijving?: string;
+  
+  // Hiërarchie (UPDATED)
+  project_id?: string;                   // Parent Project (NIEUW)
+  project_naam?: string;                 // Voor display
   
   // Klant relatie
   klant_id: string;
@@ -585,31 +589,59 @@ export interface ProjectTemplate {
 
 export interface Project {
   id: string;
+  project_nummer?: string;               // "PROJ-2024-0001" (NIEUW)
   name: string;
-  template_id: string;
+  
+  // Klant relatie
   client_id: string;
   client_name: string;
-  category: 'BTW' | 'Jaarrekening' | 'Hypotheek' | 'Advies' | 'Other';
+  
+  // Type & Classificatie
+  category: 'BTW' | 'BTW Bulk' | 'Fiscale begeleiding' | 'Groeibegeleiding' | 'Jaarrekening' | 'Hypotheek' | 'Advies' | 'Other';
+  beschrijving?: string;
+  
+  // Status
   status: 'niet-gestart' | 'in-uitvoering' | 'wacht-op-klant' | 'geblokkeerd' | 'afgerond';
+  
+  // Tijdlijn
   start_date: string;
   deadline: string;
-  completion_percentage: number;
-  responsible_team_member: string;
-  responsible_initials: string;
-  is_overdue: boolean;
-  blocked_reason: string | null;
-  last_reminder_sent: string | null;
-  reminder_count: number;
-  created_at: string;
+  completed_date?: string;
+  created_at?: string;
   
-  // NEW FIELDS
-  interactie_id?: string;                // Link to original interaction
-  stages?: ProjectStage[];               // Project stages with checklists
-  taken?: Taak[];                        // Related tasks
-  documenten?: ProjectDocument[];        // Related documents
-  tijdregistraties?: TimeEntry[];        // Time tracking
-  beschrijving?: string;                 // Project description
-  bedrag?: number;                       // Project amount
+  // Verantwoordelijkheid
+  assigned_to?: string;
+  team_members?: string[];
+  responsible_team_member?: string;
+  responsible_initials?: string;
+  
+  // Voortgang (legacy compatibility)
+  completion_percentage?: number;
+  is_overdue?: boolean;
+  blocked_reason?: string | null;
+  last_reminder_sent?: string | null;
+  reminder_count?: number;
+  
+  // Hiërarchie (NIEUW)
+  opdracht_ids?: string[];               // Links naar Opdrachten binnen dit project
+  
+  // Template (optional)
+  template_id?: string;
+  
+  // Legacy fields (backwards compatibility)
+  interactie_id?: string;
+  stages?: ProjectStage[];
+  taken?: Taak[];
+  documenten?: ProjectDocument[];
+  tijdregistraties?: TimeEntry[];
+  bedrag?: number;
+  
+  // Calculated fields (NIEUW)
+  voortgang_percentage?: number;
+  aantal_opdrachten?: number;
+  aantal_openstaande_opdrachten?: number;
+  totaal_geschatte_uren?: number;
+  totaal_bestede_uren?: number;
 }
 
 export interface ProjectStage {

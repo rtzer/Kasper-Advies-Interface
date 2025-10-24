@@ -508,6 +508,8 @@ export const mockOpdrachten: Opdracht[] = [
     opdracht_nummer: 'OPD-2024-001',
     opdracht_naam: 'IB-aangifte 2024',
     beschrijving: 'Inkomstenbelasting aangifte 2024',
+    project_id: 'PROJ-2024-001',                    // NIEUW: Link naar parent project
+    project_naam: 'Fiscale begeleiding Hans 2024', // NIEUW
     klant_id: '1',
     klant_naam: 'Hans Mulder (particulier)',
     type_opdracht: 'IB (Inkomstenbelasting)',
