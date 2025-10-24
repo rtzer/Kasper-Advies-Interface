@@ -10,13 +10,30 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const getPriorityColor = (priority?: string) => {
+    switch(priority) {
+      case 'Urgent': return 'text-red-600 bg-red-50';
+      case 'Hoog': return 'text-orange-600 bg-orange-50';
+      case 'Normaal': return 'text-blue-600 bg-blue-50';
+      case 'Laag': return 'text-gray-600 bg-gray-50';
+      default: return 'text-gray-600 bg-gray-50';
+    }
+  };
+
   return (
     <Link to={`/projects/${project.id}`}>
-      <div className="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
+      <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
         <div className="flex items-start justify-between mb-3">
-          <Badge variant="outline" className={getCategoryColor(project.category)}>
-            {project.category}
-          </Badge>
+          <div className="flex gap-2">
+            <Badge variant="outline" className={getCategoryColor(project.category)}>
+              {project.category}
+            </Badge>
+            {project.status && (
+              <Badge variant="secondary" className="text-xs">
+                {project.status}
+              </Badge>
+            )}
+          </div>
           {project.is_overdue && (
             <AlertTriangle className="w-4 h-4 text-red-500" />
           )}

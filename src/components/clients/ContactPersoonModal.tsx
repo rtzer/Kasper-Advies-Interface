@@ -98,6 +98,18 @@ export default function ContactPersoonModal({ contactPersoon, open, onOpenChange
             )}
           </div>
 
+          {/* Is ook klant link */}
+          {contactPersoon.is_ook_klant && (
+            <div className="pt-4 border-t">
+              <div className="flex items-center gap-2 text-sm">
+                <User className="w-4 h-4 text-muted-foreground" />
+                <span className="text-muted-foreground">
+                  Ook klant als: <span className="font-medium text-foreground">{contactPersoon.is_ook_klant}</span>
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Voorkeuren */}
           {contactPersoon.voorkeur_communicatie && (
             <div className="pt-4 border-t">

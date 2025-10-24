@@ -113,6 +113,12 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
                           <span>{formatDateTime(int.datum + 'T' + int.tijd, currentUser?.language || 'nl')}</span>
                           <span>•</span>
                           <span>{int.medewerker}</span>
+                          {int.duur && (
+                            <>
+                              <span>•</span>
+                              <span>{int.duur} min</span>
+                            </>
+                          )}
                           <span>•</span>
                           <Badge variant={int.type === 'Inbound' ? 'default' : 'secondary'} className="text-xs">
                             {int.type}
@@ -143,6 +149,24 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
                   <p className="text-sm text-ka-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                     {int.samenvatting}
                   </p>
+                  
+                  {int.contactpersoon && (
+                    <div className="mt-2 text-xs text-ka-gray-500 dark:text-gray-400">
+                      Contactpersoon: <span className="font-medium">{int.contactpersoon}</span>
+                    </div>
+                  )}
+                  
+                  {int.gerelateerde_klanten && (
+                    <div className="mt-1 text-xs text-ka-gray-500 dark:text-gray-400">
+                      Gerelateerd: <span className="font-medium">{int.gerelateerde_klanten}</span>
+                    </div>
+                  )}
+                  
+                  {int.externe_bestanden_id && (
+                    <Badge variant="outline" className="mt-2 text-xs">
+                      📎 Bestanden: {int.externe_bestanden_id}
+                    </Badge>
+                  )}
                   
                   {int.tags && int.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
