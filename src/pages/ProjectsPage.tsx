@@ -8,6 +8,8 @@ import ProjectsList from '@/components/projects/ProjectsList';
 import ProjectsCalendar from '@/components/projects/ProjectsCalendar';
 import ProjectsStats from '@/components/projects/ProjectsStats';
 import CreateProjectDialog from '@/components/projects/CreateProjectDialog';
+import { responsiveHeading, responsiveBody } from '@/lib/utils/typography';
+import { useDeviceChecks } from '@/hooks/useBreakpoint';
 
 export default function ProjectsPage() {
   const [view, setView] = useState<'kanban' | 'list' | 'calendar'>('kanban');
@@ -19,43 +21,55 @@ export default function ProjectsPage() {
     category: 'all',
     priority: 'all',
   });
+  
+  const { isMobile } = useDeviceChecks();
 
   return (
-    <div className="p-6 max-w-screen-2xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
+    <div className="px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6 max-w-screen-2xl mx-auto">
+      {/* Header - Optimized for 360px */}
+      <div className="flex flex-col xs:flex-row xs:items-start xs:justify-between gap-3 xs:gap-4 mb-4 xs:mb-5 sm:mb-6">
+        <div className="flex-1 min-w-0">
+          <h1 className={`${responsiveHeading.h2} truncate`}>
             Projecten & Workflows
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className={`${responsiveBody.small} mt-0.5 xs:mt-1 truncate`}>
             Beheer klantprojecten en terugkerende workflows
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
-          <Link to="/clients/late-payers">
-            <Button variant="outline" size="sm">
-              <AlertCircle className="w-4 h-4 mr-2 text-yellow-600" />
-              Late Klanten
+        {/* Action buttons - Horizontal scroll on mobile */}
+        <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
+          <Link to="/clients/late-payers" className="flex-shrink-0">
+            <Button variant="outline" size="sm" className="h-8 xs:h-9 text-xs xs:text-sm whitespace-nowrap px-2 xs:px-3">
+              <AlertCircle className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1.5 text-yellow-600" />
+              <span className="hidden xs:inline">Late Klanten</span>
             </Button>
           </Link>
-          <Link to="/projects/workload">
-            <Button variant="outline" size="sm">
-              <Users className="w-4 h-4 mr-2" />
-              Team Workload
+          <Link to="/projects/workload" className="flex-shrink-0">
+            <Button variant="outline" size="sm" className="h-8 xs:h-9 text-xs xs:text-sm whitespace-nowrap px-2 xs:px-3">
+              <Users className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1.5" />
+              <span className="hidden xs:inline">Workload</span>
             </Button>
           </Link>
-          <Link to="/projects/bulk">
-            <Button variant="outline" size="sm">
-              <Zap className="w-4 h-4 mr-2" />
-              Bulk BTW
+          <Link to="/projects/bulk" className="flex-shrink-0">
+            <Button variant="outline" size="sm" className="h-8 xs:h-9 text-xs xs:text-sm whitespace-nowrap px-2 xs:px-3">
+              <Zap className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1.5" />
+              <span className="hidden sm:inline">Bulk BTW</span>
+              <span className="sm:hidden">Bulk</span>
             </Button>
           </Link>
-          <Button variant="outline" size="sm" onClick={() => setFilterDialogOpen(true)}>
-            <Filter className="w-4 h-4 mr-2" />
-            Filters
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setFilterDialogOpen(true)}
+            className="h-8 xs:h-9 text-xs xs:text-sm whitespace-nowrap px-2 xs:px-3 flex-shrink-0"
+          >
+            <Filter className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1.5" />
+            <span className="hidden xs:inline">Filters</span>
           </Button>
-          <CreateProjectDialog />
+          <div className="flex-shrink-0">
+            <CreateProjectDialog />
+          </div>
         </div>
       </div>
 
@@ -68,41 +82,47 @@ export default function ProjectsPage() {
 
       <ProjectsStats />
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div className="flex space-x-2">
+      {/* View Switcher + Filters - Optimized for 360px */}
+      <div className="flex flex-col gap-2.5 xs:gap-3 sm:gap-4 mb-4 xs:mb-5 sm:mb-6">
+        {/* View Switcher - Full width on mobile */}
+        <div className="flex gap-1.5 xs:gap-2">
           <Button
             variant={view === 'kanban' ? 'default' : 'outline'}
             onClick={() => setView('kanban')}
             size="sm"
+            className="flex-1 h-8 xs:h-9 text-xs xs:text-sm"
           >
-            <LayoutGrid className="w-4 h-4 mr-2" />
-            Kanban
+            <LayoutGrid className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1.5" />
+            <span className="hidden xs:inline">Kanban</span>
           </Button>
           <Button
             variant={view === 'list' ? 'default' : 'outline'}
             onClick={() => setView('list')}
             size="sm"
+            className="flex-1 h-8 xs:h-9 text-xs xs:text-sm"
           >
-            <List className="w-4 h-4 mr-2" />
-            Lijst
+            <List className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1.5" />
+            <span className="hidden xs:inline">Lijst</span>
           </Button>
           <Button
             variant={view === 'calendar' ? 'default' : 'outline'}
             onClick={() => setView('calendar')}
             size="sm"
+            className="flex-1 h-8 xs:h-9 text-xs xs:text-sm"
           >
-            <Calendar className="w-4 h-4 mr-2" />
-            Kalender
+            <Calendar className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1.5" />
+            <span className="hidden xs:inline">Kalender</span>
           </Button>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        {/* Filters - Stacked on mobile */}
+        <div className="flex flex-col xs:flex-row gap-2 xs:gap-3">
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-3 py-2 border rounded-lg text-sm bg-background"
+            className="flex-1 px-2.5 xs:px-3 py-1.5 xs:py-2 border rounded-lg text-xs xs:text-sm bg-background h-8 xs:h-9"
           >
-            <option value="all">Alle categorieën</option>
+            <option value="all">{isMobile ? 'Categorie' : 'Alle categorieën'}</option>
             <option value="btw">BTW Aangiftes</option>
             <option value="hypotheek">Hypotheken</option>
             <option value="jaarrekening">Jaarrekeningen</option>
@@ -112,9 +132,9 @@ export default function ProjectsPage() {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-2 border rounded-lg text-sm bg-background"
+            className="flex-1 px-2.5 xs:px-3 py-1.5 xs:py-2 border rounded-lg text-xs xs:text-sm bg-background h-8 xs:h-9"
           >
-            <option value="all">Alle statussen</option>
+            <option value="all">{isMobile ? 'Status' : 'Alle statussen'}</option>
             <option value="niet-gestart">Niet gestart</option>
             <option value="in-uitvoering">In uitvoering</option>
             <option value="wacht-op-klant">Wacht op klant</option>
