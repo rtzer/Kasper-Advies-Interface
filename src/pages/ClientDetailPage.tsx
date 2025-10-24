@@ -1,18 +1,23 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Send, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useKlant } from '@/lib/api/klanten';
 import { useInteractiesByKlant } from '@/lib/api/interacties';
 import ClientInteractionsTimeline from '@/components/clients/ClientInteractionsTimeline';
 import ClientAssignments from '@/components/clients/ClientAssignments';
 import ClientTasks from '@/components/clients/ClientTasks';
 import ClientContactPersons from '@/components/clients/ClientContactPersons';
+import EditClientDialog from '@/components/clients/EditClientDialog';
 import { formatDate } from '@/lib/utils/dateHelpers';
 import { useUserStore } from '@/store/userStore';
+import { toast } from 'sonner';
 
 export default function ClientDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +25,8 @@ export default function ClientDetailPage() {
   const { currentUser } = useUserStore();
   const { data: klant, isLoading } = useKlant(id!);
   const { data: interacties } = useInteractiesByKlant(id!);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
   
   if (isLoading) {
     return (
@@ -98,16 +105,53 @@ export default function ClientDetailPage() {
             
             {/* Actions */}
             <div className="flex items-center space-x-2">
-              <Button variant="outline">
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(true)}>
                 <Edit className="w-4 h-4 mr-2" />
                 Bewerken
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setIsArchiveDialogOpen(true)}
+                title="Archiveer deze klant (blijft zichtbaar in historische weergave)"
+              >
                 <Archive className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="w-5 h-5" />
-              </Button>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <MoreVertical className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem onClick={() => window.location.href = `mailto:${klant.email}`}>
+                    <Send className="w-4 h-4 mr-2" />
+                    Stuur e-mail
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => window.open(`https://wa.me/${klant.telefoonnummer.replace(/\D/g, '')}`, '_blank')}>
+                    <Send className="w-4 h-4 mr-2" />
+                    Stuur WhatsApp
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => window.location.href = `tel:${klant.telefoonnummer}`}>
+                    <Phone className="w-4 h-4 mr-2" />
+                    Bel klant
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => toast.info('Export functionaliteit komt binnenkort')}>
+                    <FileText className="w-4 h-4 mr-2" />
+                    Exporteer klantgegevens
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    className="text-red-600 dark:text-red-400"
+                    onClick={() => toast.error('Verwijderen is alleen beschikbaar voor beheerders')}
+                  >
+                    <Archive className="w-4 h-4 mr-2" />
+                    Verwijder klant
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -293,6 +337,40 @@ export default function ClientDetailPage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Edit Dialog */}
+      {klant && (
+        <EditClientDialog
+          klant={klant}
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+        />
+      )}
+
+      {/* Archive Confirmation Dialog */}
+      <AlertDialog open={isArchiveDialogOpen} onOpenChange={setIsArchiveDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Klant archiveren?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Weet je zeker dat je <strong>{klant?.naam}</strong> wilt archiveren? 
+              De klant blijft zichtbaar in historische weergave maar wordt niet meer actief getoond.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuleren</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                toast.success(`${klant?.naam} is gearchiveerd`);
+                setIsArchiveDialogOpen(false);
+              }}
+              className="bg-ka-warning hover:bg-ka-warning/90"
+            >
+              Archiveren
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

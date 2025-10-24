@@ -92,11 +92,20 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
             {/* Interactions */}
             <div className="space-y-4 ml-4 border-l-2 border-ka-gray-200 dark:border-gray-700 pl-6">
               {interactions.map((int) => (
-                <Card key={int.id} className="p-4 hover:shadow-md transition-shadow">
+                <Card 
+                  key={int.id} 
+                  className="p-4 hover:shadow-lg transition-all cursor-pointer hover:scale-[1.01] border-2 border-transparent hover:border-ka-green relative group"
+                  onClick={() => {
+                    // Navigate based on channel type
+                    if (int.kanaal === 'WhatsApp' || int.kanaal === 'E-mail') {
+                      window.location.href = '/inbox';
+                    }
+                  }}
+                >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
                       <div 
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-lg transition-transform group-hover:scale-110"
                         style={{ backgroundColor: getChannelColor(int.kanaal) + '20' }}
                       >
                         {getChannelIcon(int.kanaal)}
@@ -147,6 +156,12 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
                       ))}
                     </div>
                   )}
+
+                  {/* Hover indicator */}
+                  <div className="absolute bottom-3 right-3 text-xs text-ka-green opacity-0 group-hover:opacity-100 transition-opacity flex items-center space-x-1">
+                    <span>Bekijk gesprek</span>
+                    <span>→</span>
+                  </div>
                 </Card>
               ))}
             </div>
