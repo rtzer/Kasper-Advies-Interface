@@ -59,7 +59,12 @@ export default function FlowbiteConversationDetail() {
                 className="w-10 h-10 rounded-full"
               />
               <div>
-                <h2 className="font-semibold text-gray-900 dark:text-white">{conversation.klant_naam}</h2>
+                <Link 
+                  to={`/clients/${conversation.klant_id}`}
+                  className="font-semibold text-gray-900 dark:text-white hover:text-ka-green transition-colors hover:underline"
+                >
+                  {conversation.klant_naam}
+                </Link>
                 <p className="text-xs text-gray-500 dark:text-gray-400">{conversation.onderwerp || 'Geen onderwerp'}</p>
               </div>
               <span className="px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-300 rounded">

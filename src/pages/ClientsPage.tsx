@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { CreateClientDialog } from '@/components/clients/CreateClientDialog';
 import { useKlanten } from '@/lib/api/klanten';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,6 +14,7 @@ export default function ClientsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   const { data, isLoading } = useKlanten();
   const klanten = data?.results || [];
@@ -54,11 +56,13 @@ export default function ClientsPage() {
             Beheer al uw klantrelaties op één plek
           </p>
         </div>
-        <Button className="bg-ka-green hover:bg-ka-green/90">
+        <Button className="bg-ka-green hover:bg-ka-green/90" onClick={() => setCreateDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Nieuwe Klant
         </Button>
       </div>
+
+      <CreateClientDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -166,16 +170,24 @@ export default function ClientsPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
                       {klant.email && (
-                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <a 
+                          href={`mailto:${klant.email}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-ka-green transition-colors"
+                        >
                           <Mail className="w-4 h-4" />
                           <span>{klant.email}</span>
-                        </div>
+                        </a>
                       )}
                       {klant.telefoonnummer && (
-                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <a 
+                          href={`tel:${klant.telefoonnummer}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-ka-green transition-colors"
+                        >
                           <Phone className="w-4 h-4" />
                           <span>{klant.telefoonnummer}</span>
-                        </div>
+                        </a>
                       )}
                       {klant.plaats && (
                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">

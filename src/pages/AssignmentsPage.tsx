@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CreateOpdrachtDialog } from '@/components/projects/CreateOpdrachtDialog';
 import { Calendar, DollarSign, User, Plus } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +15,7 @@ export default function AssignmentsPage() {
   const { t } = useTranslation(['common']);
   const { currentUser } = useUserStore();
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const { data: opdrachtenData, isLoading } = useOpdrachten();
   
   const opdrachten = opdrachtenData?.results || [];
@@ -49,12 +51,14 @@ export default function AssignmentsPage() {
             </SelectContent>
           </Select>
           
-          <Button className="bg-ka-green hover:bg-ka-green/90">
+          <Button className="bg-ka-green hover:bg-ka-green/90" onClick={() => setCreateDialogOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Nieuwe opdracht
           </Button>
         </div>
       </div>
+
+      <CreateOpdrachtDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
       
       {/* Assignments grid */}
       {isLoading ? (

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { CreateTaskDialog } from '@/components/projects/CreateTaskDialog';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus, Calendar, User } from 'lucide-react';
@@ -19,6 +20,7 @@ interface TaskColumns {
 export default function TasksPage() {
   const { currentUser } = useUserStore();
   const { data: takenData, isLoading } = useTaken();
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [tasks, setTasks] = useState<TaskColumns>({
     'Te doen': [],
     'In uitvoering': [],
@@ -102,11 +104,13 @@ export default function TasksPage() {
           </p>
         </div>
         
-        <Button className="bg-ka-green hover:bg-ka-green/90">
+        <Button className="bg-ka-green hover:bg-ka-green/90" onClick={() => setCreateDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Nieuwe taak
         </Button>
       </div>
+
+      <CreateTaskDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
       
       {/* Kanban Board */}
       <DragDropContext onDragEnd={onDragEnd}>
@@ -144,19 +148,19 @@ export default function TasksPage() {
                               }`}
                             >
                             <div className="space-y-2">
-                              <h4 className="font-medium text-sm text-ka-navy dark:text-white">
-                                {task.taak_omschrijving}
-                              </h4>
-                              
-                              <Link 
-                                to={`/clients/${task.klant_id}`}
-                className="text-xs text-ka-gray-600 dark:text-gray-400 hover:underline inline-block"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {task.klant_naam}
-              </Link>
-              
-              <div className="flex items-center justify-between pt-2">
+                                <h4 className="font-medium text-sm text-ka-navy dark:text-white">
+                                  {task.taak_omschrijving}
+                                </h4>
+                                
+                                <Link 
+                                  to={`/clients/${task.klant_id}`}
+                                  className="text-xs text-ka-gray-600 dark:text-gray-400 hover:underline inline-block"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {task.klant_naam}
+                                </Link>
+                                
+                                <div className="flex items-center justify-between pt-2">
                                 <Badge variant={
                                   task.priority === 'Urgent' ? 'destructive' :
                                   task.priority === 'Hoog' ? 'default' :
@@ -165,22 +169,22 @@ export default function TasksPage() {
                                   {task.priority}
                                 </Badge>
                                 
-                                {task.deadline && (
-                                  <span className="text-xs text-ka-gray-500 dark:text-gray-400 flex items-center">
-                                    <Calendar className="w-3 h-3 mr-1" />
-                                    {formatDate(task.deadline, currentUser?.language || 'nl')}
-                  </span>
-                )}
-              </div>
-              
-              {task.blocked_reason && status === 'Geblokkeerd' && (
+                                  {task.deadline && (
+                                    <span className="text-xs text-ka-gray-500 dark:text-gray-400 flex items-center">
+                                      <Calendar className="w-3 h-3 mr-1" />
+                                      {formatDate(task.deadline, currentUser?.language || 'nl')}
+                                    </span>
+                                  )}
+                                </div>
+                                
+                                {task.blocked_reason && status === 'Geblokkeerd' && (
                                 <div className="mt-2 pt-2 border-t border-ka-gray-200 dark:border-gray-700">
                                   <p className="text-xs text-ka-danger">
                                     🚫 {task.blocked_reason}
-                                  </p>
-                                </div>
-                              )}
-                            </div>
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
                             </Card>
                           </Link>
                         )}

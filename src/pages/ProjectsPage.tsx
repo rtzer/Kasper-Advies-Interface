@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Filter, Calendar, LayoutGrid, List, Zap, AlertCircle, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { ProjectFilterDialog } from '@/components/projects/ProjectFilterDialog';
 import ProjectsKanban from '@/components/projects/ProjectsKanban';
 import ProjectsList from '@/components/projects/ProjectsList';
 import ProjectsCalendar from '@/components/projects/ProjectsCalendar';
@@ -12,6 +13,12 @@ export default function ProjectsPage() {
   const [view, setView] = useState<'kanban' | 'list' | 'calendar'>('kanban');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [filterDialogOpen, setFilterDialogOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    status: 'all',
+    category: 'all',
+    priority: 'all',
+  });
 
   return (
     <div className="p-6 max-w-screen-2xl mx-auto">
@@ -44,13 +51,20 @@ export default function ProjectsPage() {
               Bulk BTW
             </Button>
           </Link>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => setFilterDialogOpen(true)}>
             <Filter className="w-4 h-4 mr-2" />
             Filters
           </Button>
           <CreateProjectDialog />
         </div>
       </div>
+
+      <ProjectFilterDialog 
+        open={filterDialogOpen} 
+        onOpenChange={setFilterDialogOpen}
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
 
       <ProjectsStats />
 

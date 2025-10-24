@@ -100,16 +100,24 @@ export default function MyClientsPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
                       {klant.email && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <a 
+                          href={`mailto:${klant.email}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-ka-green transition-colors"
+                        >
                           <Mail className="w-4 h-4" />
                           <span>{klant.email}</span>
-                        </div>
+                        </a>
                       )}
                       {klant.telefoonnummer && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <a 
+                          href={`tel:${klant.telefoonnummer}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-ka-green transition-colors"
+                        >
                           <Phone className="w-4 h-4" />
                           <span>{klant.telefoonnummer}</span>
-                        </div>
+                        </a>
                       )}
                       {klant.plaats && (
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">

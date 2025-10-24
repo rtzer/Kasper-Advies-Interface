@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { InboxFilterDialog } from "@/components/inbox/InboxFilterDialog";
 import { FlowbiteConversationItem } from "@/components/inbox/FlowbiteConversationItem";
 import { FlowbiteChatView } from "@/components/inbox/FlowbiteChatView";
 import { Search, Filter, Plus } from "lucide-react";
@@ -18,6 +19,12 @@ export default function FlowbiteUnifiedInbox() {
   
   const [selectedConversationId, setSelectedConversationId] = useState<string>(conversations[0]?.id || "1");
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterDialogOpen, setFilterDialogOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    status: 'all',
+    channel: 'all',
+    priority: 'all',
+  });
   
   // Get messages for selected conversation
   const { data: messagesData } = useConversationMessages(selectedConversationId);
@@ -55,7 +62,7 @@ export default function FlowbiteUnifiedInbox() {
               Gesprekken
             </h2>
             <div className="flex gap-2">
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" onClick={() => setFilterDialogOpen(true)}>
                 <Filter className="w-4 h-4" />
               </Button>
               <Button size="icon">
@@ -168,7 +175,14 @@ export default function FlowbiteUnifiedInbox() {
             <dl className="text-sm text-foreground divide-y divide-border">
               <div className="flex flex-col pb-3">
                 <dt className="mb-1 text-muted-foreground">Klant ID</dt>
-                <dd className="font-semibold">{selectedConversation?.klant_id}</dd>
+                <dd className="font-semibold">
+                  <Link 
+                    to={`/clients/${selectedConversation?.klant_id}`}
+                    className="hover:text-ka-green transition-colors hover:underline"
+                  >
+                    {selectedConversation?.klant_id}
+                  </Link>
+                </dd>
               </div>
               <div className="flex flex-col py-3">
                 <dt className="mb-1 text-muted-foreground">Primary Channel</dt>
