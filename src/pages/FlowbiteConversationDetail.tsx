@@ -1,14 +1,23 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, MoreVertical, Phone, Video, Mail, Archive, Tag } from "lucide-react";
+import { ArrowLeft, MoreVertical, Phone, Video, Mail, Archive, Tag, Trash2, User, Clock } from "lucide-react";
 import { FlowbiteChatView } from "@/components/inbox/FlowbiteChatView";
 import { useConversation, useConversationMessages } from "@/lib/api/conversations";
 import { Skeleton } from "@/components/ui/skeleton";
 import { normalizeChannelForIcon } from "@/lib/utils/channelHelpers";
+import { useState } from "react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+
+type TabType = 'gesprek' | 'contact' | 'geschiedenis';
 
 export default function FlowbiteConversationDetail() {
   const { id } = useParams();
   const { data: conversation, isLoading } = useConversation(id || "1");
   const { data: messagesData } = useConversationMessages(id || "1");
+  const [activeTab, setActiveTab] = useState<TabType>('gesprek');
+  const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const { toast } = useToast();
   
   // Transform messages to match FlowbiteChatView format
   const messages = (messagesData?.results || []).map((msg) => ({
@@ -20,6 +29,23 @@ export default function FlowbiteConversationDetail() {
     hasAttachment: msg.attachments && msg.attachments.length > 0,
     status: msg.delivery_status as 'sent' | 'delivered' | 'read' | undefined,
   }));
+
+  const handleArchive = () => {
+    toast({
+      title: "Conversatie gearchiveerd",
+      description: `Conversatie met ${conversation?.klant_naam} is gearchiveerd.`,
+    });
+    setArchiveDialogOpen(false);
+  };
+
+  const handleDelete = () => {
+    toast({
+      title: "Conversatie verwijderd",
+      description: `Conversatie met ${conversation?.klant_naam} is verwijderd.`,
+      variant: "destructive",
+    });
+    setDeleteDialogOpen(false);
+  };
   
   if (isLoading) {
     return (
@@ -73,48 +99,174 @@ export default function FlowbiteConversationDetail() {
             </div>
             
             <div className="flex items-center gap-2">
-              <button className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+              <button 
+                className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                title="Bellen"
+              >
                 <Phone className="h-5 w-5" />
               </button>
-              <button className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+              <button 
+                className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                title="Videogesprek"
+              >
                 <Video className="h-5 w-5" />
               </button>
-              <button className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+              <button 
+                className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                title="Email versturen"
+              >
                 <Mail className="h-5 w-5" />
               </button>
-              <button className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+              <button 
+                onClick={() => setArchiveDialogOpen(true)}
+                className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                title="Archiveren"
+              >
                 <Archive className="h-5 w-5" />
               </button>
-              <button className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
-                <MoreVertical className="h-5 w-5" />
+              <button 
+                onClick={() => setDeleteDialogOpen(true)}
+                className="p-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 rounded-lg transition-colors"
+                title="Verwijderen"
+              >
+                <Trash2 className="h-5 w-5" />
               </button>
             </div>
           </div>
 
           {/* Tabs */}
           <div className="flex gap-4 mt-3 border-b border-gray-200 dark:border-gray-700">
-            <button className="px-1 py-2 text-sm font-medium text-blue-600 border-b-2 border-blue-600">
+            <button 
+              onClick={() => setActiveTab('gesprek')}
+              className={`px-1 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'gesprek' 
+                  ? 'text-blue-600 border-b-2 border-blue-600' 
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+            >
               Gesprek
             </button>
-            <button className="px-1 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+            <button 
+              onClick={() => setActiveTab('contact')}
+              className={`px-1 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'contact' 
+                  ? 'text-blue-600 border-b-2 border-blue-600' 
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+            >
               Contact Info
             </button>
-            <button className="px-1 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+            <button 
+              onClick={() => setActiveTab('geschiedenis')}
+              className={`px-1 py-2 text-sm font-medium transition-colors ${
+                activeTab === 'geschiedenis' 
+                  ? 'text-blue-600 border-b-2 border-blue-600' 
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+            >
               Geschiedenis
             </button>
           </div>
         </div>
 
-        {/* Chat Content */}
+        {/* Tab Content */}
         <div className="flex-1 overflow-hidden">
-          <FlowbiteChatView
-            conversationName={conversation.klant_naam}
-            conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${conversation.klant_naam}`}
-            channel={normalizeChannelForIcon(conversation.primary_channel)}
-            messages={messages}
-            isOnline={conversation.status === 'open'}
-            clientId={conversation.klant_id}
-          />
+          {activeTab === 'gesprek' && (
+            <FlowbiteChatView
+              conversationName={conversation.klant_naam}
+              conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${conversation.klant_naam}`}
+              channel={normalizeChannelForIcon(conversation.primary_channel)}
+              messages={messages}
+              isOnline={conversation.status === 'open'}
+              clientId={conversation.klant_id}
+            />
+          )}
+          
+          {activeTab === 'contact' && (
+            <div className="p-6 space-y-6 overflow-y-auto h-full bg-white dark:bg-gray-900">
+              <div className="max-w-2xl">
+                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Contact Informatie</h2>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <User className="h-5 w-5 text-gray-600 dark:text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Naam</p>
+                      <p className="text-base font-semibold text-gray-900 dark:text-white">{conversation.klant_naam}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <Mail className="h-5 w-5 text-gray-600 dark:text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</p>
+                      <p className="text-base text-gray-900 dark:text-white">contact@{conversation.klant_naam.toLowerCase().replace(/\s+/g, '')}.nl</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <Phone className="h-5 w-5 text-gray-600 dark:text-gray-400 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Telefoon</p>
+                      <p className="text-base text-gray-900 dark:text-white">+31 6 1234 5678</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <Tag className="h-5 w-5 text-gray-600 dark:text-gray-400 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Tags</p>
+                      <div className="flex flex-wrap gap-2">
+                        {conversation.tags && conversation.tags.length > 0 ? (
+                          conversation.tags.map((tag) => (
+                            <span key={tag} className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 dark:bg-gray-700 dark:text-gray-300 rounded">
+                              {tag}
+                            </span>
+                          ))
+                        ) : (
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Geen tags</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {activeTab === 'geschiedenis' && (
+            <div className="p-6 overflow-y-auto h-full bg-white dark:bg-gray-900">
+              <div className="max-w-2xl">
+                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Conversatie Geschiedenis</h2>
+                
+                <div className="space-y-4">
+                  {messagesData?.results && messagesData.results.length > 0 ? (
+                    <div className="space-y-3">
+                      {messagesData.results.map((msg, idx) => (
+                        <div key={msg.id} className="flex gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                          <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400 mt-0.5 flex-shrink-0" />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="text-sm font-medium text-gray-900 dark:text-white">{msg.from.naam}</p>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                {new Date(msg.timestamp).toLocaleString('nl-NL')}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-700 dark:text-gray-300">{msg.content}</p>
+                            {msg.attachments && msg.attachments.length > 0 && (
+                              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">📎 {msg.attachments.length} bijlage(n)</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-center text-gray-500 dark:text-gray-400 py-8">Geen berichten gevonden</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -169,6 +321,40 @@ export default function FlowbiteConversationDetail() {
           </div>
         </div>
       </div>
+
+      {/* Archive Confirmation Dialog */}
+      <AlertDialog open={archiveDialogOpen} onOpenChange={setArchiveDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Conversatie archiveren?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Weet je zeker dat je deze conversatie wilt archiveren? Je kunt deze later weer terugvinden in je archief.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuleren</AlertDialogCancel>
+            <AlertDialogAction onClick={handleArchive}>Archiveren</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Conversatie verwijderen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Weet je zeker dat je deze conversatie wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuleren</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+              Verwijderen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

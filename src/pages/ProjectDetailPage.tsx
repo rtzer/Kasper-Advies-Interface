@@ -10,13 +10,18 @@ import { useToast } from '@/hooks/use-toast';
 import UpdateStatusDialog from '@/components/projects/UpdateStatusDialog';
 import ProjectStageTracker from '@/components/projects/ProjectStageTracker';
 import { useState } from 'react';
+import { useKlanten } from '@/lib/api/klanten';
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: project, isLoading } = useProject(id || '');
+  const { data: klantenData } = useKlanten();
   const sendReminderMutation = useSendReminder();
   const { toast } = useToast();
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+
+  // Find client details
+  const client = klantenData?.results?.find(k => k.id === project?.client_id);
 
   const handleSendReminder = () => {
     if (!project) return;
@@ -39,6 +44,38 @@ export default function ProjectDetailPage() {
         },
       }
     );
+  };
+
+  const handlePhoneCall = () => {
+    if (client?.telefoonnummer) {
+      window.location.href = `tel:${client.telefoonnummer}`;
+      toast({
+        title: "Bellen...",
+        description: `${client.telefoonnummer}`,
+      });
+    } else {
+      toast({
+        title: "Geen telefoonnummer",
+        description: "Er is geen telefoonnummer beschikbaar voor deze klant.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEmail = () => {
+    if (client?.email) {
+      window.location.href = `mailto:${client.email}`;
+      toast({
+        title: "Email openen...",
+        description: `${client.email}`,
+      });
+    } else {
+      toast({
+        title: "Geen email",
+        description: "Er is geen email beschikbaar voor deze klant.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (isLoading) {
@@ -200,10 +237,34 @@ export default function ProjectDetailPage() {
               >
                 {project.client_name}
               </Link>
-              <Button variant="outline" size="sm" className="w-full mt-3">
-                <Phone className="w-4 h-4 mr-2" />
-                Contact opnemen
-              </Button>
+              {client?.email && (
+                <p className="text-xs text-muted-foreground">{client.email}</p>
+              )}
+              {client?.telefoonnummer && (
+                <p className="text-xs text-muted-foreground">{client.telefoonnummer}</p>
+              )}
+              <div className="flex gap-2 mt-3">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={handlePhoneCall}
+                  disabled={!client?.telefoonnummer}
+                >
+                  <Phone className="w-4 h-4 mr-2" />
+                  Bellen
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={handleEmail}
+                  disabled={!client?.email}
+                >
+                  <Mail className="w-4 h-4 mr-2" />
+                  Email
+                </Button>
+              </div>
             </div>
           </div>
 
