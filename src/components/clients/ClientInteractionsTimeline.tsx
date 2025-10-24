@@ -10,6 +10,7 @@ import { getChannelIcon, getChannelColor } from '@/lib/utils/channelHelpers';
 import { formatDateTime } from '@/lib/utils/dateHelpers';
 import { useUserStore } from '@/store/userStore';
 import InteractieDetailModal from './InteractieDetailModal';
+import InteractieKanaalBadge from './InteractieKanaalBadge';
 
 interface ClientInteractionsTimelineProps {
   klantId: string;
@@ -107,7 +108,7 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
                       >
                         {getChannelIcon(int.kanaal)}
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <h4 className="font-medium text-ka-navy dark:text-white">{int.onderwerp}</h4>
                         <div className="flex items-center space-x-2 text-sm text-ka-gray-500 dark:text-gray-400">
                           <span>{formatDateTime(int.datum + 'T' + int.tijd, currentUser?.language || 'nl')}</span>
@@ -119,10 +120,9 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
                               <span>{int.duur} min</span>
                             </>
                           )}
-                          <span>•</span>
-                          <Badge variant={int.type === 'Inbound' ? 'default' : 'secondary'} className="text-xs">
-                            {int.type}
-                          </Badge>
+                        </div>
+                        <div className="mt-1">
+                          <InteractieKanaalBadge interactie={int} showIcon={false} />
                         </div>
                       </div>
                     </div>
@@ -141,6 +141,12 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
                       {int.opvolging_nodig && (
                         <Badge variant="destructive">
                           Opvolging vereist
+                        </Badge>
+                      )}
+
+                      {int.gekoppelde_items && int.gekoppelde_items.length > 1 && (
+                        <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/20 border-blue-300">
+                          {int.gekoppelde_items.length} onderwerpen
                         </Badge>
                       )}
                     </div>

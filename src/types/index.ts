@@ -126,11 +126,38 @@ export interface Interactie {
   type: 'Inbound' | 'Outbound';
   duur?: number;                         // Duration in minutes (phone/video)
   
+  // Kanaal-specifieke metadata (NIEUW)
+  kanaal_metadata?: {
+    // Email
+    thread_id?: string;                  // Gmail/Outlook thread ID
+    message_id?: string;                 // Specifieke message ID
+    
+    // WhatsApp
+    whatsapp_phone_id?: string;          // Telefoonnummer
+    whatsapp_message_id?: string;        // WhatsApp Message ID (wamid.xxx)
+    
+    // Telefoon/Video
+    call_id?: string;                    // Unieke call ID (bijv. van Voys)
+    call_duration?: number;              // Duur in minuten (alternatief voor duur veld)
+    
+    // Algemeen
+    external_id?: string;                // Voor andere systemen
+  };
+  
+  // Meerdere projecten/taken koppeling (NIEUW)
+  gekoppelde_items?: Array<{
+    project_id?: string;                 // Project waar het over gaat
+    opdracht_id?: string;                // Opdracht waar het over gaat
+    taak_ids?: string[];                 // Specifieke taken
+    onderwerp: string;                   // Wat werd besproken
+    notities?: string;                   // Specifieke notities voor dit onderwerp
+  }>;
+  
   // Content
   onderwerp: string;
   samenvatting: string;                  // Long text
   
-  // Opdracht link
+  // Opdracht link (legacy - gebruik gekoppelde_items voor nieuwe data)
   opdracht_id?: string;
   opdracht_naam?: string;
   opdracht?: string;                     // Alias for opdracht_naam (CSV compatibility)
@@ -153,7 +180,7 @@ export interface Interactie {
   is_read: boolean;
   read_by: string[];
   
-  // Thread info
+  // Thread info (legacy - gebruik kanaal_metadata.thread_id)
   thread_id?: string;
   reply_to_id?: string;
   

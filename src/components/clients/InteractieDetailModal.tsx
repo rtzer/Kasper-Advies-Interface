@@ -1,9 +1,12 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { Interactie } from '@/types';
 import { Mail, Phone, MessageSquare, Video, Calendar, User, Tag, ArrowRight, Inbox } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import InteractieKanaalBadge from './InteractieKanaalBadge';
+import InteractieKoppelingenSection from './InteractieKoppelingenSection';
 
 interface InteractieDetailModalProps {
   interactie: Interactie | null;
@@ -76,10 +79,7 @@ export default function InteractieDetailModal({ interactie, open, onOpenChange }
         <div className="space-y-6">
           {/* Header badges */}
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className="flex items-center gap-1">
-              {getChannelIcon(interactie.kanaal)}
-              {interactie.kanaal}
-            </Badge>
+            <InteractieKanaalBadge interactie={interactie} />
             
             {interactie.priority && (
               <Badge variant="outline" className={getPriorityColor(interactie.priority)}>
@@ -139,6 +139,14 @@ export default function InteractieDetailModal({ interactie, open, onOpenChange }
                 ))}
               </div>
             </div>
+          )}
+
+          {/* Gekoppelde items */}
+          {interactie.gekoppelde_items && interactie.gekoppelde_items.length > 0 && (
+            <>
+              <Separator />
+              <InteractieKoppelingenSection interactie={interactie} />
+            </>
           )}
 
           {/* Opvolging */}

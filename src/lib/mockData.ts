@@ -1024,16 +1024,38 @@ export const mockInteracties: Interactie[] = [
     medewerker: 'Harm-Jan Kaspers',
     kanaal: 'Telefoon',
     type: 'Inbound',
-    duur: 12,
-    onderwerp: 'Vraag over auto van de zaak',
-    samenvatting: 'Hans belt over de fiscale behandeling van zijn bedrijfsauto. Besproken: bijtelling privégebruik, lease vs koop, elektrisch vs benzine. Advies: elektrische auto heeft lagere bijtelling (16% vs 22%). Hans overweegt Tesla Model 3. Afspraak: doorrekenen in groeibegeleiding traject.',
+    duur: 25,
+    kanaal_metadata: {
+      call_id: 'VOYS-CALL-20251020-091500',
+      call_duration: 25,
+    },
+    gekoppelde_items: [
+      {
+        opdracht_id: '2',
+        onderwerp: 'Auto van de zaak - privé IB',
+        notities: 'Hans vraagt over fiscale behandeling bedrijfsauto. Overweegt Tesla Model 3. Besproken: bijtelling 16% vs 22%, lease vs koop.'
+      },
+      {
+        project_id: 'PROJ-HM-IB24',
+        onderwerp: 'Inkomstenbelasting 2024 aftrekposten',
+        notities: 'Vraag of thuiswerkkosten aftrekbaar zijn voor zijn particuliere aangifte'
+      },
+      {
+        project_id: 'PROJ-SLAGERIJ-BTW-Q1',
+        opdracht_id: '4',
+        onderwerp: 'BTW aangifte Q1 slagerij',
+        notities: 'Vraag over aftrek BTW op nieuwe koelinstallatie (€15.000)'
+      }
+    ],
+    onderwerp: 'Meerdere fiscale vragen (privé + zakelijk)',
+    samenvatting: 'Hans belt met vragen over zijn privé IB (thuiswerkkosten), bedrijfsauto fiscale behandeling, en BTW aftrek voor nieuwe koelinstallatie slagerij. Afspraak: doorrekenen in groeibegeleiding traject.',
     opdracht_id: '2',
     opdracht_naam: 'Groeibegeleiding Q2-Q4 2025',
     status: 'Afgerond',
     opvolging_nodig: true,
     opvolging_datum: '2025-10-25',
     priority: 'Normaal',
-    tags: ['Financieel', 'Auto van de zaak'],
+    tags: ['Financieel', 'Auto van de zaak', 'BTW', 'Multi-topic'],
     sentiment: 'Positief',
     externe_bestanden_id: 'INT-2025-001',
     is_read: true,
@@ -1055,6 +1077,10 @@ export const mockInteracties: Interactie[] = [
     kanaal: 'Zoom',
     type: 'Outbound',
     duur: 45,
+    kanaal_metadata: {
+      call_id: 'ZOOM-MTG-20251018-143000',
+      call_duration: 45,
+    },
     onderwerp: 'Intake procesoptimalisatie',
     samenvatting: 'Videogesprek met Lisa over procesoptimalisatie traject. Besproken: huidige knelpunten (handmatige orderverwerking, voorraadtekorten, retourprocessen). Lisa besteedt 15 uur/week aan admin die geautomatiseerd kan worden. Doel: 30% tijdsbesparing. Offerte opgesteld voor optimalisatietraject 15 uur à €165.',
     opdracht_id: '3',
@@ -1083,6 +1109,10 @@ export const mockInteracties: Interactie[] = [
     medewerker: 'Linda Prins',
     kanaal: 'E-mail',
     type: 'Inbound',
+    kanaal_metadata: {
+      thread_id: 'OUTLOOK-THREAD-1a2b3c4d5e6f',
+      message_id: 'MSG-2025-10-17-1045-KARIN',
+    },
     onderwerp: 'Factuur BTW-aangifte Q1',
     samenvatting: 'Karin vraagt wanneer de factuur voor BTW-aangifte Q1 verstuurd wordt. Antwoord: factuur is 5 mei verstuurd naar info@mulder-installatie.nl. Karin heeft deze niet ontvangen (spamfilter?). Factuur opnieuw doorgestuurd. Betaling binnen ontvangen op 5 juni.',
     opdracht_id: '4',
@@ -1109,6 +1139,10 @@ export const mockInteracties: Interactie[] = [
     medewerker: 'Linda Prins',
     kanaal: 'WhatsApp',
     type: 'Inbound',
+    kanaal_metadata: {
+      whatsapp_phone_id: '+31612345678',
+      whatsapp_message_id: 'wamid.HBgNMzE2MTIzNDU2Nzg5ABEYEjRDQTlBNzY4MTIzNDU2Nzg5AA==',
+    },
     onderwerp: 'Vraag over online kassasysteem',
     samenvatting: 'Jan stuurt bericht: \'Linda heb je ervaring met online kassasystemen voor webshop? Welke adviseer je?\' Antwoord: Lightspeed en Shopify hebben goede kassaintegraties. Bespreken in workflow analyse traject volgende week. Jan reageert met duim omhoog.',
     opdracht_id: '7',
