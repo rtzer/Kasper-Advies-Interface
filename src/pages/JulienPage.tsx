@@ -237,7 +237,7 @@ const baserowTasks: BaserowTask[] = [
       }
     ],
     testPage: '/assignments',
-    notes: 'Critical for workflow! Opdracht status "Gereed voor controle" means waiting for approval. Usually Harm-Jan signs off before reports go out.'
+    notes: 'Critical for workflow! Assignment status "Ready for Review" means waiting for approval. Usually Harm-Jan signs off before reports go out.'
   },
   {
     id: 'task-8',
@@ -285,11 +285,11 @@ const baserowTasks: BaserowTask[] = [
         name: 'approval_notes',
         type: 'Long text',
         required: false,
-        example: 'Feedback bij afkeuring'
+        example: 'Feedback on rejection'
       }
     ],
     testPage: '/tasks',
-    notes: 'CRITICAL WORKFLOW: Task lifecycle: Created → Assigned → In uitvoering → Gereed voor controle (submitted) → Approved → Afgerond. Harm-Jan must approve tasks before reports can be sent.'
+    notes: 'CRITICAL WORKFLOW: Task lifecycle: Created → Assigned → In Progress → Ready for Review (submitted) → Approved → Completed. Harm-Jan must approve tasks before reports can be sent.'
   },
   {
     id: 'task-9',
@@ -340,7 +340,7 @@ const baserowTasks: BaserowTask[] = [
         name: 'samenvatting',
         type: 'Long Text',
         required: false,
-        example: 'Hans belde met vragen over zijn privé IB, Maria\'s aangifte en BTW voor de slagerij'
+        example: 'Hans called with questions about his personal income tax, Maria\'s tax return, and VAT for the butcher shop'
       },
       {
         name: 'richting',
@@ -450,13 +450,13 @@ const baserowTasks: BaserowTask[] = [
         name: 'onderwerp',
         type: 'Text',
         required: true,
-        example: 'BTW aangifte Q1 slagerij'
+        example: 'VAT return Q1 butcher shop'
       },
       {
         name: 'notities',
         type: 'Long Text',
         required: false,
-        example: 'Vraag over aftrek BTW op nieuwe koelinstallatie'
+        example: 'Question about VAT deduction on new cooling installation'
       }
     ],
     testPage: '/clients/1',
@@ -479,9 +479,9 @@ Table 2 (Interactie_Koppelingen) = What was discussed in that conversation (1 co
 
 EXAMPLE USE CASE:
 Hans Mulder calls (1 interaction = INT-2024-001, call_id = CALL-20240315-103045)
-→ Koppeling 1: His private income tax (project: PROJ-HM-IB24)
-→ Koppeling 2: Partner Maria's income tax (project: PROJ-MARIA-IB24)  
-→ Koppeling 3: Business BTW Q1 (opdracht: OPD-SLAGERIJ-BTW-Q1)
+→ Link 1: His private income tax (project: PROJ-HM-IB24)
+→ Link 2: Partner Maria's income tax (project: PROJ-MARIA-IB24)  
+→ Link 3: Business VAT Q1 (assignment: OPD-SLAGERIJ-BTW-Q1)
 
 All 3 topics in ONE phone call, properly tracked across 3 different projects.
 
@@ -565,7 +565,7 @@ WHATSAPP BUSINESS API:
         name: 'beschrijving',
         type: 'Long Text',
         required: false,
-        example: 'Volledige fiscale begeleiding inclusief IB, BTW en groeibegeleiding'
+        example: 'Complete tax guidance including income tax, VAT, and growth consulting'
       },
       {
         name: '📊 UPDATED TABLE: Opdrachten',
@@ -600,10 +600,10 @@ STRUCTURE:
 Klant (Hans Mulder)
   └─ Project (Fiscale begeleiding 2024)
        ├─ Opdracht 1: IB 2024
-       │    ├─ Taak: Gegevens verzamelen
-       │    └─ Taak: Balans opstellen
+       │    ├─ Taak: Collect data
+       │    └─ Taak: Create balance sheet
        └─ Opdracht 2: BTW Q1
-            └─ Taak: BTW aangifte indienen
+            └─ Taak: Submit VAT return
 
 WHY THIS STRUCTURE?
 - Project = long-term container (e.g., "Fiscale begeleiding 2024")
@@ -717,7 +717,7 @@ export default function JulienPage() {
             <ul className="list-disc list-inside space-y-1 mt-2">
               <li><strong>CSV Import:</strong> Many text fields need to be converted to actual links (e.g., "Installatiebedrijf Mulder BV" → link to record)</li>
               <li><strong>Security:</strong> BSN and IBAN fields contain sensitive data - ensure proper access restrictions</li>
-              <li><strong>Workflow:</strong> The approval process is critical - tasks must go through: Created → Assigned → In uitvoering → Gereed voor controle → Approved → Afgerond</li>
+              <li><strong>Workflow:</strong> The approval process is critical - tasks must go through: Created → Assigned → In Progress → Ready for Review → Approved → Completed</li>
               <li><strong>Testing:</strong> Each task has a test page link - check the UI after configuration to verify data shows correctly</li>
             </ul>
           </AlertDescription>
