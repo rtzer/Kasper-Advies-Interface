@@ -23,7 +23,7 @@ export function CreateOpdrachtDialog({ open, onOpenChange }: CreateOpdrachtDialo
     opdracht_naam: '',
     klant_id: '',
     type_opdracht: 'BTW-aangifte' as any,
-    status: 'Nieuw',
+    status: 'Intake' as const,
     deadline: '',
   });
 
@@ -46,7 +46,7 @@ export function CreateOpdrachtDialog({ open, onOpenChange }: CreateOpdrachtDialo
         opdracht_naam: '',
         klant_id: '',
         type_opdracht: 'BTW-aangifte',
-        status: 'Nieuw',
+        status: 'Intake',
         deadline: '',
       });
     } catch (error) {

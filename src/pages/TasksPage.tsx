@@ -4,12 +4,12 @@ import { CreateTaskDialog } from '@/components/projects/CreateTaskDialog';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Calendar, User } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Plus, Calendar } from 'lucide-react';
 import { useTaken } from '@/lib/api/taken';
 import { Taak } from '@/types';
 import { formatDate } from '@/lib/utils/dateHelpers';
 import { useUserStore } from '@/store/userStore';
-import { Link } from 'react-router-dom';
 
 type TaskStatus = 'Te doen' | 'In uitvoering' | 'Geblokkeerd' | 'Afgerond';
 
