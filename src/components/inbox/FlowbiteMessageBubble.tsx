@@ -18,66 +18,65 @@ export const FlowbiteMessageBubble = ({
   status,
 }: FlowbiteMessageBubbleProps) => {
   return (
-    <div className={`flex items-start gap-2.5 mb-4 ${isOwn ? 'flex-row-reverse' : ''}`}>
-      {/* Avatar for received messages */}
+    <div className={`flex gap-2.5 ${isOwn ? 'justify-end' : 'justify-start'}`}>
       {!isOwn && (
         <img
           className="w-8 h-8 rounded-full"
-          src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${senderName}`}
-          alt={`${senderName} avatar`}
+          src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${senderName || 'user'}`}
+          alt={`${senderName || 'user'} avatar`}
         />
       )}
-
-      <div className={`flex flex-col gap-1 ${isOwn ? 'items-end' : 'w-full max-w-[320px]'}`}>
-        {/* Sender name for received messages */}
+      <div className={`flex flex-col gap-1 ${isOwn ? 'max-w-[320px]' : 'max-w-[320px]'}`}>
         {!isOwn && senderName && (
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
-              {senderName}
-            </span>
-          </div>
+          <span className="text-sm font-semibold text-foreground">
+            {senderName}
+          </span>
         )}
-
-        {/* Message bubble */}
         <div
-          className={`flex flex-col leading-1.5 p-4 border-gray-200 rounded-e-xl rounded-es-xl ${
+          className={`flex flex-col leading-1.5 p-4 ${
             isOwn
-              ? 'bg-blue-600 text-white rounded-e-xl rounded-es-xl'
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-s-xl rounded-ee-xl'
+              ? 'bg-[hsl(var(--message-sent-bg))] text-[hsl(var(--message-sent))] rounded-s-xl rounded-ee-xl'
+              : 'bg-[hsl(var(--message-received-bg))] text-foreground rounded-e-xl rounded-es-xl'
           }`}
         >
-          {/* Attachment indicator */}
           {hasAttachment && (
-            <div className={`flex items-center gap-2 mb-2 pb-2 border-b ${
-              isOwn ? 'border-blue-500' : 'border-gray-300 dark:border-gray-600'
-            }`}>
-              <Paperclip className="w-4 h-4" />
-              <span className="text-sm">Bijlage</span>
+            <div className="flex items-start gap-2.5 mb-2">
+              <Paperclip className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium">
+                Attachment
+              </span>
             </div>
           )}
-
-          {/* Message text */}
-          <p className="text-sm font-normal">{text}</p>
+          <p className="text-sm font-normal">
+            {text}
+          </p>
         </div>
-
-        {/* Time and status */}
         <div className="flex items-center gap-1">
-          <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
+          <span className="text-xs font-normal text-muted-foreground">
             {time}
           </span>
           {isOwn && status && (
-            <span className="text-gray-500 dark:text-gray-400">
-              {status === "read" ? (
-                <CheckCheck className="w-4 h-4 text-blue-600" />
-              ) : status === "delivered" ? (
-                <CheckCheck className="w-4 h-4" />
-              ) : (
-                <Check className="w-4 h-4" />
+            <>
+              {status === 'read' && (
+                <CheckCheck className="w-4 h-4 text-primary" />
               )}
-            </span>
+              {status === 'delivered' && (
+                <CheckCheck className="w-4 h-4 text-muted-foreground" />
+              )}
+              {status === 'sent' && (
+                <Check className="w-4 h-4 text-muted-foreground" />
+              )}
+            </>
           )}
         </div>
       </div>
+      {isOwn && (
+        <img
+          className="w-8 h-8 rounded-full"
+          src="https://api.dicebear.com/7.x/avataaars/svg?seed=me"
+          alt="My avatar"
+        />
+      )}
     </div>
   );
 };
