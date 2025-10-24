@@ -32,11 +32,23 @@ export default function FlowbiteUnifiedInbox() {
   const filteredConversations = useMemo(() => {
     if (!conversations.length) return [];
     return conversations.filter((conv) => {
+      // Search filter
       const matchesSearch = conv.klant_naam.toLowerCase().includes(searchQuery.toLowerCase()) ||
         conv.onderwerp?.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesSearch;
+      
+      // Status filter
+      const matchesStatus = filters.status === 'all' || conv.status === filters.status;
+      
+      // Channel filter
+      const matchesChannel = filters.channel === 'all' || 
+        conv.primary_channel.toLowerCase() === filters.channel.toLowerCase();
+      
+      // Priority filter
+      const matchesPriority = filters.priority === 'all' || conv.priority === filters.priority;
+      
+      return matchesSearch && matchesStatus && matchesChannel && matchesPriority;
     });
-  }, [conversations, searchQuery]);
+  }, [conversations, searchQuery, filters]);
 
   const selectedConversation = conversations.find((c) => c.id === selectedConversationId);
   
@@ -124,6 +136,9 @@ export default function FlowbiteUnifiedInbox() {
                     isActive={conversation.id === selectedConversationId}
                     onClick={() => setSelectedConversationId(conversation.id)}
                     avatarUrl={`https://api.dicebear.com/7.x/avataaars/svg?seed=${conversation.klant_naam}`}
+                    priority={conversation.priority}
+                    assignedTo={conversation.toegewezen_aan}
+                    tags={conversation.tags}
                   />
                 </Link>
               );
@@ -241,6 +256,14 @@ export default function FlowbiteUnifiedInbox() {
           </div>
         </div>
       </div>
+
+      {/* Filter Dialog */}
+      <InboxFilterDialog
+        open={filterDialogOpen}
+        onOpenChange={setFilterDialogOpen}
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
     </div>
   );
 }

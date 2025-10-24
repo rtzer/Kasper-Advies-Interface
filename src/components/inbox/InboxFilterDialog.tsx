@@ -83,6 +83,7 @@ export function InboxFilterDialog({ open, onOpenChange, filters, onFiltersChange
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Alle prioriteiten</SelectItem>
+                <SelectItem value="urgent">Urgent</SelectItem>
                 <SelectItem value="high">Hoog</SelectItem>
                 <SelectItem value="normal">Normaal</SelectItem>
                 <SelectItem value="low">Laag</SelectItem>

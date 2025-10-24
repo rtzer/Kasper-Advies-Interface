@@ -1,6 +1,7 @@
 import { ChannelIcon } from "./ChannelIcon";
 import { Tag, User, Flag } from "lucide-react";
 import { useState } from "react";
+import { QuickActionsMenu } from "./QuickActionsMenu";
 
 type ChannelType = "whatsapp" | "email" | "phone" | "video" | "facebook" | "instagram" | "linkedin" | "sms";
 
@@ -14,12 +15,13 @@ interface FlowbiteConversationItemProps {
   isActive: boolean;
   avatarUrl?: string;
   onClick: () => void;
-  priority?: 'laag' | 'normaal' | 'hoog' | 'urgent';
+  priority?: 'urgent' | 'high' | 'normal' | 'low';
   assignedTo?: string;
   tags?: string[];
 }
 
 export const FlowbiteConversationItem = ({
+  id,
   name,
   lastMessage,
   timestamp,
@@ -28,7 +30,7 @@ export const FlowbiteConversationItem = ({
   isActive,
   avatarUrl,
   onClick,
-  priority = 'normaal',
+  priority = 'normal',
   assignedTo,
   tags = [],
 }: FlowbiteConversationItemProps) => {
@@ -37,9 +39,9 @@ export const FlowbiteConversationItem = ({
   const getPriorityColor = () => {
     switch (priority) {
       case 'urgent': return 'text-red-600 dark:text-red-400';
-      case 'hoog': return 'text-orange-600 dark:text-orange-400';
-      case 'normaal': return 'text-blue-600 dark:text-blue-400';
-      case 'laag': return 'text-gray-600 dark:text-gray-400';
+      case 'high': return 'text-orange-600 dark:text-orange-400';
+      case 'normal': return 'text-blue-600 dark:text-blue-400';
+      case 'low': return 'text-gray-600 dark:text-gray-400';
       default: return 'text-gray-600 dark:text-gray-400';
     }
   };
@@ -77,7 +79,7 @@ export const FlowbiteConversationItem = ({
               }`}>
                 {name}
               </p>
-              {priority !== 'normaal' && (
+              {priority !== 'normal' && (
                 <Flag className={`h-3 w-3 flex-shrink-0 ${getPriorityColor()}`} />
               )}
             </div>
@@ -120,37 +122,14 @@ export const FlowbiteConversationItem = ({
 
       {/* Quick Actions */}
       {showActions && (
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-1 z-10">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // Handle assign action
-            }}
-            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-            title="Toewijzen"
-          >
-            <User className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // Handle tag action
-            }}
-            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-            title="Tag toevoegen"
-          >
-            <Tag className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // Handle priority action
-            }}
-            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-            title="Prioriteit aanpassen"
-          >
-            <Flag className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-          </button>
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 z-10" onClick={(e) => e.stopPropagation()}>
+          <QuickActionsMenu
+            conversationId={id}
+            conversationName={name}
+            currentAssignee={assignedTo}
+            currentTags={tags}
+            currentPriority={priority}
+          />
         </div>
       )}
     </div>

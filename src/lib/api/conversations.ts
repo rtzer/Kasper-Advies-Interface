@@ -137,3 +137,75 @@ export function useUpdateConversation() {
     },
   });
 }
+
+export function useAssignConversation() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ 
+      conversationId, 
+      assignedTo 
+    }: { 
+      conversationId: string; 
+      assignedTo: string;
+    }) => {
+      await delay(300);
+      const conversation = mockConversations.find(c => c.id === conversationId);
+      if (conversation) {
+        conversation.toegewezen_aan = assignedTo;
+      }
+      return conversation;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+  });
+}
+
+export function useUpdateConversationTags() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ 
+      conversationId, 
+      tags 
+    }: { 
+      conversationId: string; 
+      tags: string[];
+    }) => {
+      await delay(300);
+      const conversation = mockConversations.find(c => c.id === conversationId);
+      if (conversation) {
+        conversation.tags = tags;
+      }
+      return conversation;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+  });
+}
+
+export function useUpdateConversationPriority() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ 
+      conversationId, 
+      priority 
+    }: { 
+      conversationId: string; 
+      priority: 'urgent' | 'high' | 'normal' | 'low';
+    }) => {
+      await delay(300);
+      const conversation = mockConversations.find(c => c.id === conversationId);
+      if (conversation) {
+        conversation.priority = priority;
+      }
+      return conversation;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+  });
+}
