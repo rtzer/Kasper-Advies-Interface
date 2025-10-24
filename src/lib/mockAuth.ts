@@ -3,7 +3,7 @@ interface User {
   id: string;
   email: string;
   full_name: string;
-  role: 'admin' | 'accountant' | 'assistant';
+  role: 'admin' | 'accountant' | 'assistant' | 'client';
 }
 
 // Mock users database (for development only)
@@ -33,6 +33,15 @@ const MOCK_USERS: Record<string, { password: string; user: User }> = {
       email: 'linda@kaspersadvies.nl',
       full_name: 'Linda Prins',
       role: 'assistant',
+    },
+  },
+  'klant@voorbeeld.nl': {
+    password: 'demo123',
+    user: {
+      id: '4',
+      email: 'klant@voorbeeld.nl',
+      full_name: 'Hans Mulder',
+      role: 'client',
     },
   },
 };

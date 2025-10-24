@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { Mail, Lock, AlertCircle, Loader } from 'lucide-react';
+import { Mail, Lock, AlertCircle, Loader, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/contexts/AuthContext';
 
-export default function LoginPage() {
-  const { t } = useTranslation(['common']);
+export default function ClientLoginPage() {
   const navigate = useNavigate();
   const { user, login } = useAuth();
 
@@ -19,7 +17,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      navigate('/'); // Redirect to unified inbox
+      navigate('/client-portal'); // Redirect to client portal
     }
   }, [user, navigate]);
 
@@ -38,29 +36,27 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-ka-gray-50 to-ka-gray-100 dark:from-gray-900 dark:to-gray-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-ka-navy/5 to-ka-green/5 p-4">
       <div className="w-full max-w-md">
         {/* Logo & Branding */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-ka-green rounded-2xl mb-6 shadow-lg">
-            <span className="text-white text-4xl font-bold">K</span>
+            <User className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-ka-navy dark:text-white mb-2">Kaspers Advies</h1>
-          <p className="text-ka-gray-600 dark:text-gray-400">Medewerker Portal</p>
+          <p className="text-ka-gray-600 dark:text-gray-400">Klanten Portal</p>
         </div>
 
         {/* Login Form */}
         <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
-          <h2 className="text-xl font-semibold text-ka-navy dark:text-white mb-6">Inloggen</h2>
+          <h2 className="text-xl font-semibold text-ka-navy dark:text-white mb-6">Welkom terug</h2>
 
           {/* Demo credentials notice */}
           <Alert className="mb-6 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
             <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             <AlertDescription className="text-sm text-blue-800 dark:text-blue-200">
-              <strong>Demo accounts:</strong><br />
-              harm-jan@kaspersadvies.nl / demo123<br />
-              jan@kaspersadvies.nl / demo123<br />
-              linda@kaspersadvies.nl / demo123
+              <strong>Demo klant account:</strong><br />
+              klant@voorbeeld.nl / demo123
             </AlertDescription>
           </Alert>
 
@@ -85,7 +81,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jouw@email.nl"
+                  placeholder="uw@email.nl"
                   className="pl-10"
                   required
                   disabled={loading}
@@ -118,7 +114,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 className="text-sm text-ka-green hover:text-ka-green/80 dark:text-ka-green dark:hover:text-ka-green/80 transition-colors"
-                onClick={() => alert('Wachtwoord reset via Baserow na migratie')}
+                onClick={() => alert('Neem contact op met Kaspers Advies voor een wachtwoord reset')}
               >
                 Wachtwoord vergeten?
               </button>
@@ -140,22 +136,33 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
+
+          {/* Info box */}
+          <div className="mt-6 p-4 bg-ka-gray-50 dark:bg-gray-900 rounded-lg">
+            <p className="text-sm text-ka-gray-600 dark:text-gray-400 text-center">
+              Via dit portaal kunt u:
+            </p>
+            <ul className="mt-2 space-y-1 text-sm text-ka-gray-600 dark:text-gray-400">
+              <li>✓ Uw projecten bekijken</li>
+              <li>✓ Documenten uploaden</li>
+              <li>✓ Status updates ontvangen</li>
+            </ul>
+          </div>
         </div>
 
         {/* Footer */}
         <div className="mt-8 text-center space-y-4">
           <p className="text-sm text-ka-gray-600 dark:text-gray-400">
-            Bent u een klant?{' '}
+            Bent u een medewerker?{' '}
             <button
-              onClick={() => navigate('/client-login')}
+              onClick={() => navigate('/login')}
               className="text-ka-green hover:text-ka-green/80 font-medium"
             >
               Klik hier om in te loggen
             </button>
           </p>
           <p className="text-sm text-ka-gray-500 dark:text-gray-400">
-            <strong>Development Modus</strong><br />
-            Mock authenticatie - wordt vervangen door Baserow
+            Nog geen account? Neem contact op met Kaspers Advies
           </p>
         </div>
       </div>

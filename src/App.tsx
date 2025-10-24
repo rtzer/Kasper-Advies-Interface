@@ -12,6 +12,7 @@ import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
+import ClientLoginPage from "./pages/ClientLoginPage";
 import FlowbiteIndex from "./pages/FlowbiteIndex";
 import InboxPage from "./pages/InboxPage";
 import ClientsPage from "./pages/ClientsPage";
@@ -75,6 +76,7 @@ const App = () => {
             <Routes>
               {/* Public routes */}
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/client-login" element={<ClientLoginPage />} />
               <Route path="/kaspers-advies" element={<HomePage />} />
               <Route path="/diensten-mkb" element={<DienstenMKB />} />
               <Route path="/diensten-zzp" element={<DienstenZZP />} />
