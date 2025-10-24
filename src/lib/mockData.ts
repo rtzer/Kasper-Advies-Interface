@@ -218,6 +218,11 @@ export const mockKlanten: Klant[] = [
     tags: ['DGA', 'Particulier'],
     voorkeur_kanaal: 'Telefoon',
     taal_voorkeur: 'nl',
+    // Factuuradres (zelfde als woonadres in dit geval)
+    factuur_adres: 'Stationsstraat 12',
+    factuur_postcode: '9501 AB',
+    factuur_plaats: 'Stadskanaal',
+    factuur_land: 'Nederland',
   },
   // Installatiebedrijf Mulder BV - Zakelijk (bedrijf van Hans Mulder)
   {
@@ -249,6 +254,17 @@ export const mockKlanten: Klant[] = [
     tags: ['MKB', 'Installatie', 'Groei'],
     voorkeur_kanaal: 'E-mail',
     taal_voorkeur: 'nl',
+    // Externe accountant
+    externe_accountant: 'Petra de Vries RA',
+    accountant_email: 'p.devries@bakkeraccount.nl',
+    accountant_telefoonnummer: '+31-50-1234567',
+    accountant_kantoor: 'Bakker Accountants & Adviseurs',
+    samenwerking_sinds: '2021-03-15',
+    // Bankgegevens
+    iban: 'NL45 RABO 0123 4567 89',
+    bic: 'RABONL2U',
+    bank_naam: 'Rabobank',
+    betalingstermijn: 30,
   },
   // Lisa de Vries - Particulier (privé klant van onderneemster)
   {
@@ -331,6 +347,11 @@ export const mockKlanten: Klant[] = [
     tags: ['Particulier', 'Gezin', 'Toeslagen'],
     voorkeur_kanaal: 'E-mail',
     taal_voorkeur: 'nl',
+    // Partner relatie (gezamenlijk)
+    is_gezamenlijk: true,
+    // Bankgegevens
+    iban: 'NL12 RABO 0123 4567 89',
+    bank_naam: 'Rabobank',
   },
   // Fysiotherapie Vitaal VOF - Zakelijk (vennootschap)
   {
@@ -445,6 +466,10 @@ export const mockKlanten: Klant[] = [
     tags: ['MKB', 'Retail', 'Digitalisering'],
     voorkeur_kanaal: 'WhatsApp',
     taal_voorkeur: 'nl',
+    // Bankgegevens
+    iban: 'NL78 RABO 0234 5678 90',
+    bank_naam: 'Rabobank',
+    betalingstermijn: 14,
   },
   // Jan van Dijk - Particulier (eigenaar slagerij)
   {

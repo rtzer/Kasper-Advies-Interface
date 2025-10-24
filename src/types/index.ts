@@ -223,6 +223,18 @@ export interface Klant {
   gerelateerde_klanten: string[];        // IDs
   relatie_type?: string;
   
+  // Partner (alleen voor Particulier)
+  partner_id?: string;                   // Link naar partner klant
+  partner_naam?: string;                 // Naam voor display
+  is_gezamenlijk?: boolean;              // Gezamenlijke aangifte?
+  
+  // Externe accountant (voor BV klanten)
+  externe_accountant?: string;           // Naam accountant
+  accountant_email?: string;
+  accountant_telefoonnummer?: string;
+  accountant_kantoor?: string;           // Naam accountantskantoor
+  samenwerking_sinds?: string;           // Sinds wanneer samenwerking
+  
   // Groei & Ontwikkeling (voor MKB/ZZP)
   jaren_actief_als_ondernemer?: number;
   groei_fase?: 'Starter' | 'Groei' | 'Schaal-op' | 'Professionalisering' | 'Digitalisering' | 'Stabiel' | 'Exit' | 'N.V.T.';

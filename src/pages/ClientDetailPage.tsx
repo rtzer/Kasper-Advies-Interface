@@ -9,13 +9,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { useKlant } from '@/lib/api/klanten';
+import { useKlant, useKlanten } from '@/lib/api/klanten';
 import { useInteractiesByKlant } from '@/lib/api/interacties';
 import ClientInteractionsTimeline from '@/components/clients/ClientInteractionsTimeline';
 import ClientAssignments from '@/components/clients/ClientAssignments';
 import ClientTasks from '@/components/clients/ClientTasks';
 import ClientContactPersons from '@/components/clients/ClientContactPersons';
 import EditClientDialog from '@/components/clients/EditClientDialog';
+import RelatedClientsSection from '@/components/clients/RelatedClientsSection';
+import PartnerSection from '@/components/clients/PartnerSection';
+import ExternalAccountantCard from '@/components/clients/ExternalAccountantCard';
+import FinancialDetailsSection from '@/components/clients/FinancialDetailsSection';
+import BusinessDetailsSection from '@/components/clients/BusinessDetailsSection';
+import InvoiceAddressSection from '@/components/clients/InvoiceAddressSection';
 import { formatDate } from '@/lib/utils/dateHelpers';
 import { useUserStore } from '@/store/userStore';
 import { toast } from 'sonner';
@@ -26,6 +32,17 @@ export default function ClientDetailPage() {
   const { currentUser } = useUserStore();
   const { data: klant, isLoading } = useKlant(id!);
   const { data: interacties } = useInteractiesByKlant(id!);
+  const { data: allKlantenData } = useKlanten();
+  
+  // Get related clients
+  const relatedClients = klant?.gerelateerde_klanten
+    ? allKlantenData?.results.filter(k => klant.gerelateerde_klanten.includes(k.id)) || []
+    : [];
+  
+  // Get partner
+  const partner = klant?.partner_id 
+    ? allKlantenData?.results.find(k => k.id === klant.partner_id)
+    : undefined;
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
   
@@ -373,6 +390,27 @@ export default function ClientDetailPage() {
               )}
             </CardContent>
           </Card>
+        </div>
+
+        {/* NEW SECTIONS */}
+        <div className="space-y-6 mb-6">
+          {/* Gerelateerde klanten */}
+          <RelatedClientsSection klant={klant} relatedClients={relatedClients} />
+          
+          {/* Partner (alleen voor Particulier) */}
+          <PartnerSection klant={klant} partner={partner} />
+          
+          {/* Externe accountant (alleen voor MKB) */}
+          <ExternalAccountantCard klant={klant} />
+          
+          {/* Zakelijke details (alleen voor MKB/ZZP) */}
+          <BusinessDetailsSection klant={klant} />
+          
+          {/* Financiële gegevens */}
+          <FinancialDetailsSection klant={klant} />
+          
+          {/* Factuuradres (als afwijkend) */}
+          <InvoiceAddressSection klant={klant} />
         </div>
 
         {/* Bedrijfsgegevens - Collapsible (alleen voor ZZP/MKB) */}
