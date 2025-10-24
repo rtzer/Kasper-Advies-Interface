@@ -14,10 +14,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { nl, enUS } from "date-fns/locale";
 import { normalizeChannelForIcon } from "@/lib/utils/channelHelpers";
+import { useDeviceChecks } from "@/hooks/useBreakpoint";
+import { responsiveHeading, responsiveBody } from "@/lib/utils/typography";
 
 export default function FlowbiteUnifiedInbox() {
   const { t, i18n } = useTranslation('common');
   const currentLocale = i18n.language === 'en' ? enUS : nl;
+  const { isMobile, isTablet } = useDeviceChecks();
   const { data: conversationsData, isLoading } = useConversations();
   const conversations = conversationsData?.results || [];
   
@@ -70,20 +73,22 @@ export default function FlowbiteUnifiedInbox() {
 
   return (
     <div className="flex h-[calc(100vh-64px)]">
-      {/* Conversation List */}
-      <div className="w-96 bg-card border-r border-border flex flex-col">
-        {/* Header */}
-        <div className="p-4 border-b border-border">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <h2 className="text-lg font-semibold text-foreground">
+      {/* Conversation List - Always visible, responsive width */}
+      <div className={`${
+        isMobile ? 'w-full' : isTablet ? 'w-80' : 'w-96'
+      } bg-card border-r border-border flex flex-col`}>
+        {/* Header - Optimized for 360px */}
+        <div className="px-3 xs:px-4 py-3 xs:py-4 border-b border-border">
+          <div className="flex items-center justify-between mb-2 xs:mb-3">
+            <div className="flex-1 min-w-0">
+              <h2 className={`${responsiveHeading.h4} truncate`}>
                 {t('inbox.conversations')}
               </h2>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className={`${responsiveBody.tiny} mt-0.5 truncate`}>
                 {t('inbox.allConversations')}
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 xs:gap-2 flex-shrink-0">
               <FilterPopover
                 open={filterDialogOpen}
                 onOpenChange={setFilterDialogOpen}
@@ -94,32 +99,33 @@ export default function FlowbiteUnifiedInbox() {
                 size="icon"
                 title={t('inbox.newConversation')}
                 onClick={() => setCreateDialogOpen(true)}
+                className="h-9 w-9 xs:h-10 xs:w-10"
               >
                 <Plus className="w-4 h-4" />
               </Button>
             </div>
           </div>
 
-          {/* Search - Inbox Specific */}
+          {/* Search - Compact on mobile */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-2.5 xs:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 xs:w-4 xs:h-4 text-muted-foreground" />
             <Input
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-[hsl(var(--conversation-hover))] border-primary/20 focus:border-primary focus:ring-primary/30"
-              placeholder={t('inbox.searchPlaceholder')}
+              className="pl-8 xs:pl-10 h-9 xs:h-10 text-xs xs:text-sm bg-[hsl(var(--conversation-hover))] border-primary/20 focus:border-primary focus:ring-primary/30"
+              placeholder={isMobile ? "Zoeken..." : t('inbox.searchPlaceholder')}
               title={t('inbox.searchTitle')}
             />
           </div>
         </div>
 
-        {/* Conversations */}
+        {/* Conversations - More compact on mobile */}
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
-            <div className="p-4 space-y-3">
+            <div className="p-2 xs:p-3 sm:p-4 space-y-2 xs:space-y-3">
               {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-20 w-full" />
+                <Skeleton key={i} className="h-16 xs:h-20 w-full" />
               ))}
             </div>
           ) : filteredConversations.length > 0 ? (
@@ -148,12 +154,12 @@ export default function FlowbiteUnifiedInbox() {
               );
             })
           ) : (
-            <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-              <Search className="w-12 h-12 text-muted-foreground mb-3" />
-              <h3 className="mb-1 text-sm font-medium text-foreground">
+            <div className="flex flex-col items-center justify-center h-full px-4 py-8 text-center">
+              <Search className="w-10 h-10 xs:w-12 xs:h-12 text-muted-foreground mb-2 xs:mb-3" />
+              <h3 className={`${responsiveBody.base} font-medium text-foreground mb-1`}>
                 {t('inbox.noConversations')}
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className={responsiveBody.small}>
                 {t('inbox.tryDifferentSearch')}
               </p>
             </div>
@@ -161,44 +167,47 @@ export default function FlowbiteUnifiedInbox() {
         </div>
       </div>
 
-      {/* Chat View */}
-      <div className="flex-1 flex flex-col">
-        {selectedConversation && (
-          <FlowbiteChatView
-            conversationName={selectedConversation.klant_naam}
-            conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation.klant_naam}`}
-            channel={normalizeChannelForIcon(selectedConversation.primary_channel)}
-            messages={transformedMessages}
-            isOnline={selectedConversation.status === 'open'}
-            clientId={selectedConversation.klant_id}
-          />
-        )}
-      </div>
-
-      {/* Customer Info Panel */}
-      <div className="w-80 bg-card border-l border-border overflow-y-auto">
-        <div className="p-6">
-          {/* Customer Header */}
-          <div className="text-center mb-6">
-            <img
-              className="w-24 h-24 rounded-full mx-auto mb-4"
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation?.klant_naam}`}
-              alt={selectedConversation?.klant_naam}
+      {/* Chat View - Hidden on mobile (use conversation detail page instead) */}
+      {!isMobile && (
+        <div className="flex-1 flex flex-col">
+          {selectedConversation && (
+            <FlowbiteChatView
+              conversationName={selectedConversation.klant_naam}
+              conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation.klant_naam}`}
+              channel={normalizeChannelForIcon(selectedConversation.primary_channel)}
+              messages={transformedMessages}
+              isOnline={selectedConversation.status === 'open'}
+              clientId={selectedConversation.klant_id}
             />
-            <h3 className="text-lg font-semibold text-foreground mb-2">
-              {selectedConversation?.klant_naam}
-            </h3>
-            <Badge variant="secondary" className={
-              selectedConversation?.status === 'open' 
-                ? "bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]"
-                : "bg-[hsl(var(--status-away)/0.1)] text-[hsl(var(--status-away))] border-[hsl(var(--status-away)/0.2)]"
-            }>
-              <span className={`w-2 h-2 mr-1.5 rounded-full ${
-                selectedConversation?.status === 'open' ? 'bg-[hsl(var(--status-online))]' : 'bg-[hsl(var(--status-away))]'
-              }`}></span>
-              {selectedConversation?.status === 'open' ? 'Actieve conversatie' : 'Gesloten'}
-            </Badge>
-          </div>
+          )}
+        </div>
+      )}
+
+      {/* Customer Info Panel - Only on desktop */}
+      {!isMobile && !isTablet && (
+        <div className="w-80 bg-card border-l border-border overflow-y-auto">
+          <div className="p-4 sm:p-6">
+            {/* Customer Header */}
+            <div className="text-center mb-4 sm:mb-6">
+              <img
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto mb-3 sm:mb-4"
+                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation?.klant_naam}`}
+                alt={selectedConversation?.klant_naam}
+              />
+              <h3 className={`${responsiveHeading.h4} mb-2`}>
+                {selectedConversation?.klant_naam}
+              </h3>
+              <Badge variant="secondary" className={`text-xs ${
+                selectedConversation?.status === 'open' 
+                  ? "bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]"
+                  : "bg-[hsl(var(--status-away)/0.1)] text-[hsl(var(--status-away))] border-[hsl(var(--status-away)/0.2)]"
+              }`}>
+                <span className={`w-2 h-2 mr-1.5 rounded-full ${
+                  selectedConversation?.status === 'open' ? 'bg-[hsl(var(--status-online))]' : 'bg-[hsl(var(--status-away))]'
+                }`}></span>
+                {selectedConversation?.status === 'open' ? 'Actieve conversatie' : 'Gesloten'}
+              </Badge>
+            </div>
 
           {/* Contact Info */}
           <div className="mb-6">
@@ -247,19 +256,20 @@ export default function FlowbiteUnifiedInbox() {
 
           {/* Tags */}
           <div>
-            <h4 className="text-sm font-semibold text-foreground mb-3">Tags</h4>
+            <h4 className={`${responsiveBody.base} font-semibold text-foreground mb-3`}>Tags</h4>
             <div className="flex flex-wrap gap-2">
               {selectedConversation?.tags && selectedConversation.tags.length > 0 ? (
                 selectedConversation.tags.map((tag, idx) => (
-                  <Badge key={idx} variant="secondary">{tag}</Badge>
+                  <Badge key={idx} variant="secondary" className="text-xs">{tag}</Badge>
                 ))
               ) : (
-                <p className="text-sm text-muted-foreground">Geen tags</p>
+                <p className={`${responsiveBody.small} text-muted-foreground`}>Geen tags</p>
               )}
             </div>
           </div>
         </div>
       </div>
+      )}
 
       {/* Create Conversation Dialog */}
       <CreateConversationDialog
