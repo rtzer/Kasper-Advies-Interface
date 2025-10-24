@@ -113,8 +113,9 @@ export default function AssignmentsPage() {
                       <Badge className={
                         opdracht.status === 'Afgerond' ? 'bg-ka-green' :
                         opdracht.status === 'In behandeling' ? 'bg-ka-warning' :
-                        opdracht.status === 'Gereed' ? 'bg-ka-green' :
+                        opdracht.status === 'Gereed voor controle' ? 'bg-orange-500' :
                         opdracht.status === 'Wacht op klant' ? 'bg-ka-gray-500' :
+                        opdracht.status === 'Ingediend' ? 'bg-ka-green' :
                         'bg-ka-navy'
                       }>
                         {opdracht.status}

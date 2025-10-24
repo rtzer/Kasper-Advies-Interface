@@ -253,7 +253,7 @@ export interface Klant {
 }
 
 // ============================================
-// OPDRACHT (Assignment)
+// OPDRACHT (Assignment) - Parent of Tasks
 // ============================================
 export interface Opdracht {
   // Identificatie
@@ -274,7 +274,7 @@ export interface Opdracht {
   bijzonderheden?: string;               // Extra opmerkingen
   
   // Status workflow
-  status: 'Intake' | 'In behandeling' | 'Wacht op klant' | 'Gereed' | 'Afgerond' | 'Ingediend';
+  status: 'Intake' | 'In behandeling' | 'Wacht op klant' | 'Gereed voor controle' | 'Afgerond' | 'Ingediend';
   priority: 'Urgent' | 'Hoog' | 'Normaal' | 'Laag';
   
   // Tijdlijn
@@ -283,9 +283,12 @@ export interface Opdracht {
   afgerond_datum?: string;
   ingediend_datum?: string;
   
-  // Verantwoordelijkheid
-  verantwoordelijk: string;
-  team_members?: string[];
+  // Verantwoordelijkheid & Goedkeuring
+  verantwoordelijk: string;              // Hoofdverantwoordelijke (vaak Harm-Jan)
+  team_members?: string[];               // Team dat eraan werkt
+  goedkeurder?: string;                  // Wie moet aftekenen (vaak Harm-Jan)
+  goedgekeurd_door?: string;             // Wie heeft afgetekend
+  goedgekeurd_op?: string;               // Wanneer afgetekend
   
   // Uren & Planning
   geschat_aantal_uren: number;
@@ -312,6 +315,8 @@ export interface Opdracht {
   laatste_communicatie?: string;
   aantal_taken?: number;
   aantal_openstaande_taken?: number;
+  aantal_taken_wacht_goedkeuring?: number; // Taken die wachten op goedkeuring
+  voortgang_percentage?: number;         // Percentage taken afgerond
 }
 
 export type OpdrachtType = 
@@ -333,7 +338,7 @@ export type OpdrachtType =
   | 'Financieel advies';
 
 // ============================================
-// TAAK (Task)
+// TAAK (Task) - With Workflow Management
 // ============================================
 export interface Taak {
   // Identificatie
@@ -342,21 +347,29 @@ export interface Taak {
   taak_omschrijving: string;
   notities?: string;
   
-  // Verantwoordelijkheid
-  toegewezen_aan: string;
-  created_by: string;
+  // Workflow - Verantwoordelijkheden
+  created_by: string;                    // Wie heeft de taak aangemaakt
+  toegewezen_aan: string;                // Wie moet de taak uitvoeren
+  started_by?: string;                   // Wie is daadwerkelijk gestart
+  approved_by?: string;                  // Wie heeft afgetekend (vaak Harm-Jan)
+  
+  // Goedkeuringsproces
+  needs_approval: boolean;               // Moet deze taak goedgekeurd worden?
+  approval_status?: 'pending' | 'approved' | 'rejected';
+  approval_notes?: string;               // Feedback bij afkeuring
   
   // Relaties (EXPANDED)
   klant_id: string;
   klant_naam: string;
   gerelateerde_interactie_id?: string;
   gerelateerde_interactie?: string;      // Onderwerp/naam voor display (CSV compatibility)
-  gerelateerde_opdracht_id?: string;
-  project_id?: string;                   // NEW: Link to project
-  parent_taak_id?: string;               // NEW: For subtasks
+  gerelateerde_opdracht_id?: string;     // Link to parent Opdracht
+  opdracht_naam?: string;                // Opdracht naam voor display
+  project_id?: string;                   // Link to project
+  parent_taak_id?: string;               // For subtasks
   
   // Status & Priority
-  status: 'Te doen' | 'In uitvoering' | 'Geblokkeerd' | 'Afgerond';
+  status: 'Te doen' | 'In uitvoering' | 'Gereed voor controle' | 'Afgerond' | 'Geblokkeerd';
   priority: 'Urgent' | 'Hoog' | 'Normaal' | 'Laag';
   blocked_reason?: string;
   
@@ -365,6 +378,8 @@ export interface Taak {
   deadline: string;
   started_at?: string;
   completed_at?: string;
+  submitted_for_approval_at?: string;    // Wanneer ingediend voor goedkeuring
+  approved_at?: string;                  // Wanneer goedgekeurd
   
   // Checklist
   checklist_items?: ChecklistItem[];
@@ -377,6 +392,7 @@ export interface Taak {
   is_overdue?: boolean;
   dagen_open?: number;
   klant_status?: string;
+  wacht_op_goedkeuring?: boolean;        // Handig voor filters
 }
 
 export interface ChecklistItem {
