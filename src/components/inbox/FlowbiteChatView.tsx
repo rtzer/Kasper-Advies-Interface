@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { FlowbiteMessageBubble } from "./FlowbiteMessageBubble";
-import { Send, Paperclip, MoreVertical, Phone, Video, Smile, Mic } from "lucide-react";
+import { Send, Paperclip, MoreVertical, Phone, Video, Smile, Mic, ExternalLink } from "lucide-react";
 import { ChannelIcon } from "./ChannelIcon";
 
 type ChannelType = "whatsapp" | "email" | "phone" | "video" | "facebook" | "instagram" | "linkedin" | "sms";
@@ -21,6 +22,7 @@ interface FlowbiteChatViewProps {
   channel: ChannelType;
   messages: Message[];
   isOnline?: boolean;
+  clientId?: string;
 }
 
 export const FlowbiteChatView = ({ 
@@ -28,7 +30,8 @@ export const FlowbiteChatView = ({
   conversationAvatar, 
   channel, 
   messages,
-  isOnline = false 
+  isOnline = false,
+  clientId
 }: FlowbiteChatViewProps) => {
   const [messageText, setMessageText] = useState("");
 
@@ -55,9 +58,21 @@ export const FlowbiteChatView = ({
             )}
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-              {conversationName}
-            </h3>
+            <div className="flex items-center gap-2">
+              {clientId ? (
+                <Link 
+                  to={`/clients/${clientId}`}
+                  className="text-sm font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 group"
+                >
+                  {conversationName}
+                  <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
+              ) : (
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {conversationName}
+                </h3>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               <ChannelIcon channel={channel} size="sm" />
               <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">

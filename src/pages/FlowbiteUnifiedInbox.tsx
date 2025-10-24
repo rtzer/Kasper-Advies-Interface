@@ -15,6 +15,7 @@ const conversations = [
     channel: "whatsapp" as ChannelType,
     unreadCount: 2,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rosemary",
+    clientId: "1",
   },
   {
     id: "2",
@@ -24,6 +25,7 @@ const conversations = [
     channel: "email" as ChannelType,
     unreadCount: 1,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ronald",
+    clientId: "2",
   },
   {
     id: "3",
@@ -33,6 +35,7 @@ const conversations = [
     channel: "whatsapp" as ChannelType,
     unreadCount: 0,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Cameron",
+    clientId: "3",
   },
   {
     id: "4",
@@ -42,6 +45,7 @@ const conversations = [
     channel: "email" as ChannelType,
     unreadCount: 0,
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Esther",
+    clientId: "4",
   },
 ];
 
@@ -142,6 +146,7 @@ export default function FlowbiteUnifiedInbox() {
             channel={selectedConversation.channel}
             messages={messages}
             isOnline={selectedConversation.id === "1"}
+            clientId={selectedConversation.clientId}
           />
         )}
       </div>
