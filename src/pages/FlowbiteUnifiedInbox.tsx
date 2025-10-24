@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { InboxFilterDialog } from "@/components/inbox/InboxFilterDialog";
 import { CreateConversationDialog } from "@/components/inbox/CreateConversationDialog";
 import { FlowbiteConversationItem } from "@/components/inbox/FlowbiteConversationItem";
@@ -11,10 +12,12 @@ import { Badge } from "@/components/ui/badge";
 import { useConversations, useConversationMessages } from "@/lib/api/conversations";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
-import { nl } from "date-fns/locale";
+import { nl, enUS } from "date-fns/locale";
 import { normalizeChannelForIcon } from "@/lib/utils/channelHelpers";
 
 export default function FlowbiteUnifiedInbox() {
+  const { t, i18n } = useTranslation('common');
+  const currentLocale = i18n.language === 'en' ? enUS : nl;
   const { data: conversationsData, isLoading } = useConversations();
   const conversations = conversationsData?.results || [];
   
@@ -74,10 +77,10 @@ export default function FlowbiteUnifiedInbox() {
           <div className="flex items-center justify-between mb-3">
             <div>
               <h2 className="text-lg font-semibold text-foreground">
-                Gesprekken
+                {t('inbox.conversations')}
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Alle actieve conversaties met klanten
+                {t('inbox.allConversations')}
               </p>
             </div>
             <div className="flex gap-2">
@@ -85,13 +88,13 @@ export default function FlowbiteUnifiedInbox() {
                 variant="outline" 
                 size="icon" 
                 onClick={() => setFilterDialogOpen(true)}
-                title="Filter gesprekken op status, kanaal en prioriteit"
+                title={t('inbox.filter')}
               >
                 <Filter className="w-4 h-4" />
               </Button>
               <Button 
                 size="icon"
-                title="Start nieuwe conversatie"
+                title={t('inbox.newConversation')}
                 onClick={() => setCreateDialogOpen(true)}
               >
                 <Plus className="w-4 h-4" />
@@ -107,8 +110,8 @@ export default function FlowbiteUnifiedInbox() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 bg-[hsl(var(--conversation-hover))] border-primary/20 focus:border-primary focus:ring-primary/30"
-              placeholder="Filter actieve gesprekken..."
-              title="Filter gesprekken op naam of onderwerp"
+              placeholder={t('inbox.searchPlaceholder')}
+              title={t('inbox.searchTitle')}
             />
           </div>
         </div>
@@ -124,7 +127,7 @@ export default function FlowbiteUnifiedInbox() {
           ) : filteredConversations.length > 0 ? (
             filteredConversations.map((conversation) => {
               const lastMessageTime = conversation.last_message_at 
-                ? formatDistanceToNow(new Date(conversation.last_message_at), { addSuffix: true, locale: nl })
+                ? formatDistanceToNow(new Date(conversation.last_message_at), { addSuffix: true, locale: currentLocale })
                 : '';
               
               return (
@@ -132,7 +135,7 @@ export default function FlowbiteUnifiedInbox() {
                   <FlowbiteConversationItem
                     id={conversation.id}
                     name={conversation.klant_naam}
-                    lastMessage={conversation.onderwerp || 'Geen onderwerp'}
+                    lastMessage={conversation.onderwerp || t('inbox.noSubject')}
                     timestamp={lastMessageTime}
                     channel={normalizeChannelForIcon(conversation.primary_channel)}
                     unreadCount={conversation.is_unread ? 1 : 0}
@@ -150,10 +153,10 @@ export default function FlowbiteUnifiedInbox() {
             <div className="flex flex-col items-center justify-center h-full p-8 text-center">
               <Search className="w-12 h-12 text-muted-foreground mb-3" />
               <h3 className="mb-1 text-sm font-medium text-foreground">
-                Geen gesprekken gevonden
+                {t('inbox.noConversations')}
               </h3>
               <p className="text-sm text-muted-foreground">
-                Probeer een andere zoekterm
+                {t('inbox.tryDifferentSearch')}
               </p>
             </div>
           )}
