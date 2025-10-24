@@ -8,18 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import ContactPersoonModal from './ContactPersoonModal';
-import { ContactPersoon as ContactPersoonType } from '@/types';
-
-interface ContactPersoon {
-  id: string;
-  naam: string;
-  functie: string;
-  email: string;
-  telefoon: string;
-  mobiel?: string;
-  primair: boolean;
-  laatste_contact?: string;
-}
+import { ContactPersoon } from '@/types';
 
 // Mock data - dit zou uit de API moeten komen
 const mockContactPersonen: ContactPersoon[] = [
@@ -27,19 +16,26 @@ const mockContactPersonen: ContactPersoon[] = [
     id: '1',
     naam: 'Peter van Dam',
     functie: 'CFO',
-    email: 'p.vandam@example.com',
-    telefoon: '+31201234567',
-    mobiel: '+31612345678',
+    klant_id: '1',
+    bedrijfsnaam: 'Rosemary Braun',
     primair: true,
+    email: 'p.vandam@example.com',
+    telefoonnummer: '+31201234567',
+    mobiel: '+31612345678',
+    aantal_interacties: 35,
     laatste_contact: '2024-10-20',
   },
   {
     id: '2',
     naam: 'Sarah de Vries',
     functie: 'HR Manager',
-    email: 's.devries@example.com',
-    telefoon: '+31201234568',
+    klant_id: '1',
+    bedrijfsnaam: 'Rosemary Braun',
     primair: false,
+    email: 's.devries@example.com',
+    telefoonnummer: '+31201234568',
+    mobiel: '+31612345679',
+    aantal_interacties: 12,
     laatste_contact: '2024-09-15',
   },
 ];
@@ -163,12 +159,12 @@ export default function ClientContactPersons({ klantId }: { klantId: string }) {
               </a>
               
               <a
-                href={`tel:${contact.telefoon}`}
+                href={`tel:${contact.telefoonnummer}`}
                 className="flex items-center space-x-2 text-sm text-ka-gray-700 dark:text-gray-300 hover:text-ka-green transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
                 <Phone className="w-4 h-4" />
-                <span>{contact.telefoon}</span>
+                <span>{contact.telefoonnummer}</span>
               </a>
 
               {contact.laatste_contact && (
@@ -183,7 +179,7 @@ export default function ClientContactPersons({ klantId }: { klantId: string }) {
       </div>
 
       <ContactPersoonModal
-        contactPersoon={selectedContact as ContactPersoonType | null}
+        contactPersoon={selectedContact}
         open={!!selectedContact}
         onOpenChange={(open) => !open && setSelectedContact(null)}
       />
