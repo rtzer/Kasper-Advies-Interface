@@ -171,12 +171,33 @@ export interface Klant {
   email: string;
   telefoonnummer: string;
   mobiel?: string;
+  linkedin_url?: string;
+  website?: string;
   
-  // Adresgegevens
+  // Adresgegevens (primair)
   adres: string;
   postcode: string;
   plaats: string;
   land: string;                          // Default: "Nederland"
+  
+  // Alternatief postadres (voor facturen)
+  factuur_adres?: string;
+  factuur_postcode?: string;
+  factuur_plaats?: string;
+  factuur_land?: string;
+  
+  // Persoonlijke gegevens
+  geboortedatum?: string;                // "1985-03-15"
+  bsn?: string;                          // Burger Service Nummer (gevoelig!)
+  kvk_nummer?: string;                   // Voor ZZP/MKB
+  btw_nummer?: string;                   // Voor ondernemers
+  
+  // Financiële gegevens
+  iban?: string;                         // NL91 ABNA 0417 1643 00
+  bic?: string;                          // ABNANL2A
+  bank_naam?: string;                    // "ABN AMRO"
+  alternatief_iban?: string;             // Tweede rekening
+  betalingstermijn?: number;             // In dagen (bijv. 30)
   
   // Status
   status: 'Actief' | 'Inactief' | 'Prospect';
