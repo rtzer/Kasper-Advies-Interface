@@ -26,7 +26,7 @@ export default function ProjectsPage() {
         </div>
 
         <div className="flex items-center space-x-3">
-          <Link to="/projects/late-clients">
+          <Link to="/clients/late-payers">
             <Button variant="outline" size="sm">
               <AlertCircle className="w-4 h-4 mr-2 text-yellow-600" />
               Late Klanten

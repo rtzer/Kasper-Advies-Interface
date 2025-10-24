@@ -134,14 +134,15 @@ export default function TasksPage() {
                     {taskList.map((task, index) => (
                       <Draggable key={task.id} draggableId={task.id} index={index}>
                         {(provided, snapshot) => (
-                          <Card
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={`p-3 cursor-move transition-shadow ${
-                              snapshot.isDragging ? 'shadow-lg' : ''
-                            }`}
-                          >
+                          <Link to={`/tasks/${task.id}`}>
+                            <Card
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={`p-3 cursor-pointer transition-shadow hover:shadow-md ${
+                                snapshot.isDragging ? 'shadow-lg' : ''
+                              }`}
+                            >
                             <div className="space-y-2">
                               <h4 className="font-medium text-sm text-ka-navy dark:text-white">
                                 {task.taak_omschrijving}
@@ -180,7 +181,8 @@ export default function TasksPage() {
                                 </div>
                               )}
                             </div>
-                          </Card>
+                            </Card>
+                          </Link>
                         )}
                       </Draggable>
                     ))}

@@ -17,9 +17,11 @@ import ClientsPage from "./pages/ClientsPage";
 import ClientDetailPage from "./pages/ClientDetailPage";
 import MyClientsPage from "./pages/clients/MyClientsPage";
 import AssignmentsPage from "./pages/AssignmentsPage";
+import AssignmentDetailPage from "./pages/AssignmentDetailPage";
 import AwaitingApprovalPage from "./pages/opdrachten/AwaitingApprovalPage";
 import ByTypePage from "./pages/opdrachten/ByTypePage";
 import TasksPage from "./pages/TasksPage";
+import TaskDetailPage from "./pages/TaskDetailPage";
 import TeamTasksPage from "./pages/taken/TeamTasksPage";
 import ToReviewPage from "./pages/taken/ToReviewPage";
 import ProjectsPage from "./pages/ProjectsPage";
@@ -100,13 +102,13 @@ const App = () => {
               <Route path="/assignments/my" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
               <Route path="/assignments/pending" element={<ProtectedRoute><AppLayout><AwaitingApprovalPage /></AppLayout></ProtectedRoute>} />
               <Route path="/assignments/by-type" element={<ProtectedRoute><AppLayout><ByTypePage /></AppLayout></ProtectedRoute>} />
-              <Route path="/assignments/:id" element={<ProtectedRoute><AppLayout><ProjectDetailPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/assignments/:id" element={<ProtectedRoute><AppLayout><AssignmentDetailPage /></AppLayout></ProtectedRoute>} />
               
               {/* Tasks (Taken) routes */}
               <Route path="/tasks" element={<ProtectedRoute><AppLayout><TasksPage /></AppLayout></ProtectedRoute>} />
               <Route path="/tasks/team" element={<ProtectedRoute><AppLayout><TeamTasksPage /></AppLayout></ProtectedRoute>} />
               <Route path="/tasks/review" element={<ProtectedRoute><AppLayout><ToReviewPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/tasks/:id" element={<ProtectedRoute><AppLayout><ProjectDetailPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/tasks/:id" element={<ProtectedRoute><AppLayout><TaskDetailPage /></AppLayout></ProtectedRoute>} />
               
               {/* Other protected routes */}
               <Route path="/settings" element={<ProtectedRoute><AppLayout><FlowbiteSettings /></AppLayout></ProtectedRoute>} />

@@ -161,7 +161,12 @@ export default function ProjectsList({ filterStatus, filterCategory }: ProjectsL
                   </Link>
                 </td>
                 <td className="py-3 px-4">
-                  <span className="text-sm text-muted-foreground">{project.client_name}</span>
+                  <Link 
+                    to={`/clients/${project.client_id}`}
+                    className="text-sm text-muted-foreground hover:underline"
+                  >
+                    {project.client_name}
+                  </Link>
                 </td>
                 <td className="py-3 px-4">
                   <Badge variant="outline" className={getCategoryColor(project.category)}>

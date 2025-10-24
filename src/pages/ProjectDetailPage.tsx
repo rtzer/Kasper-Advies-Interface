@@ -194,7 +194,12 @@ export default function ProjectDetailPage() {
           <div className="bg-white rounded-lg shadow-sm p-4">
             <h3 className="font-semibold text-foreground mb-3">Klant</h3>
             <div className="space-y-2 text-sm">
-              <p className="font-medium text-foreground">{project.client_name}</p>
+              <Link 
+                to={`/clients/${project.client_id}`}
+                className="font-medium text-foreground hover:underline block"
+              >
+                {project.client_name}
+              </Link>
               <Button variant="outline" size="sm" className="w-full mt-3">
                 <Phone className="w-4 h-4 mr-2" />
                 Contact opnemen
