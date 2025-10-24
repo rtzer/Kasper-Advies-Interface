@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Send, Video } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Send, Video, Linkedin, Globe, Building2, Calendar, ShieldAlert, CreditCard, Banknote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -217,91 +217,278 @@ export default function ClientDetailPage() {
           </Card>
         </div>
         
-        {/* Contact Information Card */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Contactinformatie</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <Mail className="w-5 h-5 text-ka-gray-500 dark:text-gray-400" />
-                  <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400">E-mail</div>
-                    <a href={`mailto:${klant.email}`} className="text-sm text-ka-navy dark:text-white hover:underline">
-                      {klant.email}
-                    </a>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3">
-                  <Phone className="w-5 h-5 text-ka-gray-500 dark:text-gray-400" />
-                  <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400">Telefoon</div>
-                    <a href={`tel:${klant.telefoonnummer}`} className="text-sm text-ka-navy dark:text-white hover:underline">
-                      {klant.telefoonnummer}
-                    </a>
-                    {klant.mobiel && (
-                      <div className="text-xs text-ka-gray-500 dark:text-gray-400">
-                        Mobiel: {klant.mobiel}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3">
-                  <MapPin className="w-5 h-5 text-ka-gray-500 dark:text-gray-400" />
-                  <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400">Adres</div>
-                    <div className="text-sm text-ka-gray-900 dark:text-gray-100">
-                      {klant.adres}<br />
-                      {klant.postcode} {klant.plaats}<br />
-                      {klant.land}
-                    </div>
-                  </div>
+        {/* Contact Information Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Contactgegevens */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center">
+                <Mail className="w-5 h-5 mr-2 text-ka-green" />
+                Contactgegevens
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-start space-x-3">
+                <Mail className="w-5 h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5" />
+                <div className="flex-1">
+                  <div className="text-xs text-ka-gray-500 dark:text-gray-400">E-mail</div>
+                  <a href={`mailto:${klant.email}`} className="text-sm text-ka-navy dark:text-white hover:underline">
+                    {klant.email}
+                  </a>
                 </div>
               </div>
               
-              <div className="space-y-3">
-                <div>
-                  <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Accountmanager</div>
-                  <div className="text-sm font-medium text-ka-navy dark:text-white">
-                    {klant.accountmanager}
+              <div className="flex items-start space-x-3">
+                <Phone className="w-5 h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5" />
+                <div className="flex-1">
+                  <div className="text-xs text-ka-gray-500 dark:text-gray-400">Telefoon</div>
+                  <a href={`tel:${klant.telefoonnummer}`} className="text-sm text-ka-navy dark:text-white hover:underline">
+                    {klant.telefoonnummer}
+                  </a>
+                  {klant.mobiel && (
+                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
+                      Mobiel: <a href={`tel:${klant.mobiel}`} className="hover:underline">{klant.mobiel}</a>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {klant.website && (
+                <div className="flex items-start space-x-3">
+                  <Globe className="w-5 h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5" />
+                  <div className="flex-1">
+                    <div className="text-xs text-ka-gray-500 dark:text-gray-400">Website</div>
+                    <a href={klant.website} target="_blank" rel="noopener noreferrer" className="text-sm text-ka-navy dark:text-white hover:underline">
+                      {klant.website}
+                    </a>
                   </div>
                 </div>
-                
-                {klant.voorkeur_kanaal && (
+              )}
+
+              {klant.linkedin_url && (
+                <div className="flex items-start space-x-3">
+                  <Linkedin className="w-5 h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5" />
+                  <div className="flex-1">
+                    <div className="text-xs text-ka-gray-500 dark:text-gray-400">LinkedIn</div>
+                    <a href={klant.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-sm text-ka-navy dark:text-white hover:underline">
+                      {klant.linkedin_url}
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-4 border-t border-ka-gray-200 dark:border-gray-700">
+                <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Accountmanager</div>
+                <div className="text-sm font-medium text-ka-navy dark:text-white">
+                  {klant.accountmanager}
+                </div>
+              </div>
+              
+              {klant.voorkeur_kanaal && (
+                <div>
+                  <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Voorkeur communicatie</div>
+                  <Badge variant="secondary">{klant.voorkeur_kanaal}</Badge>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Adresgegevens */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center">
+                <MapPin className="w-5 h-5 mr-2 text-ka-green" />
+                Adresgegevens
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-2">Primair adres</div>
+                <div className="text-sm text-ka-gray-900 dark:text-gray-100">
+                  {klant.adres}<br />
+                  {klant.postcode} {klant.plaats}<br />
+                  {klant.land}
+                </div>
+              </div>
+
+              {(klant.factuur_adres || klant.factuur_postcode || klant.factuur_plaats) && (
+                <div className="pt-4 border-t border-ka-gray-200 dark:border-gray-700">
+                  <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-2">Factuuradres</div>
+                  <div className="text-sm text-ka-gray-900 dark:text-gray-100">
+                    {klant.factuur_adres || klant.adres}<br />
+                    {klant.factuur_postcode || klant.postcode} {klant.factuur_plaats || klant.plaats}<br />
+                    {klant.factuur_land || klant.land}
+                  </div>
+                </div>
+              )}
+
+              {klant.groei_fase && klant.groei_fase !== 'N.V.T.' && (
+                <div className="pt-4 border-t border-ka-gray-200 dark:border-gray-700">
+                  <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-2">Groei fase</div>
+                  <Badge className="bg-ka-green">{klant.groei_fase}</Badge>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Bedrijfs- en Persoonlijke gegevens */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Bedrijfsgegevens (alleen voor ZZP/MKB) */}
+          {(klant.type_klant === 'ZZP' || klant.type_klant === 'MKB') && (klant.kvk_nummer || klant.btw_nummer) && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center">
+                  <Building2 className="w-5 h-5 mr-2 text-ka-green" />
+                  Bedrijfsgegevens
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {klant.kvk_nummer && (
                   <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Voorkeur communicatie</div>
-                    <div className="text-sm text-ka-gray-900 dark:text-gray-100">
-                      {klant.voorkeur_kanaal}
+                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">KvK nummer</div>
+                    <div className="text-sm font-mono text-ka-navy dark:text-white">
+                      {klant.kvk_nummer}
                     </div>
                   </div>
                 )}
                 
-                {klant.groei_fase && klant.groei_fase !== 'N.V.T.' && (
+                {klant.btw_nummer && (
                   <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Groei fase</div>
-                    <Badge className="bg-ka-green">
-                      {klant.groei_fase}
-                    </Badge>
+                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">BTW nummer</div>
+                    <div className="text-sm font-mono text-ka-navy dark:text-white">
+                      {klant.btw_nummer}
+                    </div>
                   </div>
                 )}
-              </div>
-            </div>
-            
-            {/* Notities */}
-            {klant.notities && (
-              <div className="mt-6 pt-6 border-t border-ka-gray-200 dark:border-gray-700">
-                <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-2">Notities</div>
-                <div className="text-sm text-ka-gray-700 dark:text-gray-300 whitespace-pre-wrap bg-ka-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                  {klant.notities}
+
+                {klant.jaren_actief_als_ondernemer && (
+                  <div>
+                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Jaren actief als ondernemer</div>
+                    <div className="text-sm text-ka-navy dark:text-white">
+                      {klant.jaren_actief_als_ondernemer} jaar
+                    </div>
+                  </div>
+                )}
+
+                {klant.omzet_categorie && (
+                  <div>
+                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Omzet categorie</div>
+                    <Badge variant="secondary">{klant.omzet_categorie}</Badge>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Persoonlijke gegevens */}
+          {(klant.geboortedatum || klant.bsn) && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center">
+                  <Calendar className="w-5 h-5 mr-2 text-ka-green" />
+                  Persoonlijke gegevens
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {klant.geboortedatum && (
+                  <div>
+                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Geboortedatum</div>
+                    <div className="text-sm text-ka-navy dark:text-white">
+                      {formatDate(klant.geboortedatum, currentUser?.language || 'nl')}
+                    </div>
+                  </div>
+                )}
+                
+                {klant.bsn && (
+                  <div>
+                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1 flex items-center">
+                      <ShieldAlert className="w-3 h-3 mr-1 text-amber-500" />
+                      BSN (Gevoelig)
+                    </div>
+                    <div className="text-sm font-mono text-ka-navy dark:text-white bg-amber-50 dark:bg-amber-950/20 px-2 py-1 rounded border border-amber-200 dark:border-amber-800">
+                      {klant.bsn}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Financiële gegevens */}
+        {(klant.iban || klant.betalingstermijn) && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center">
+                <CreditCard className="w-5 h-5 mr-2 text-ka-green" />
+                Financiële gegevens
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  {klant.iban && (
+                    <div>
+                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">IBAN</div>
+                      <div className="text-sm font-mono text-ka-navy dark:text-white">
+                        {klant.iban}
+                      </div>
+                      {klant.bank_naam && (
+                        <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
+                          {klant.bank_naam}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {klant.bic && (
+                    <div>
+                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">BIC</div>
+                      <div className="text-sm font-mono text-ka-navy dark:text-white">
+                        {klant.bic}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  {klant.alternatief_iban && (
+                    <div>
+                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Alternatief IBAN</div>
+                      <div className="text-sm font-mono text-ka-navy dark:text-white">
+                        {klant.alternatief_iban}
+                      </div>
+                    </div>
+                  )}
+
+                  {klant.betalingstermijn && (
+                    <div>
+                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Betalingstermijn</div>
+                      <div className="text-sm text-ka-navy dark:text-white">
+                        {klant.betalingstermijn} dagen
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Notities */}
+        {klant.notities && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg">Notities</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-sm text-ka-gray-700 dark:text-gray-300 whitespace-pre-wrap bg-ka-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                {klant.notities}
+              </div>
+            </CardContent>
+          </Card>
+        )}
         
         {/* Tabs */}
         <Tabs defaultValue="timeline" className="space-y-6">
