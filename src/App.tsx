@@ -13,8 +13,6 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import ClientLoginPage from "./pages/ClientLoginPage";
-import FlowbiteIndex from "./pages/FlowbiteIndex";
-import InboxPage from "./pages/InboxPage";
 import ClientsPage from "./pages/ClientsPage";
 import ClientDetailPage from "./pages/ClientDetailPage";
 import MyClientsPage from "./pages/clients/MyClientsPage";
@@ -40,10 +38,6 @@ import HomePage from "./pages/HomePage";
 import DienstenMKB from "./pages/DienstenMKB";
 import DienstenZZP from "./pages/DienstenZZP";
 import ContactKaspers from "./pages/ContactKaspers";
-import ChannelWhatsAppPage from "./pages/channels/ChannelWhatsAppPage";
-import ChannelEmailPage from "./pages/channels/ChannelEmailPage";
-import ChannelPhonePage from "./pages/channels/ChannelPhonePage";
-import ChannelVideoPage from "./pages/channels/ChannelVideoPage";
 import FlowbiteUnifiedInbox from "./pages/FlowbiteUnifiedInbox";
 import FlowbiteWhatsAppChannel from "./pages/channels/FlowbiteWhatsAppChannel";
 import FlowbiteEmailChannel from "./pages/channels/FlowbiteEmailChannel";
@@ -84,7 +78,6 @@ const App = () => {
               
               {/* Protected routes */}
               <Route path="/" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
-              <Route path="/inbox" element={<ProtectedRoute><AppLayout><InboxPage /></AppLayout></ProtectedRoute>} />
               <Route path="/unified-inbox" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
               <Route path="/unified-inbox/conversation/:id" element={<ProtectedRoute><AppLayout><FlowbiteConversationDetail /></AppLayout></ProtectedRoute>} />
               <Route path="/customer/:id" element={<ProtectedRoute><AppLayout><FlowbiteCustomerDetail /></AppLayout></ProtectedRoute>} />
@@ -123,23 +116,11 @@ const App = () => {
               {/* Other protected routes */}
               <Route path="/settings" element={<ProtectedRoute><AppLayout><FlowbiteSettings /></AppLayout></ProtectedRoute>} />
               <Route path="/analytics" element={<ProtectedRoute><AppLayout><FlowbiteAnalytics /></AppLayout></ProtectedRoute>} />
-              <Route path="/channels/whatsapp" element={<ProtectedRoute><AppLayout><ChannelWhatsAppPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/channels/email" element={<ProtectedRoute><AppLayout><ChannelEmailPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/channels/phone" element={<ProtectedRoute><AppLayout><ChannelPhonePage /></AppLayout></ProtectedRoute>} />
-              <Route path="/channels/video" element={<ProtectedRoute><AppLayout><ChannelVideoPage /></AppLayout></ProtectedRoute>} />
               <Route path="/channels/sms" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="SMS" icon={MessageCircle} color="text-blue-600" /></AppLayout></ProtectedRoute>} />
               <Route path="/channels/facebook" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="Facebook" icon={Facebook} color="text-indigo-600" /></AppLayout></ProtectedRoute>} />
               <Route path="/channels/instagram" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="Instagram" icon={Instagram} color="text-pink-600" /></AppLayout></ProtectedRoute>} />
               <Route path="/channels/linkedin" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="LinkedIn" icon={Linkedin} color="text-blue-600" /></AppLayout></ProtectedRoute>} />
               <Route path="/conversations" element={<ProtectedRoute><AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Alle Gesprekken</h1></div></AppLayout></ProtectedRoute>} />
-              <Route path="/clients" element={<ProtectedRoute><AppLayout><ClientsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/opdrachten" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/taken" element={<ProtectedRoute><AppLayout><TasksPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects" element={<ProtectedRoute><AppLayout><ProjectsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/bulk" element={<ProtectedRoute><AppLayout><BulkProjectsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/late-clients" element={<ProtectedRoute><AppLayout><LateClientsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/team-workload" element={<ProtectedRoute><AppLayout><TeamWorkloadPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/:id" element={<ProtectedRoute><AppLayout><ProjectDetailPage /></AppLayout></ProtectedRoute>} />
               <Route path="/client-portal" element={<ProtectedRoute><ClientPortalPage /></ProtectedRoute>} />
               <Route path="/brand-guide" element={<ProtectedRoute><AppLayout><BrandGuidePage /></AppLayout></ProtectedRoute>} />
               <Route path="/brand-audit" element={<ProtectedRoute><AppLayout><BrandAuditPage /></AppLayout></ProtectedRoute>} />
