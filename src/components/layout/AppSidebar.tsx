@@ -74,16 +74,6 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <NavLink to="/" end className={getNavCls(isActive('/'))}>
                     <Home className="h-4 w-4" />
-                    {!collapsed && <span>Dashboard</span>}
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              {/* Inbox */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/unified-inbox" className={getNavCls(isActive('/unified-inbox'))}>
-                    <MessageSquare className="h-4 w-4" />
                     {!collapsed && <span>Inbox</span>}
                   </NavLink>
                 </SidebarMenuButton>
@@ -118,7 +108,7 @@ export function AppSidebar() {
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <NavLink to="/clients/my-clients" className={getNavCls(isActive('/clients/my-clients'))}>
+                            <NavLink to="/clients/my" className={getNavCls(isActive('/clients/my'))}>
                               <UserCircle className="h-3 w-3 mr-1" />
                               Mijn klanten
                             </NavLink>
@@ -159,7 +149,7 @@ export function AppSidebar() {
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <NavLink to="/projects/my-projects" className={getNavCls(isActive('/projects/my-projects'))}>
+                            <NavLink to="/projects/my" className={getNavCls(isActive('/projects/my'))}>
                               <UserCircle className="h-3 w-3 mr-1" />
                               Mijn projecten
                             </NavLink>
@@ -175,14 +165,6 @@ export function AppSidebar() {
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <NavLink to="/projects/kanban" className={getNavCls(isActive('/projects/kanban'))}>
-                              <KanbanSquare className="h-3 w-3 mr-1" />
-                              Kanban
-                            </NavLink>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild>
                             <NavLink to="/projects/bulk" className={getNavCls(isActive('/projects/bulk'))}>
                               Bulk projecten
                             </NavLink>
@@ -190,7 +172,7 @@ export function AppSidebar() {
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <NavLink to="/projects/team-workload" className={getNavCls(isActive('/projects/team-workload'))}>
+                            <NavLink to="/projects/workload" className={getNavCls(isActive('/projects/workload'))}>
                               <Clock className="h-3 w-3 mr-1" />
                               Team workload
                             </NavLink>
@@ -204,12 +186,12 @@ export function AppSidebar() {
 
               {/* Opdrachten met submenu */}
               <Collapsible
-                open={openGroups.opdrachten || isGroupActive(['/opdrachten', '/assignments'])}
+                open={openGroups.opdrachten || isGroupActive(['/assignments'])}
                 onOpenChange={() => toggleGroup('opdrachten')}
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className={getNavCls(isGroupActive(['/opdrachten', '/assignments']))}>
+                    <SidebarMenuButton className={getNavCls(isGroupActive(['/assignments']))}>
                       <FileText className="h-4 w-4" />
                       {!collapsed && (
                         <>
@@ -224,14 +206,14 @@ export function AppSidebar() {
                       <SidebarMenuSub>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <NavLink to="/opdrachten" className={getNavCls(isActive('/opdrachten'))}>
+                            <NavLink to="/assignments" className={getNavCls(isActive('/assignments'))}>
                               Alle opdrachten
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <NavLink to="/opdrachten/my-assignments" className={getNavCls(isActive('/opdrachten/my-assignments'))}>
+                            <NavLink to="/assignments/my" className={getNavCls(isActive('/assignments/my'))}>
                               <UserCircle className="h-3 w-3 mr-1" />
                               Mijn opdrachten
                             </NavLink>
@@ -241,8 +223,8 @@ export function AppSidebar() {
                           <SidebarMenuSubItem>
                             <SidebarMenuSubButton asChild>
                               <NavLink 
-                                to="/opdrachten/awaiting-approval" 
-                                className={getNavCls(isActive('/opdrachten/awaiting-approval'))}
+                                to="/assignments/pending" 
+                                className={getNavCls(isActive('/assignments/pending'))}
                               >
                                 <CheckCircle className="h-3 w-3 mr-1" />
                                 Wacht op goedkeuring
@@ -250,6 +232,13 @@ export function AppSidebar() {
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         )}
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild>
+                            <NavLink to="/assignments/by-type" className={getNavCls(isActive('/assignments/by-type'))}>
+                              Per type
+                            </NavLink>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
                       </SidebarMenuSub>
                     </CollapsibleContent>
                   )}
@@ -258,12 +247,12 @@ export function AppSidebar() {
 
               {/* Taken met submenu */}
               <Collapsible
-                open={openGroups.taken || isGroupActive(['/taken', '/tasks'])}
+                open={openGroups.taken || isGroupActive(['/tasks'])}
                 onOpenChange={() => toggleGroup('taken')}
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className={getNavCls(isGroupActive(['/taken', '/tasks']))}>
+                    <SidebarMenuButton className={getNavCls(isGroupActive(['/tasks']))}>
                       <CheckSquare className="h-4 w-4" />
                       {!collapsed && (
                         <>
@@ -278,14 +267,7 @@ export function AppSidebar() {
                       <SidebarMenuSub>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <NavLink to="/taken" className={getNavCls(isActive('/taken'))}>
-                              Alle taken
-                            </NavLink>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild>
-                            <NavLink to="/taken/my-tasks" className={getNavCls(isActive('/taken/my-tasks'))}>
+                            <NavLink to="/tasks" className={getNavCls(isActive('/tasks'))}>
                               <UserCircle className="h-3 w-3 mr-1" />
                               Mijn taken
                             </NavLink>
@@ -293,7 +275,7 @@ export function AppSidebar() {
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <NavLink to="/taken/team-tasks" className={getNavCls(isActive('/taken/team-tasks'))}>
+                            <NavLink to="/tasks/team" className={getNavCls(isActive('/tasks/team'))}>
                               <Users className="h-3 w-3 mr-1" />
                               Team taken
                             </NavLink>
@@ -303,8 +285,8 @@ export function AppSidebar() {
                           <SidebarMenuSubItem>
                             <SidebarMenuSubButton asChild>
                               <NavLink 
-                                to="/taken/awaiting-approval" 
-                                className={getNavCls(isActive('/taken/awaiting-approval'))}
+                                to="/tasks/review" 
+                                className={getNavCls(isActive('/tasks/review'))}
                               >
                                 <CheckCircle className="h-3 w-3 mr-1" />
                                 Te beoordelen

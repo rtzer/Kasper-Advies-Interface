@@ -66,11 +66,11 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
             <FolderKanban className="mr-2 h-4 w-4" />
             <span>Projecten</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate('/opdrachten'))}>
+          <CommandItem onSelect={() => runCommand(() => navigate('/assignments'))}>
             <FileText className="mr-2 h-4 w-4" />
             <span>Opdrachten</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate('/taken'))}>
+          <CommandItem onSelect={() => runCommand(() => navigate('/tasks'))}>
             <CheckSquare className="mr-2 h-4 w-4" />
             <span>Taken</span>
           </CommandItem>
@@ -88,15 +88,15 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
             <Plus className="mr-2 h-4 w-4" />
             <span>Nieuw project</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate('/opdrachten?action=new'))}>
+          <CommandItem onSelect={() => runCommand(() => navigate('/assignments?action=new'))}>
             <Plus className="mr-2 h-4 w-4" />
             <span>Nieuwe opdracht</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate('/taken?action=new'))}>
+          <CommandItem onSelect={() => runCommand(() => navigate('/tasks?action=new'))}>
             <Plus className="mr-2 h-4 w-4" />
             <span>Nieuwe taak</span>
           </CommandItem>
-          <CommandItem onSelect={() => runCommand(() => navigate('/unified-inbox'))}>
+          <CommandItem onSelect={() => runCommand(() => navigate('/'))}>
             <Search className="mr-2 h-4 w-4" />
             <span>Zoek gesprekken</span>
           </CommandItem>
@@ -111,11 +111,11 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
           <>
             <CommandSeparator />
             <CommandGroup heading="Management (Harm-Jan)">
-              <CommandItem onSelect={() => runCommand(() => navigate('/opdrachten?filter=wacht-goedkeuring'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/assignments/pending'))}>
                 <CheckCircle className="mr-2 h-4 w-4" />
                 <span>Opdrachten goedkeuren</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/taken?filter=wacht-goedkeuring'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/tasks/review'))}>
                 <CheckCircle className="mr-2 h-4 w-4" />
                 <span>Taken goedkeuren</span>
               </CommandItem>
@@ -123,7 +123,7 @@ export default function CommandPalette({ open, onOpenChange }: CommandPalettePro
                 <BarChart3 className="mr-2 h-4 w-4" />
                 <span>Financiële rapportages</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/projects/team-workload'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/projects/workload'))}>
                 <Users className="mr-2 h-4 w-4" />
                 <span>Team workload</span>
               </CommandItem>

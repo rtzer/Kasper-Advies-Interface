@@ -32,7 +32,7 @@ export default function ProjectsPage() {
               Late Klanten
             </Button>
           </Link>
-          <Link to="/projects/team-workload">
+          <Link to="/projects/workload">
             <Button variant="outline" size="sm">
               <Users className="w-4 h-4 mr-2" />
               Team Workload

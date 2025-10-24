@@ -39,7 +39,7 @@ export default function FlowbiteConversationDetail() {
         <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Link to="/unified-inbox">
+              <Link to="/">
                 <button className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                   <ArrowLeft className="h-5 w-5" />
                 </button>

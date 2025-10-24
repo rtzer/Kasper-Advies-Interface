@@ -40,7 +40,7 @@ export default function FlowbiteCustomerDetail() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/unified-inbox">
+            <Link to="/">
               <button className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                 <ArrowLeft className="h-5 w-5" />
               </button>

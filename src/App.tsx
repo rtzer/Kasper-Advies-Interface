@@ -76,41 +76,36 @@ const App = () => {
               <Route path="/diensten-zzp" element={<DienstenZZP />} />
               <Route path="/contact-kaspers" element={<ContactKaspers />} />
               
-              {/* Protected routes */}
+              {/* Protected routes - Inbox & Communication */}
               <Route path="/" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
-              <Route path="/unified-inbox" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
-              <Route path="/unified-inbox/conversation/:id" element={<ProtectedRoute><AppLayout><FlowbiteConversationDetail /></AppLayout></ProtectedRoute>} />
-              <Route path="/customer/:id" element={<ProtectedRoute><AppLayout><FlowbiteCustomerDetail /></AppLayout></ProtectedRoute>} />
+              <Route path="/conversations/:id" element={<ProtectedRoute><AppLayout><FlowbiteConversationDetail /></AppLayout></ProtectedRoute>} />
+              <Route path="/customers/:id" element={<ProtectedRoute><AppLayout><FlowbiteCustomerDetail /></AppLayout></ProtectedRoute>} />
               
               {/* Klanten routes */}
               <Route path="/clients" element={<ProtectedRoute><AppLayout><ClientsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/clients/my-clients" element={<ProtectedRoute><AppLayout><MyClientsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/clients/my" element={<ProtectedRoute><AppLayout><MyClientsPage /></AppLayout></ProtectedRoute>} />
               <Route path="/clients/late-payers" element={<ProtectedRoute><AppLayout><LateClientsPage /></AppLayout></ProtectedRoute>} />
               <Route path="/clients/:id" element={<ProtectedRoute><AppLayout><ClientDetailPage /></AppLayout></ProtectedRoute>} />
               
               {/* Projecten routes */}
               <Route path="/projects" element={<ProtectedRoute><AppLayout><ProjectsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/my-projects" element={<ProtectedRoute><AppLayout><MyProjectsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/projects/my" element={<ProtectedRoute><AppLayout><MyProjectsPage /></AppLayout></ProtectedRoute>} />
               <Route path="/projects/calendar" element={<ProtectedRoute><AppLayout><ProjectsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/kanban" element={<ProtectedRoute><AppLayout><ProjectsPage /></AppLayout></ProtectedRoute>} />
               <Route path="/projects/bulk" element={<ProtectedRoute><AppLayout><BulkProjectsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/team-workload" element={<ProtectedRoute><AppLayout><TeamWorkloadPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/projects/workload" element={<ProtectedRoute><AppLayout><TeamWorkloadPage /></AppLayout></ProtectedRoute>} />
               <Route path="/projects/:id" element={<ProtectedRoute><AppLayout><ProjectDetailPage /></AppLayout></ProtectedRoute>} />
               
-              {/* Opdrachten routes */}
-              <Route path="/opdrachten" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/opdrachten/my-opdrachten" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/opdrachten/awaiting-approval" element={<ProtectedRoute><AppLayout><AwaitingApprovalPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/opdrachten/by-type" element={<ProtectedRoute><AppLayout><ByTypePage /></AppLayout></ProtectedRoute>} />
+              {/* Assignments (Opdrachten) routes */}
               <Route path="/assignments" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/assignments/my" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/assignments/pending" element={<ProtectedRoute><AppLayout><AwaitingApprovalPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/assignments/by-type" element={<ProtectedRoute><AppLayout><ByTypePage /></AppLayout></ProtectedRoute>} />
               <Route path="/assignments/:id" element={<ProtectedRoute><AppLayout><ProjectDetailPage /></AppLayout></ProtectedRoute>} />
               
-              {/* Taken routes */}
-              <Route path="/taken" element={<ProtectedRoute><AppLayout><TasksPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/taken/my-taken" element={<ProtectedRoute><AppLayout><TasksPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/taken/team" element={<ProtectedRoute><AppLayout><TeamTasksPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/taken/to-review" element={<ProtectedRoute><AppLayout><ToReviewPage /></AppLayout></ProtectedRoute>} />
+              {/* Tasks (Taken) routes */}
               <Route path="/tasks" element={<ProtectedRoute><AppLayout><TasksPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/tasks/team" element={<ProtectedRoute><AppLayout><TeamTasksPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/tasks/review" element={<ProtectedRoute><AppLayout><ToReviewPage /></AppLayout></ProtectedRoute>} />
               <Route path="/tasks/:id" element={<ProtectedRoute><AppLayout><ProjectDetailPage /></AppLayout></ProtectedRoute>} />
               
               {/* Other protected routes */}
@@ -120,13 +115,17 @@ const App = () => {
               <Route path="/channels/facebook" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="Facebook" icon={Facebook} color="text-indigo-600" /></AppLayout></ProtectedRoute>} />
               <Route path="/channels/instagram" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="Instagram" icon={Instagram} color="text-pink-600" /></AppLayout></ProtectedRoute>} />
               <Route path="/channels/linkedin" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="LinkedIn" icon={Linkedin} color="text-blue-600" /></AppLayout></ProtectedRoute>} />
-              <Route path="/conversations" element={<ProtectedRoute><AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Alle Gesprekken</h1></div></AppLayout></ProtectedRoute>} />
+              
+              {/* Client Portal */}
               <Route path="/client-portal" element={<ProtectedRoute><ClientPortalPage /></ProtectedRoute>} />
+              
+              {/* Project Info & Documentation */}
               <Route path="/brand-guide" element={<ProtectedRoute><AppLayout><BrandGuidePage /></AppLayout></ProtectedRoute>} />
               <Route path="/brand-audit" element={<ProtectedRoute><AppLayout><BrandAuditPage /></AppLayout></ProtectedRoute>} />
               <Route path="/brand-guide-extended" element={<ProtectedRoute><ExtendedBrandGuidePage /></ProtectedRoute>} />
               <Route path="/julien" element={<ProtectedRoute><AppLayout><JulienPage /></AppLayout></ProtectedRoute>} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              
+              {/* 404 - Must be last */}
               <Route path="*" element={<FlowbiteNotFound />} />
             </Routes>
             <BottomNav />
