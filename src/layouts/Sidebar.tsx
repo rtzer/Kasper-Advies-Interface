@@ -11,16 +11,19 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { t } = useTranslation(['navigation']);
   
+  // Hergeordend: dagelijks gebruik bovenaan
   const mainNavigation = [
-    { icon: Home, label: t('navigation:menu.dashboard'), href: '/', badge: null },
     { icon: Inbox, label: t('navigation:menu.inbox'), href: '/inbox', badge: 8 },
-    { icon: MessageSquare, label: t('navigation:menu.conversations'), href: '/conversations', badge: 23 },
     { icon: Users, label: t('navigation:menu.clients'), href: '/clients', badge: null },
-    { icon: FolderKanban, label: 'Projecten', href: '/projects', badge: null },
     { icon: FileText, label: t('navigation:menu.assignments'), href: '/opdrachten', badge: null },
     { icon: CheckSquare, label: t('navigation:menu.tasks'), href: '/taken', badge: null },
+    { icon: FolderKanban, label: 'Projecten', href: '/projects', badge: null },
+  ];
+  
+  // Secundaire items (minder frequent gebruik)
+  const secondaryNavigation = [
+    { icon: Home, label: t('navigation:menu.dashboard'), href: '/', badge: null },
     { icon: BarChart3, label: t('navigation:menu.statistics'), href: '/analytics', badge: null },
-    { icon: Palette, label: 'Brand Guide', href: '/brand-guide-extended', badge: null },
     { icon: Settings, label: t('navigation:menu.settings'), href: '/settings', badge: null },
   ];
   
@@ -66,28 +69,59 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       
       {/* Main Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-hide">
-        {mainNavigation.map((item) => {
-          const Icon = item.icon;
-          return (
-            <NavLink
-              key={item.href}
-              to={item.href}
-              className={({ isActive }) => `flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                isActive 
-                  ? 'bg-ka-green/10 text-ka-green dark:bg-ka-green/20' 
-                  : 'text-ka-gray-600 dark:text-gray-300 hover:bg-ka-gray-100 dark:hover:bg-gray-700 hover:text-ka-navy dark:hover:text-white'
-              }`}
-            >
-              <div className="flex items-center space-x-3">
-                <Icon className="w-5 h-5" />
-                <span>{item.label}</span>
-              </div>
-              {item.badge && (
-                <Badge className="bg-ka-green hover:bg-ka-green text-white border-ka-green">{item.badge}</Badge>
-              )}
-            </NavLink>
-          );
-        })}
+        <div className="space-y-1">
+          <h3 className="px-3 pb-2 text-xs font-semibold text-ka-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            Dagelijks
+          </h3>
+          {mainNavigation.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.href}
+                to={item.href}
+                className={({ isActive }) => `flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive 
+                    ? 'bg-ka-green/10 text-ka-green dark:bg-ka-green/20' 
+                    : 'text-ka-gray-600 dark:text-gray-300 hover:bg-ka-gray-100 dark:hover:bg-gray-700 hover:text-ka-navy dark:hover:text-white'
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <Icon className="w-5 h-5" />
+                  <span>{item.label}</span>
+                </div>
+                {item.badge && (
+                  <Badge className="bg-ka-green hover:bg-ka-green text-white border-ka-green">{item.badge}</Badge>
+                )}
+              </NavLink>
+            );
+          })}
+        </div>
+        
+        {/* Secondary Navigation */}
+        <div className="pt-6 space-y-1">
+          <h3 className="px-3 pb-2 text-xs font-semibold text-ka-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            Overige
+          </h3>
+          {secondaryNavigation.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.href}
+                to={item.href}
+                className={({ isActive }) => `flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive 
+                    ? 'bg-ka-green/10 text-ka-green dark:bg-ka-green/20' 
+                    : 'text-ka-gray-600 dark:text-gray-300 hover:bg-ka-gray-100 dark:hover:bg-gray-700 hover:text-ka-navy dark:hover:text-white'
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <Icon className="w-5 h-5" />
+                  <span>{item.label}</span>
+                </div>
+              </NavLink>
+            );
+          })}
+        </div>
         
         {/* Channels Section */}
         <div className="pt-6">

@@ -93,6 +93,13 @@ All colors MUST be HSL.
     --status-away: 38 92% 50%;
     --status-offline: 215.4 16.3% 46.9%;
     
+    /* Priority colors - voor opvolging statussen */
+    --priority-urgent: 0 84% 60%;
+    --priority-high: 25 95% 53%;
+    --priority-normal: 48 96% 53%;
+    --priority-low: 142 71% 45%;
+    --ka-warning: 38 92% 50%;
+    
     /* Message colors */
     --message-sent: 217.2 91.2% 59.8%;
     --message-sent-bg: 214 95% 93%;
@@ -183,6 +190,13 @@ All colors MUST be HSL.
     --status-online: 142 70% 45%;
     --status-away: 38 92% 50%;
     --status-offline: 215 20.2% 65.1%;
+    
+    /* Priority colors - dark mode */
+    --priority-urgent: 0 84% 60%;
+    --priority-high: 25 95% 53%;
+    --priority-normal: 48 96% 53%;
+    --priority-low: 142 71% 45%;
+    --ka-warning: 38 92% 50%;
     
     /* Message colors - dark mode */
     --message-sent: 217.2 91.2% 59.8%;

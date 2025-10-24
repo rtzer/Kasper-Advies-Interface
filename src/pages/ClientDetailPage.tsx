@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Send, Video, Linkedin, Globe, Building2, Calendar, ShieldAlert, CreditCard, Banknote } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Send, Video, Linkedin, Globe, Building2, Calendar, ShieldAlert, CreditCard, MessageCircle, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -105,6 +105,55 @@ export default function ClientDetailPage() {
             
             {/* Actions */}
             <div className="flex items-center space-x-2">
+              {/* Quick Communication Actions */}
+              <div className="flex items-center space-x-1 mr-2 border-r border-ka-gray-200 dark:border-gray-700 pr-3">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => window.location.href = `mailto:${klant.email}`}
+                  title="Stuur e-mail"
+                  className="hover:bg-ka-green/10 hover:text-ka-green"
+                >
+                  <Mail className="w-5 h-5" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => window.open(`https://wa.me/${klant.telefoonnummer.replace(/\D/g, '')}`, '_blank')}
+                  title="WhatsApp"
+                  className="hover:bg-ka-green/10 hover:text-ka-green"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => window.location.href = `tel:${klant.telefoonnummer}`}
+                  title="Bel klant"
+                  className="hover:bg-ka-green/10 hover:text-ka-green"
+                >
+                  <Phone className="w-5 h-5" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => toast.info('Video call functionaliteit komt binnenkort')}
+                  title="Start video call"
+                  className="hover:bg-ka-green/10 hover:text-ka-green"
+                >
+                  <Video className="w-5 h-5" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => toast.info('SMS functionaliteit komt binnenkort')}
+                  title="Stuur SMS"
+                  className="hover:bg-ka-green/10 hover:text-ka-green"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                </Button>
+              </div>
+              
               <Button variant="outline" onClick={() => setIsEditDialogOpen(true)}>
                 <Edit className="w-4 h-4 mr-2" />
                 Bewerken
@@ -124,20 +173,7 @@ export default function ClientDetailPage() {
                     <MoreVertical className="w-5 h-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem onClick={() => window.location.href = `mailto:${klant.email}`}>
-                    <Send className="w-4 h-4 mr-2" />
-                    Stuur e-mail
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => window.open(`https://wa.me/${klant.telefoonnummer.replace(/\D/g, '')}`, '_blank')}>
-                    <Send className="w-4 h-4 mr-2" />
-                    Stuur WhatsApp
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => window.location.href = `tel:${klant.telefoonnummer}`}>
-                    <Phone className="w-4 h-4 mr-2" />
-                    Bel klant
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                <DropdownMenuContent align="end" className="w-56 bg-white dark:bg-gray-800 z-50">
                   <DropdownMenuItem onClick={() => toast.info('Export functionaliteit komt binnenkort')}>
                     <FileText className="w-4 h-4 mr-2" />
                     Exporteer klantgegevens
