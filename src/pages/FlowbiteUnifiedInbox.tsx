@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { InboxFilterDialog } from "@/components/inbox/InboxFilterDialog";
+import { FilterPopover } from "@/components/inbox/FilterPopover";
 import { CreateConversationDialog } from "@/components/inbox/CreateConversationDialog";
 import { FlowbiteConversationItem } from "@/components/inbox/FlowbiteConversationItem";
 import { FlowbiteChatView } from "@/components/inbox/FlowbiteChatView";
-import { Search, Filter, Plus } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -84,14 +84,12 @@ export default function FlowbiteUnifiedInbox() {
               </p>
             </div>
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="icon" 
-                onClick={() => setFilterDialogOpen(true)}
-                title={t('inbox.filter')}
-              >
-                <Filter className="w-4 h-4" />
-              </Button>
+              <FilterPopover
+                open={filterDialogOpen}
+                onOpenChange={setFilterDialogOpen}
+                filters={filters}
+                onFiltersChange={setFilters}
+              />
               <Button 
                 size="icon"
                 title={t('inbox.newConversation')}
@@ -262,14 +260,6 @@ export default function FlowbiteUnifiedInbox() {
           </div>
         </div>
       </div>
-
-      {/* Filter Dialog */}
-      <InboxFilterDialog
-        open={filterDialogOpen}
-        onOpenChange={setFilterDialogOpen}
-        filters={filters}
-        onFiltersChange={setFilters}
-      />
 
       {/* Create Conversation Dialog */}
       <CreateConversationDialog
