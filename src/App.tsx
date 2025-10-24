@@ -27,6 +27,7 @@ import ClientPortalPage from "./pages/ClientPortalPage";
 import BrandGuidePage from "./pages/BrandGuidePage";
 import BrandAuditPage from "./pages/BrandAuditPage";
 import ExtendedBrandGuidePage from "./pages/ExtendedBrandGuidePage";
+import JulienPage from "./pages/JulienPage";
 import HomePage from "./pages/HomePage";
 import DienstenMKB from "./pages/DienstenMKB";
 import DienstenZZP from "./pages/DienstenZZP";
@@ -104,6 +105,7 @@ const App = () => {
               <Route path="/brand-guide" element={<ProtectedRoute><AppLayout><BrandGuidePage /></AppLayout></ProtectedRoute>} />
               <Route path="/brand-audit" element={<ProtectedRoute><AppLayout><BrandAuditPage /></AppLayout></ProtectedRoute>} />
               <Route path="/brand-guide-extended" element={<ProtectedRoute><ExtendedBrandGuidePage /></ProtectedRoute>} />
+              <Route path="/julien" element={<ProtectedRoute><AppLayout><JulienPage /></AppLayout></ProtectedRoute>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<FlowbiteNotFound />} />
             </Routes>
