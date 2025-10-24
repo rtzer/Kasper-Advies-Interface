@@ -70,10 +70,24 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border-ka-gray-200 dark:border-gray-700 z-50">
-            <DropdownMenuItem onClick={() => changeLanguage('nl')} className="cursor-pointer">
+            <DropdownMenuItem 
+              onClick={() => changeLanguage('nl')} 
+              className={`cursor-pointer ${
+                i18n.language === 'nl' 
+                  ? 'bg-ka-green/10 border-2 border-ka-green font-semibold text-ka-navy dark:text-white dark:bg-ka-green/20' 
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
               <span className="mr-2">🇳🇱</span> Nederlands
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => changeLanguage('en')} className="cursor-pointer">
+            <DropdownMenuItem 
+              onClick={() => changeLanguage('en')} 
+              className={`cursor-pointer ${
+                i18n.language === 'en' 
+                  ? 'bg-ka-green/10 border-2 border-ka-green font-semibold text-ka-navy dark:text-white dark:bg-ka-green/20' 
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
               <span className="mr-2">🇬🇧</span> English
             </DropdownMenuItem>
           </DropdownMenuContent>
