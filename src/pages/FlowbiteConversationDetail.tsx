@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft, MoreVertical, Phone, Video, Mail, Archive, Tag, Trash2, User, Clock } from "lucide-react";
 import { FlowbiteChatView } from "@/components/inbox/FlowbiteChatView";
 import { useConversation, useConversationMessages } from "@/lib/api/conversations";
@@ -12,6 +13,7 @@ type TabType = 'gesprek' | 'contact' | 'geschiedenis';
 
 export default function FlowbiteConversationDetail() {
   const { id } = useParams();
+  const { t } = useTranslation('common');
   const { data: conversation, isLoading } = useConversation(id || "1");
   const { data: messagesData } = useConversationMessages(id || "1");
   const [activeTab, setActiveTab] = useState<TabType>('gesprek');
@@ -32,16 +34,16 @@ export default function FlowbiteConversationDetail() {
 
   const handleArchive = () => {
     toast({
-      title: "Conversatie gearchiveerd",
-      description: `Conversatie met ${conversation?.klant_naam} is gearchiveerd.`,
+      title: t('inbox.conversationArchived'),
+      description: t('inbox.conversationArchivedDesc', { name: conversation?.klant_naam }),
     });
     setArchiveDialogOpen(false);
   };
 
   const handleDelete = () => {
     toast({
-      title: "Conversatie verwijderd",
-      description: `Conversatie met ${conversation?.klant_naam} is verwijderd.`,
+      title: t('inbox.conversationDeleted'),
+      description: t('inbox.conversationDeletedDesc', { name: conversation?.klant_naam }),
       variant: "destructive",
     });
     setDeleteDialogOpen(false);
@@ -101,33 +103,33 @@ export default function FlowbiteConversationDetail() {
             <div className="flex items-center gap-2">
               <button 
                 className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                title="Bellen"
+                title={t('inbox.call')}
               >
                 <Phone className="h-5 w-5" />
               </button>
               <button 
                 className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                title="Videogesprek"
+                title={t('inbox.videoCall')}
               >
                 <Video className="h-5 w-5" />
               </button>
               <button 
                 className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                title="Email versturen"
+                title={t('inbox.sendEmail')}
               >
                 <Mail className="h-5 w-5" />
               </button>
               <button 
                 onClick={() => setArchiveDialogOpen(true)}
                 className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                title="Archiveren"
+                title={t('actions.archive')}
               >
                 <Archive className="h-5 w-5" />
               </button>
               <button 
                 onClick={() => setDeleteDialogOpen(true)}
                 className="p-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 rounded-lg transition-colors"
-                title="Verwijderen"
+                title={t('actions.delete')}
               >
                 <Trash2 className="h-5 w-5" />
               </button>
@@ -144,7 +146,7 @@ export default function FlowbiteConversationDetail() {
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
-              Gesprek
+              {t('inbox.conversation')}
             </button>
             <button 
               onClick={() => setActiveTab('contact')}
@@ -154,7 +156,7 @@ export default function FlowbiteConversationDetail() {
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
-              Contact Info
+              {t('inbox.contactInfo')}
             </button>
             <button 
               onClick={() => setActiveTab('geschiedenis')}
@@ -164,7 +166,7 @@ export default function FlowbiteConversationDetail() {
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
-              Geschiedenis
+              {t('inbox.history')}
             </button>
           </div>
         </div>
@@ -185,13 +187,13 @@ export default function FlowbiteConversationDetail() {
           {activeTab === 'contact' && (
             <div className="p-6 space-y-6 overflow-y-auto h-full bg-white dark:bg-gray-900">
               <div className="max-w-2xl">
-                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Contact Informatie</h2>
+                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">{t('inbox.contactInfo')}</h2>
                 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <User className="h-5 w-5 text-gray-600 dark:text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Naam</p>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('inbox.name')}</p>
                       <p className="text-base font-semibold text-gray-900 dark:text-white">{conversation.klant_naam}</p>
                     </div>
                   </div>
@@ -199,7 +201,7 @@ export default function FlowbiteConversationDetail() {
                   <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <Mail className="h-5 w-5 text-gray-600 dark:text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</p>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('clients.email')}</p>
                       <p className="text-base text-gray-900 dark:text-white">contact@{conversation.klant_naam.toLowerCase().replace(/\s+/g, '')}.nl</p>
                     </div>
                   </div>
@@ -207,7 +209,7 @@ export default function FlowbiteConversationDetail() {
                   <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <Phone className="h-5 w-5 text-gray-600 dark:text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Telefoon</p>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('clients.phone')}</p>
                       <p className="text-base text-gray-900 dark:text-white">+31 6 1234 5678</p>
                     </div>
                   </div>
@@ -215,7 +217,7 @@ export default function FlowbiteConversationDetail() {
                   <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <Tag className="h-5 w-5 text-gray-600 dark:text-gray-400 mt-0.5" />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Tags</p>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('inbox.tags')}</p>
                       <div className="flex flex-wrap gap-2">
                         {conversation.tags && conversation.tags.length > 0 ? (
                           conversation.tags.map((tag) => (
@@ -224,7 +226,7 @@ export default function FlowbiteConversationDetail() {
                             </span>
                           ))
                         ) : (
-                          <p className="text-sm text-gray-500 dark:text-gray-400">Geen tags</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{t('inbox.noTags')}</p>
                         )}
                       </div>
                     </div>
@@ -237,7 +239,7 @@ export default function FlowbiteConversationDetail() {
           {activeTab === 'geschiedenis' && (
             <div className="p-6 overflow-y-auto h-full bg-white dark:bg-gray-900">
               <div className="max-w-2xl">
-                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Conversatie Geschiedenis</h2>
+                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">{t('inbox.conversationHistory')}</h2>
                 
                 <div className="space-y-4">
                   {messagesData?.results && messagesData.results.length > 0 ? (
@@ -261,7 +263,7 @@ export default function FlowbiteConversationDetail() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-center text-gray-500 dark:text-gray-400 py-8">Geen berichten gevonden</p>
+                    <p className="text-center text-gray-500 dark:text-gray-400 py-8">{t('inbox.noMessages')}</p>
                   )}
                 </div>
               </div>
@@ -288,7 +290,7 @@ export default function FlowbiteConversationDetail() {
           <div className="space-y-3">
             <h4 className="font-semibold flex items-center gap-2 text-gray-900 dark:text-white">
               <Tag className="h-4 w-4" />
-              Tags
+              {t('inbox.tags')}
             </h4>
             <div className="flex flex-wrap gap-2">
               {conversation.tags && conversation.tags.length > 0 ? (
@@ -298,7 +300,7 @@ export default function FlowbiteConversationDetail() {
                   </span>
                 ))
               ) : (
-                <p className="text-xs text-gray-500 dark:text-gray-400">Geen tags</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{t('inbox.noTags')}</p>
               )}
             </div>
           </div>
@@ -306,7 +308,7 @@ export default function FlowbiteConversationDetail() {
           <hr className="border-gray-200 dark:border-gray-700" />
 
           <div className="space-y-3">
-            <h4 className="font-semibold text-gray-900 dark:text-white">Conversatie Details</h4>
+            <h4 className="font-semibold text-gray-900 dark:text-white">{t('inbox.conversationDetails')}</h4>
             <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
               <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
                 <p><strong>Status:</strong> {conversation.status}</p>
@@ -326,14 +328,14 @@ export default function FlowbiteConversationDetail() {
       <AlertDialog open={archiveDialogOpen} onOpenChange={setArchiveDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Conversatie archiveren?</AlertDialogTitle>
+            <AlertDialogTitle>{t('inbox.archiveConfirm')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Weet je zeker dat je deze conversatie wilt archiveren? Je kunt deze later weer terugvinden in je archief.
+              {t('inbox.archiveDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Annuleren</AlertDialogCancel>
-            <AlertDialogAction onClick={handleArchive}>Archiveren</AlertDialogAction>
+            <AlertDialogCancel>{t('actions.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleArchive}>{t('actions.archive')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -342,15 +344,15 @@ export default function FlowbiteConversationDetail() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Conversatie verwijderen?</AlertDialogTitle>
+            <AlertDialogTitle>{t('inbox.deleteConfirm')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Weet je zeker dat je deze conversatie wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.
+              {t('inbox.deleteDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Annuleren</AlertDialogCancel>
+            <AlertDialogCancel>{t('actions.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
-              Verwijderen
+              {t('actions.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

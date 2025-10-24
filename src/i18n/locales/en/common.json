@@ -71,7 +71,21 @@
     "searchPlaceholder": "Filter active conversations...",
     "searchTitle": "Filter conversations by name or subject",
     "noSubject": "No subject",
-    "tryDifferentSearch": "Try a different search term"
+    "tryDifferentSearch": "Try a different search term",
+    "conversationArchived": "Conversation archived",
+    "conversationArchivedDesc": "Conversation with {{name}} has been archived.",
+    "conversationDeleted": "Conversation deleted",
+    "conversationDeletedDesc": "Conversation with {{name}} has been deleted.",
+    "call": "Call",
+    "videoCall": "Video call",
+    "sendEmail": "Send email",
+    "conversation": "Conversation",
+    "contactInfo": "Contact Info",
+    "history": "History",
+    "name": "Name",
+    "noTags": "No tags",
+    "conversationHistory": "Conversation History",
+    "conversationDetails": "Conversation Details"
   },
   "clients": {
     "title": "Clients",

@@ -71,7 +71,21 @@
     "searchPlaceholder": "Filter actieve gesprekken...",
     "searchTitle": "Filter gesprekken op naam of onderwerp",
     "noSubject": "Geen onderwerp",
-    "tryDifferentSearch": "Probeer een andere zoekterm"
+    "tryDifferentSearch": "Probeer een andere zoekterm",
+    "conversationArchived": "Conversatie gearchiveerd",
+    "conversationArchivedDesc": "Conversatie met {{name}} is gearchiveerd.",
+    "conversationDeleted": "Conversatie verwijderd",
+    "conversationDeletedDesc": "Conversatie met {{name}} is verwijderd.",
+    "call": "Bellen",
+    "videoCall": "Videogesprek",
+    "sendEmail": "Email versturen",
+    "conversation": "Gesprek",
+    "contactInfo": "Contact Info",
+    "history": "Geschiedenis",
+    "name": "Naam",
+    "noTags": "Geen tags",
+    "conversationHistory": "Conversatie Geschiedenis",
+    "conversationDetails": "Conversatie Details"
   },
   "clients": {
     "title": "Klanten",
