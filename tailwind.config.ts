@@ -19,6 +19,14 @@ export default {
         "2xl": "1400px",
       },
     },
+    screens: {
+      'xs': '360px',   // Extra small - Nederlandse budget phones (Samsung A series) 🇳🇱
+      'sm': '640px',   // Small - Large phones, phablets
+      'md': '768px',   // Medium - Tablets portrait
+      'lg': '1024px',  // Large - Tablets landscape, small laptops
+      'xl': '1280px',  // Extra large - Desktops
+      '2xl': '1536px', // 2X large - Large desktops
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",
