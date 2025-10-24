@@ -122,15 +122,16 @@ export default function GlobalSearch() {
   
   return (
     <div ref={searchRef} className="relative flex-1 max-w-md">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-ka-gray-500 dark:text-gray-400" />
+      <div className="relative group">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-ka-gray-500 dark:text-gray-400 group-hover:text-ka-green transition-colors" />
         <Input
           type="text"
-          placeholder={t('common:actions.search') + ' klanten, gesprekken...'}
+          placeholder={t('common:actions.search') + ' klanten, opdrachten, taken...'}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.length >= 2 && setShowResults(true)}
           className="pl-10 pr-10 bg-ka-gray-50 dark:bg-gray-700 border-ka-gray-200 dark:border-gray-600 focus:ring-ka-green focus:border-ka-green"
+          title="Globale zoekopdracht - zoek door alle klanten, opdrachten en taken"
         />
         {query && (
           <button

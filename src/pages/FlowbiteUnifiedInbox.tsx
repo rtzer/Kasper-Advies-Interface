@@ -58,28 +58,42 @@ export default function FlowbiteUnifiedInbox() {
         {/* Header */}
         <div className="p-4 border-b border-border">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-semibold text-foreground">
-              Gesprekken
-            </h2>
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">
+                Gesprekken
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Alle actieve conversaties met klanten
+              </p>
+            </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="icon" onClick={() => setFilterDialogOpen(true)}>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                onClick={() => setFilterDialogOpen(true)}
+                title="Filter gesprekken op status, kanaal en prioriteit"
+              >
                 <Filter className="w-4 h-4" />
               </Button>
-              <Button size="icon">
+              <Button 
+                size="icon"
+                title="Start nieuwe conversatie"
+              >
                 <Plus className="w-4 h-4" />
               </Button>
             </div>
           </div>
 
-          {/* Search */}
+          {/* Search - Inbox Specific */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-              placeholder="Zoek gesprekken..."
+              className="pl-10 bg-[hsl(var(--conversation-hover))] border-primary/20 focus:border-primary focus:ring-primary/30"
+              placeholder="Filter actieve gesprekken..."
+              title="Filter gesprekken op naam of onderwerp"
             />
           </div>
         </div>
