@@ -14,6 +14,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import FlowbiteIndex from "./pages/FlowbiteIndex";
 import InboxPage from "./pages/InboxPage";
+import ClientsPage from "./pages/ClientsPage";
 import ClientDetailPage from "./pages/ClientDetailPage";
 import AssignmentsPage from "./pages/AssignmentsPage";
 import TasksPage from "./pages/TasksPage";
@@ -91,7 +92,7 @@ const App = () => {
               <Route path="/channels/instagram" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="Instagram" icon={Instagram} color="text-pink-600" /></AppLayout></ProtectedRoute>} />
               <Route path="/channels/linkedin" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="LinkedIn" icon={Linkedin} color="text-blue-600" /></AppLayout></ProtectedRoute>} />
               <Route path="/conversations" element={<ProtectedRoute><AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Alle Gesprekken</h1></div></AppLayout></ProtectedRoute>} />
-              <Route path="/clients" element={<ProtectedRoute><AppLayout><div className="p-6"><h1 className="text-2xl font-semibold text-ka-navy dark:text-white">Klanten</h1></div></AppLayout></ProtectedRoute>} />
+              <Route path="/clients" element={<ProtectedRoute><AppLayout><ClientsPage /></AppLayout></ProtectedRoute>} />
               <Route path="/opdrachten" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
               <Route path="/taken" element={<ProtectedRoute><AppLayout><TasksPage /></AppLayout></ProtectedRoute>} />
               <Route path="/projects" element={<ProtectedRoute><AppLayout><ProjectsPage /></AppLayout></ProtectedRoute>} />
