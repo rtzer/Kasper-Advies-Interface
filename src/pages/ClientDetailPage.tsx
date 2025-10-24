@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Send, Video, Linkedin, Globe, Building2, Calendar, ShieldAlert, CreditCard, MessageCircle, MessageSquare, ChevronDown } from 'lucide-react';
+import { responsiveHeading, responsiveBody } from '@/lib/utils/typography';
+import { spacing } from '@/lib/utils/spacing';
+import { useDeviceChecks, useTouchTargetSize } from '@/hooks/useBreakpoint';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -33,6 +36,10 @@ export default function ClientDetailPage() {
   const { data: klant, isLoading } = useKlant(id!);
   const { data: interacties } = useInteractiesByKlant(id!);
   const { data: allKlantenData } = useKlanten();
+  
+  // Responsive helpers
+  const { isMobile } = useDeviceChecks();
+  const touchSize = useTouchTargetSize();
   
   // Get related clients
   const relatedClients = klant?.gerelateerde_klanten
@@ -70,28 +77,29 @@ export default function ClientDetailPage() {
   
   return (
     <div className="h-full overflow-y-auto bg-ka-gray-50 dark:bg-gray-900">
-      {/* Header */}
+      {/* Header - Responsive */}
       <div className="bg-white dark:bg-gray-800 border-b border-ka-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-start justify-between">
-            <div className="flex items-start space-x-4">
-              {/* Avatar */}
-              <div className="w-20 h-20 rounded-full bg-ka-navy dark:bg-ka-green text-white flex items-center justify-center text-2xl font-bold">
+        <div className={`max-w-7xl mx-auto ${spacing.container.md} ${spacing.section.sm}`}>
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
+            {/* Avatar + Client info - Stacked on mobile, side-by-side on desktop */}
+            <div className="flex items-start space-x-3 sm:space-x-4">
+              {/* Avatar - Smaller on mobile */}
+              <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-ka-navy dark:bg-ka-green text-white flex items-center justify-center text-lg sm:text-2xl font-bold flex-shrink-0">
                 {klant.naam.substring(0, 2).toUpperCase()}
               </div>
               
               {/* Client info */}
-              <div>
-                <div className="flex items-center space-x-3 mb-2">
-                  <h1 className="text-2xl font-bold text-ka-navy dark:text-white">
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <h1 className={`${responsiveHeading.h2} truncate`}>
                     {klant.naam}
                   </h1>
                   <Badge className={
                     klant.status === 'Actief' 
-                      ? 'bg-ka-green' 
+                      ? 'bg-ka-green text-white' 
                       : klant.status === 'Prospect'
-                      ? 'bg-ka-warning'
-                      : 'bg-ka-gray-500'
+                      ? 'bg-ka-warning text-white'
+                      : 'bg-ka-gray-500 text-white'
                   }>
                     {klant.status}
                   </Badge>
@@ -102,15 +110,16 @@ export default function ClientDetailPage() {
                   )}
                 </div>
                 
-                <div className="flex items-center space-x-4 text-sm text-ka-gray-600 dark:text-gray-300">
-                  <span className="flex items-center space-x-1">
+                {/* Client metadata - Stack on mobile */}
+                <div className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 ${responsiveBody.small}`}>
+                  <span className="flex items-center gap-1">
                     <span className="font-medium">{klant.type_klant}</span>
-                    <span>•</span>
-                    <span>{klant.klant_type_details}</span>
+                    <span className="hidden sm:inline">•</span>
+                    <span className="text-ka-gray-500 dark:text-gray-400">{klant.klant_type_details}</span>
                   </span>
-                  <span className="flex items-center space-x-1">
-                    <span>Klant nummer:</span>
-                    <span className="font-mono">{klant.klant_nummer}</span>
+                  <span className="flex items-center gap-1">
+                    <span className="text-ka-gray-500 dark:text-gray-400">Klant#:</span>
+                    <span className="font-mono font-medium">{klant.klant_nummer}</span>
                   </span>
                 </div>
                 
@@ -118,7 +127,7 @@ export default function ClientDetailPage() {
                 {klant.tags && klant.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-3">
                     {klant.tags.map((tag) => (
-                      <Badge key={tag} variant="outline">
+                      <Badge key={tag} variant="outline" className="text-xs">
                         {tag}
                       </Badge>
                     ))}
@@ -127,104 +136,117 @@ export default function ClientDetailPage() {
               </div>
             </div>
             
-            {/* Actions */}
-            <div className="flex items-center space-x-2">
-              {/* Quick Communication Actions */}
-              <div className="flex items-center space-x-1 mr-2 border-r border-ka-gray-200 dark:border-gray-700 pr-3">
+            {/* Actions - Full width on mobile, inline on desktop */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 w-full lg:w-auto">
+              {/* Quick Communication Actions - Horizontal scroll on mobile */}
+              <div className="flex items-center gap-1 overflow-x-auto pb-2 sm:pb-0 sm:border-r sm:border-ka-gray-200 sm:dark:border-gray-700 sm:pr-3 -mx-1 px-1">
                 <Button 
                   variant="ghost" 
-                  size="icon"
+                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
                   onClick={() => window.location.href = `mailto:${klant.email}`}
                   title="Stuur e-mail"
-                  className="hover:bg-ka-green/10 hover:text-ka-green"
+                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0"
                 >
                   <Mail className="w-5 h-5" />
                 </Button>
                 <Button 
                   variant="ghost" 
-                  size="icon"
+                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
                   onClick={() => window.open(`https://wa.me/${klant.telefoonnummer.replace(/\D/g, '')}`, '_blank')}
                   title="WhatsApp"
-                  className="hover:bg-ka-green/10 hover:text-ka-green"
+                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0"
                 >
                   <MessageCircle className="w-5 h-5" />
                 </Button>
                 <Button 
                   variant="ghost" 
-                  size="icon"
+                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
                   onClick={() => window.location.href = `tel:${klant.telefoonnummer}`}
                   title="Bel klant"
-                  className="hover:bg-ka-green/10 hover:text-ka-green"
+                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0"
                 >
                   <Phone className="w-5 h-5" />
                 </Button>
                 <Button 
                   variant="ghost" 
-                  size="icon"
+                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
                   onClick={() => toast.info('Video call functionaliteit komt binnenkort')}
                   title="Start video call"
-                  className="hover:bg-ka-green/10 hover:text-ka-green"
+                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0"
                 >
                   <Video className="w-5 h-5" />
                 </Button>
                 <Button 
                   variant="ghost" 
-                  size="icon"
+                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
                   onClick={() => toast.info('SMS functionaliteit komt binnenkort')}
                   title="Stuur SMS"
-                  className="hover:bg-ka-green/10 hover:text-ka-green"
+                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0"
                 >
                   <MessageSquare className="w-5 h-5" />
                 </Button>
               </div>
               
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(true)}>
-                <Edit className="w-4 h-4 mr-2" />
-                Bewerken
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setIsArchiveDialogOpen(true)}
-                title="Archiveer deze klant (blijft zichtbaar in historische weergave)"
-              >
-                <Archive className="w-5 h-5" />
-              </Button>
-              
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <MoreVertical className="w-5 h-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-white dark:bg-gray-800 z-50">
-                  <DropdownMenuItem onClick={() => toast.info('Export functionaliteit komt binnenkort')}>
-                    <FileText className="w-4 h-4 mr-2" />
-                    Exporteer klantgegevens
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    className="text-red-600 dark:text-red-400"
-                    onClick={() => toast.error('Verwijderen is alleen beschikbaar voor beheerders')}
-                  >
-                    <Archive className="w-4 h-4 mr-2" />
-                    Verwijder klant
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {/* Primary actions - Full width on mobile */}
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsEditDialogOpen(true)}
+                  size={touchSize}
+                  className="flex-1 sm:flex-initial"
+                >
+                  <Edit className="w-4 h-4 sm:mr-2" />
+                  <span className={isMobile ? "sr-only sm:not-sr-only" : ""}>Bewerken</span>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
+                  onClick={() => setIsArchiveDialogOpen(true)}
+                  title="Archiveer deze klant"
+                  className="flex-shrink-0"
+                >
+                  <Archive className="w-5 h-5" />
+                </Button>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
+                      className="flex-shrink-0"
+                    >
+                      <MoreVertical className="w-5 h-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 bg-white dark:bg-gray-800 z-50">
+                    <DropdownMenuItem onClick={() => toast.info('Export functionaliteit komt binnenkort')}>
+                      <FileText className="w-4 h-4 mr-2" />
+                      Exporteer klantgegevens
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      className="text-red-600 dark:text-red-400"
+                      onClick={() => toast.error('Verwijderen is alleen beschikbaar voor beheerders')}
+                    >
+                      <Archive className="w-4 h-4 mr-2" />
+                      Verwijder klant
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </div>
         </div>
       </div>
       
-      {/* Stats Cards */}
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      {/* Stats Cards - Responsive grid */}
+      <div className={`max-w-7xl mx-auto ${spacing.container.md}`}>
+        <div className={`grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 ${spacing.grid.md} mb-6`}>
           {/* Eerste contact */}
-          <Card>
+          <Card className="border-ka-gray-200 dark:border-gray-700">
             <CardContent className="pt-6">
-              <div className="text-sm text-ka-gray-500 dark:text-gray-400 mb-1">Klant sinds</div>
-              <div className="text-2xl font-bold text-ka-navy dark:text-white">
+              <div className={`${responsiveBody.small} text-ka-gray-500 dark:text-gray-400 mb-1`}>Klant sinds</div>
+              <div className={`${responsiveHeading.h3} text-ka-navy dark:text-white`}>
                 {formatDate(klant.sinds_wanneer_klant, currentUser?.language || 'nl')}
               </div>
               <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
@@ -234,13 +256,13 @@ export default function ClientDetailPage() {
           </Card>
           
           {/* Totaal gesprekken */}
-          <Card>
+          <Card className="border-ka-gray-200 dark:border-gray-700">
             <CardContent className="pt-6">
-              <div className="text-sm text-ka-gray-500 dark:text-gray-400 mb-1">Totaal gesprekken</div>
-              <div className="text-2xl font-bold text-ka-navy dark:text-white">
+              <div className={`${responsiveBody.small} text-ka-gray-500 dark:text-gray-400 mb-1`}>Totaal gesprekken</div>
+              <div className={`${responsiveHeading.h3} text-ka-navy dark:text-white`}>
                 {klant.aantal_interacties || 0}
               </div>
-              <div className="text-xs text-ka-green mt-1 flex items-center">
+              <div className="text-xs text-ka-green dark:text-ka-green-light mt-1 flex items-center">
                 <TrendingUp className="w-3 h-3 mr-1" />
                 Laatste: {interacties?.results[0]?.datum || '-'}
               </div>
@@ -248,10 +270,10 @@ export default function ClientDetailPage() {
           </Card>
           
           {/* Opdrachten */}
-          <Card>
+          <Card className="border-ka-gray-200 dark:border-gray-700">
             <CardContent className="pt-6">
-              <div className="text-sm text-ka-gray-500 dark:text-gray-400 mb-1">Opdrachten</div>
-              <div className="text-2xl font-bold text-ka-navy dark:text-white">
+              <div className={`${responsiveBody.small} text-ka-gray-500 dark:text-gray-400 mb-1`}>Opdrachten</div>
+              <div className={`${responsiveHeading.h3} text-ka-navy dark:text-white`}>
                 {klant.aantal_actieve_opdrachten || 0}
               </div>
               <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
@@ -261,10 +283,10 @@ export default function ClientDetailPage() {
           </Card>
           
           {/* Lifetime value */}
-          <Card>
+          <Card className="border-ka-gray-200 dark:border-gray-700">
             <CardContent className="pt-6">
-              <div className="text-sm text-ka-gray-500 dark:text-gray-400 mb-1">Lifetime Value</div>
-              <div className="text-2xl font-bold text-ka-green">
+              <div className={`${responsiveBody.small} text-ka-gray-500 dark:text-gray-400 mb-1`}>Lifetime Value</div>
+              <div className={`${responsiveHeading.h3} text-ka-green dark:text-ka-green-light`}>
                 €{klant.totale_omzet?.toLocaleString('nl-NL') || '0'}
               </div>
               <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
@@ -277,17 +299,17 @@ export default function ClientDetailPage() {
           </Card>
         </div>
         
-        {/* Contact Information Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* Contact Information Cards - Responsive grid */}
+        <div className={`grid grid-cols-1 lg:grid-cols-2 ${spacing.grid.md} mb-6`}>
           {/* Contactgegevens */}
-          <Card>
+          <Card className="border-ka-gray-200 dark:border-gray-700">
             <CardHeader>
-              <CardTitle className="text-lg flex items-center">
+              <CardTitle className={`${responsiveHeading.h4} flex items-center`}>
                 <Mail className="w-5 h-5 mr-2 text-ka-green" />
                 Contactgegevens
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className={spacing.stack.sm}>
               <div className="flex items-start space-x-3">
                 <Mail className="w-5 h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5" />
                 <div className="flex-1">
@@ -354,14 +376,14 @@ export default function ClientDetailPage() {
           </Card>
 
           {/* Adresgegevens */}
-          <Card>
+          <Card className="border-ka-gray-200 dark:border-gray-700">
             <CardHeader>
-              <CardTitle className="text-lg flex items-center">
+              <CardTitle className={`${responsiveHeading.h4} flex items-center`}>
                 <MapPin className="w-5 h-5 mr-2 text-ka-green" />
                 Adresgegevens
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className={spacing.stack.sm}>
               <div>
                 <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-2">Primair adres</div>
                 <div className="text-sm text-ka-gray-900 dark:text-gray-100">
@@ -392,8 +414,8 @@ export default function ClientDetailPage() {
           </Card>
         </div>
 
-        {/* NEW SECTIONS */}
-        <div className="space-y-6 mb-6">
+        {/* NEW SECTIONS - Responsive spacing */}
+        <div className={spacing.stack.md}>
           {/* Gerelateerde klanten */}
           <RelatedClientsSection klant={klant} relatedClients={relatedClients} />
           
@@ -413,13 +435,13 @@ export default function ClientDetailPage() {
           <InvoiceAddressSection klant={klant} />
         </div>
 
-        {/* Bedrijfsgegevens - Collapsible (alleen voor ZZP/MKB) */}
+        {/* Bedrijfsgegevens - Collapsible */}
         {(klant.type_klant === 'ZZP' || klant.type_klant === 'MKB') && (klant.kvk_nummer || klant.btw_nummer) && (
-          <Collapsible open={isBedrijfsOpen} onOpenChange={setIsBedrijfsOpen} className="mb-6">
-            <Card>
+          <Collapsible open={isBedrijfsOpen} onOpenChange={setIsBedrijfsOpen}>
+            <Card className="border-ka-gray-200 dark:border-gray-700">
               <CollapsibleTrigger className="w-full">
                 <CardHeader className="cursor-pointer hover:bg-ka-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                  <CardTitle className="text-lg flex items-center justify-between">
+                  <CardTitle className={`${responsiveHeading.h4} flex items-center justify-between`}>
                     <div className="flex items-center">
                       <Building2 className="w-5 h-5 mr-2 text-ka-green" />
                       Bedrijfsgegevens
@@ -429,7 +451,7 @@ export default function ClientDetailPage() {
                 </CardHeader>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <CardContent className="pt-0 space-y-3">
+                <CardContent className={`pt-0 ${spacing.stack.sm}`}>
                   {klant.kvk_nummer && (
                     <div>
                       <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">KvK nummer</div>
@@ -471,11 +493,11 @@ export default function ClientDetailPage() {
 
         {/* Persoonlijke gegevens - Collapsible */}
         {(klant.geboortedatum || klant.bsn) && (
-          <Collapsible open={isPersoonlijkOpen} onOpenChange={setIsPersoonlijkOpen} className="mb-6">
-            <Card>
+          <Collapsible open={isPersoonlijkOpen} onOpenChange={setIsPersoonlijkOpen}>
+            <Card className="border-ka-gray-200 dark:border-gray-700">
               <CollapsibleTrigger className="w-full">
                 <CardHeader className="cursor-pointer hover:bg-ka-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                  <CardTitle className="text-lg flex items-center justify-between">
+                  <CardTitle className={`${responsiveHeading.h4} flex items-center justify-between`}>
                     <div className="flex items-center">
                       <Calendar className="w-5 h-5 mr-2 text-ka-green" />
                       Persoonlijke gegevens
@@ -485,7 +507,7 @@ export default function ClientDetailPage() {
                 </CardHeader>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <CardContent className="pt-0 space-y-3">
+                <CardContent className={`pt-0 ${spacing.stack.sm}`}>
                   {klant.geboortedatum && (
                     <div>
                       <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Geboortedatum</div>
@@ -514,11 +536,11 @@ export default function ClientDetailPage() {
 
         {/* Financiële gegevens - Collapsible */}
         {(klant.iban || klant.betalingstermijn) && (
-          <Collapsible open={isFinancieelOpen} onOpenChange={setIsFinancieelOpen} className="mb-6">
-            <Card>
+          <Collapsible open={isFinancieelOpen} onOpenChange={setIsFinancieelOpen}>
+            <Card className="border-ka-gray-200 dark:border-gray-700">
               <CollapsibleTrigger className="w-full">
                 <CardHeader className="cursor-pointer hover:bg-ka-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                  <CardTitle className="text-lg flex items-center justify-between">
+                  <CardTitle className={`${responsiveHeading.h4} flex items-center justify-between`}>
                     <div className="flex items-center">
                       <CreditCard className="w-5 h-5 mr-2 text-ka-green" />
                       Financiële gegevens
@@ -529,7 +551,7 @@ export default function ClientDetailPage() {
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <CardContent className="pt-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className={`grid grid-cols-1 sm:grid-cols-2 ${spacing.grid.md}`}>
                     <div className="space-y-3">
                       {klant.iban && (
                         <div>
@@ -583,11 +605,11 @@ export default function ClientDetailPage() {
 
         {/* Notities - Collapsible */}
         {klant.notities && (
-          <Collapsible open={isNotitiesOpen} onOpenChange={setIsNotitiesOpen} className="mb-6">
-            <Card>
+          <Collapsible open={isNotitiesOpen} onOpenChange={setIsNotitiesOpen}>
+            <Card className="border-ka-gray-200 dark:border-gray-700">
               <CollapsibleTrigger className="w-full">
                 <CardHeader className="cursor-pointer hover:bg-ka-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                  <CardTitle className="text-lg flex items-center justify-between">
+                  <CardTitle className={`${responsiveHeading.h4} flex items-center justify-between`}>
                     <div className="flex items-center">
                       <FileText className="w-5 h-5 mr-2 text-ka-green" />
                       Notities
@@ -598,7 +620,7 @@ export default function ClientDetailPage() {
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <CardContent className="pt-0">
-                  <div className="text-sm text-ka-gray-700 dark:text-gray-300 whitespace-pre-wrap bg-ka-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <div className={`${responsiveBody.small} text-ka-gray-700 dark:text-gray-300 whitespace-pre-wrap bg-ka-gray-50 dark:bg-gray-800 p-4 rounded-lg`}>
                     {klant.notities}
                   </div>
                 </CardContent>
@@ -607,20 +629,27 @@ export default function ClientDetailPage() {
           </Collapsible>
         )}
         
-        {/* Tabs */}
-        <Tabs defaultValue="timeline" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="timeline">
-              Tijdlijn ({interacties?.results.length || 0})
+        {/* Tabs - Responsive, scroll on mobile */}
+        <Tabs defaultValue="timeline" className={spacing.stack.md}>
+          <TabsList className="w-full overflow-x-auto flex-nowrap justify-start">
+            <TabsTrigger value="timeline" className="flex-shrink-0">
+              <span className="hidden sm:inline">Tijdlijn</span>
+              <span className="sm:hidden">Tijdlijn</span>
+              <span className="ml-1">({interacties?.results.length || 0})</span>
             </TabsTrigger>
-            <TabsTrigger value="assignments">
-              Opdrachten ({klant.aantal_opdrachten || 0})
+            <TabsTrigger value="assignments" className="flex-shrink-0">
+              <span className="hidden sm:inline">Opdrachten</span>
+              <span className="sm:hidden">Opdr</span>
+              <span className="ml-1">({klant.aantal_opdrachten || 0})</span>
             </TabsTrigger>
-            <TabsTrigger value="tasks">
-              Taken ({klant.aantal_openstaande_taken || 0})
+            <TabsTrigger value="tasks" className="flex-shrink-0">
+              <span className="hidden sm:inline">Taken</span>
+              <span className="sm:hidden">Taken</span>
+              <span className="ml-1">({klant.aantal_openstaande_taken || 0})</span>
             </TabsTrigger>
-            <TabsTrigger value="contacts">
-              Contactpersonen
+            <TabsTrigger value="contacts" className="flex-shrink-0">
+              <span className="hidden sm:inline">Contactpersonen</span>
+              <span className="sm:hidden">Cont</span>
             </TabsTrigger>
           </TabsList>
           
