@@ -44,3 +44,24 @@ export function getChannelBadgeClass(channel: Channel): string {
   
   return colors[channel] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
 }
+
+// Map Channel names to ChannelIcon format
+type ChannelIconType = "whatsapp" | "email" | "phone" | "video" | "facebook" | "instagram" | "linkedin" | "sms";
+
+export function normalizeChannelForIcon(channel: string): ChannelIconType {
+  const mapping: Record<string, ChannelIconType> = {
+    'whatsapp': 'whatsapp',
+    'e-mail': 'email',
+    'email': 'email',
+    'telefoon': 'phone',
+    'phone': 'phone',
+    'zoom': 'video',
+    'video': 'video',
+    'sms': 'sms',
+    'facebook': 'facebook',
+    'instagram': 'instagram',
+    'linkedin': 'linkedin',
+  };
+  
+  return mapping[channel.toLowerCase()] || 'email';
+}

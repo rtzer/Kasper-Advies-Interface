@@ -10,8 +10,7 @@ import { useConversations, useConversationMessages } from "@/lib/api/conversatio
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { nl } from "date-fns/locale";
-
-type ChannelType = "whatsapp" | "email" | "phone" | "video" | "facebook" | "instagram" | "linkedin" | "sms";
+import { normalizeChannelForIcon } from "@/lib/utils/channelHelpers";
 
 export default function FlowbiteUnifiedInbox() {
   const { data: conversationsData, isLoading } = useConversations();
@@ -99,7 +98,7 @@ export default function FlowbiteUnifiedInbox() {
                     name={conversation.klant_naam}
                     lastMessage={conversation.onderwerp || 'Geen onderwerp'}
                     timestamp={lastMessageTime}
-                    channel={conversation.primary_channel.toLowerCase() as ChannelType}
+                    channel={normalizeChannelForIcon(conversation.primary_channel)}
                     unreadCount={conversation.is_unread ? 1 : 0}
                     isActive={conversation.id === selectedConversationId}
                     onClick={() => setSelectedConversationId(conversation.id)}
@@ -128,7 +127,7 @@ export default function FlowbiteUnifiedInbox() {
           <FlowbiteChatView
             conversationName={selectedConversation.klant_naam}
             conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation.klant_naam}`}
-            channel={selectedConversation.primary_channel.toLowerCase() as ChannelType}
+            channel={normalizeChannelForIcon(selectedConversation.primary_channel)}
             messages={transformedMessages}
             isOnline={selectedConversation.status === 'open'}
             clientId={selectedConversation.klant_id}

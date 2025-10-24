@@ -3,6 +3,7 @@ import { ArrowLeft, MoreVertical, Phone, Video, Mail, Archive, Tag } from "lucid
 import { FlowbiteChatView } from "@/components/inbox/FlowbiteChatView";
 import { useConversation, useConversationMessages } from "@/lib/api/conversations";
 import { Skeleton } from "@/components/ui/skeleton";
+import { normalizeChannelForIcon } from "@/lib/utils/channelHelpers";
 
 export default function FlowbiteConversationDetail() {
   const { id } = useParams();
@@ -104,7 +105,7 @@ export default function FlowbiteConversationDetail() {
           <FlowbiteChatView
             conversationName={conversation.klant_naam}
             conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${conversation.klant_naam}`}
-            channel={conversation.primary_channel.toLowerCase() as any}
+            channel={normalizeChannelForIcon(conversation.primary_channel)}
             messages={messages}
             isOnline={conversation.status === 'open'}
             clientId={conversation.klant_id}
