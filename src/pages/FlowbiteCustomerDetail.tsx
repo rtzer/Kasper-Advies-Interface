@@ -1,38 +1,42 @@
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Mail, Phone, MapPin, Building2, Calendar, MessageSquare, Edit, Trash2 } from "lucide-react";
-
-const mockCustomer = {
-  id: "1",
-  name: "Rosemary Braun",
-  email: "rosemary.braun@example.com",
-  phone: "+31 6 12345678",
-  company: "Tech Solutions BV",
-  location: "Amsterdam, Netherlands",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rosemary",
-  tags: ["VIP", "Premium", "Active"],
-  status: "Active Customer",
-  firstContact: "Jan 15, 2024",
-  lastContact: "2 hours ago",
-  totalConversations: 23,
-  totalOrders: 12,
-  lifetimeValue: "€4,250",
-  preferredChannel: "WhatsApp",
-};
-
-const recentActivity = [
-  { id: "1", type: "message", channel: "whatsapp", description: "Nieuwe conversatie gestart", date: "2 hours ago" },
-  { id: "2", type: "order", channel: "email", description: "Order #12345 geplaatst", date: "1 day ago" },
-  { id: "3", type: "message", channel: "email", description: "Support ticket #789 opgelost", date: "3 days ago" },
-  { id: "4", type: "call", channel: "phone", description: "Telefoongesprek van 15 min", date: "1 week ago" },
-];
-
-const notes = [
-  { id: "1", author: "Jan van Dijk", content: "VIP klant - altijd prioriteit geven", date: "Jan 20, 2024" },
-  { id: "2", author: "Lisa Peters", content: "Geïnteresseerd in premium features", date: "Feb 5, 2024" },
-];
+import { useKlant } from "@/lib/api/klanten";
+import { useInteractiesByKlant } from "@/lib/api/interacties";
+import { Skeleton } from "@/components/ui/skeleton";
+import { formatDistanceToNow } from "date-fns";
+import { nl } from "date-fns/locale";
 
 export default function FlowbiteCustomerDetail() {
   const { id } = useParams();
+  const { data: klant, isLoading } = useKlant(id || "1");
+  const { data: interactiesData } = useInteractiesByKlant(id || "1");
+  
+  const recentActivity = (interactiesData?.results || []).slice(0, 5).map((int) => ({
+    id: int.id,
+    type: "message",
+    channel: int.kanaal.toLowerCase(),
+    description: int.onderwerp || 'Interactie',
+    date: formatDistanceToNow(new Date(int.datum), { addSuffix: true, locale: nl }),
+  }));
+  
+  if (isLoading) {
+    return (
+      <div className="h-[calc(100vh-64px)] overflow-y-auto bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto p-6">
+          <Skeleton className="h-20 w-full mb-4" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+      </div>
+    );
+  }
+  
+  if (!klant) {
+    return (
+      <div className="h-[calc(100vh-64px)] flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <p className="text-gray-500 dark:text-gray-400">Klant niet gevonden</p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[calc(100vh-64px)] overflow-y-auto bg-gray-50 dark:bg-gray-900">
@@ -73,19 +77,23 @@ export default function FlowbiteCustomerDetail() {
               <div className="flex items-start justify-between mb-6">
                 <div className="flex items-center gap-4">
                   <img
-                    src={mockCustomer.avatar}
-                    alt={mockCustomer.name}
+                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${klant.naam}`}
+                    alt={klant.naam}
                     className="w-20 h-20 rounded-full"
                   />
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{mockCustomer.name}</h2>
-                    <p className="text-gray-500 dark:text-gray-400">{mockCustomer.status}</p>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{klant.naam}</h2>
+                    <p className="text-gray-500 dark:text-gray-400">{klant.status} - {klant.type_klant}</p>
                     <div className="flex flex-wrap gap-2 mt-2">
-                      {mockCustomer.tags.map((tag) => (
-                        <span key={tag} className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 rounded">
-                          {tag}
-                        </span>
-                      ))}
+                      {klant.tags && klant.tags.length > 0 ? (
+                        klant.tags.map((tag) => (
+                          <span key={tag} className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 rounded">
+                            {tag}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-xs text-gray-500 dark:text-gray-400">Geen tags</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -95,28 +103,28 @@ export default function FlowbiteCustomerDetail() {
                   <Mail className="h-5 w-5 text-gray-400" />
                   <div>
                     <p className="text-xs text-gray-500 dark:text-gray-400">Email</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{mockCustomer.email}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{klant.email || 'Geen email'}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-gray-400" />
                   <div>
                     <p className="text-xs text-gray-500 dark:text-gray-400">Telefoon</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{mockCustomer.phone}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{klant.telefoonnummer || 'Geen telefoon'}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Building2 className="h-5 w-5 text-gray-400" />
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Bedrijf</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{mockCustomer.company}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Klant nummer</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{klant.klant_nummer}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <MapPin className="h-5 w-5 text-gray-400" />
                   <div>
                     <p className="text-xs text-gray-500 dark:text-gray-400">Locatie</p>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{mockCustomer.location}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{klant.plaats || 'Onbekend'}</p>
                   </div>
                 </div>
               </div>
@@ -159,42 +167,39 @@ export default function FlowbiteCustomerDetail() {
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Statistieken</h3>
               <div className="space-y-4">
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Eerste Contact</p>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{mockCustomer.firstContact}</p>
-                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Status</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">{klant.status}</p>
                 </div>
                 <hr className="border-gray-200 dark:border-gray-700" />
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Laatste Contact</p>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">{mockCustomer.lastContact}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Type</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">{klant.type_klant}</p>
                 </div>
                 <hr className="border-gray-200 dark:border-gray-700" />
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Totaal Gesprekken</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{mockCustomer.totalConversations}</p>
-                </div>
-                <hr className="border-gray-200 dark:border-gray-700" />
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Totaal Orders</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{mockCustomer.totalOrders}</p>
-                </div>
-                <hr className="border-gray-200 dark:border-gray-700" />
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Lifetime Value</p>
-                  <p className="text-2xl font-bold text-green-600 dark:text-green-500">{mockCustomer.lifetimeValue}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Interacties</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{interactiesData?.count || 0}</p>
                 </div>
               </div>
             </div>
 
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Voorkeuren</h3>
-              <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Voorkeur Kanaal</p>
-                <span className="px-2 py-1 text-xs font-medium text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-300 rounded">
-                  {mockCustomer.preferredChannel}
-                </span>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Extra Informatie</h3>
+              <div className="space-y-3">
+                {klant.partner_naam && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Partner</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{klant.partner_naam}</p>
+                  </div>
+                )}
+                {klant.website && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Website</p>
+                    <a href={klant.website} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">
+                      {klant.website}
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </div>

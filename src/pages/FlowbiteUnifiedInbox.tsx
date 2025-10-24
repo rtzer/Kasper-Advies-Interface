@@ -6,72 +6,44 @@ import { Search, Filter, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useConversations, useConversationMessages } from "@/lib/api/conversations";
+import { Skeleton } from "@/components/ui/skeleton";
+import { formatDistanceToNow } from "date-fns";
+import { nl } from "date-fns/locale";
 
 type ChannelType = "whatsapp" | "email" | "phone" | "video" | "facebook" | "instagram" | "linkedin" | "sms";
 
-const conversations = [
-  {
-    id: "1",
-    name: "Rosemary Braun",
-    lastMessage: "Hello, I received a damaged product...",
-    timestamp: "2m ago",
-    channel: "whatsapp" as ChannelType,
-    unreadCount: 2,
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rosemary",
-    clientId: "1",
-  },
-  {
-    id: "2",
-    name: "Ronald Richards",
-    lastMessage: "Question about invoice #12345",
-    timestamp: "15m ago",
-    channel: "email" as ChannelType,
-    unreadCount: 1,
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ronald",
-    clientId: "2",
-  },
-  {
-    id: "3",
-    name: "Cameron Williams",
-    lastMessage: "Thanks for the quick response!",
-    timestamp: "1h ago",
-    channel: "whatsapp" as ChannelType,
-    unreadCount: 0,
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Cameron",
-    clientId: "3",
-  },
-  {
-    id: "4",
-    name: "Esther Howard",
-    lastMessage: "Order delivery status",
-    timestamp: "2h ago",
-    channel: "email" as ChannelType,
-    unreadCount: 0,
-    avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Esther",
-    clientId: "4",
-  },
-];
-
-const messages = [
-  { id: "1", text: "Hello, I received a damaged product in my order #12345", time: "14:32", isOwn: false, senderName: "Rosemary Braun" },
-  { id: "2", text: "I'm very sorry to hear that. Can you send me a photo of the damage?", time: "14:33", isOwn: true, status: "read" as const },
-  { id: "3", text: "Sure, here it is", time: "14:35", isOwn: false, hasAttachment: true },
-  { id: "4", text: "Thank you. We'll send you a replacement immediately.", time: "14:36", isOwn: true, status: "delivered" as const },
-];
-
 export default function FlowbiteUnifiedInbox() {
-  const [selectedConversationId, setSelectedConversationId] = useState<string>(conversations[0].id);
+  const { data: conversationsData, isLoading } = useConversations();
+  const conversations = conversationsData?.results || [];
+  
+  const [selectedConversationId, setSelectedConversationId] = useState<string>(conversations[0]?.id || "1");
   const [searchQuery, setSearchQuery] = useState("");
+  
+  // Get messages for selected conversation
+  const { data: messagesData } = useConversationMessages(selectedConversationId);
 
   const filteredConversations = useMemo(() => {
+    if (!conversations.length) return [];
     return conversations.filter((conv) => {
-      const matchesSearch = conv.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        conv.lastMessage.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = conv.klant_naam.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        conv.onderwerp?.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesSearch;
     });
-  }, [searchQuery]);
+  }, [conversations, searchQuery]);
 
   const selectedConversation = conversations.find((c) => c.id === selectedConversationId);
+  
+  // Transform messages to match FlowbiteChatView format
+  const transformedMessages = (messagesData?.results || []).map((msg) => ({
+    id: msg.id,
+    text: msg.content,
+    time: new Date(msg.timestamp).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }),
+    isOwn: msg.direction === 'outbound',
+    senderName: msg.from.naam,
+    hasAttachment: msg.attachments && msg.attachments.length > 0,
+    status: msg.delivery_status as 'sent' | 'delivered' | 'read' | undefined,
+  }));
 
   return (
     <div className="flex h-[calc(100vh-64px)]">
@@ -108,16 +80,34 @@ export default function FlowbiteUnifiedInbox() {
 
         {/* Conversations */}
         <div className="flex-1 overflow-y-auto">
-          {filteredConversations.length > 0 ? (
-            filteredConversations.map((conversation) => (
-              <Link key={conversation.id} to={`/unified-inbox/conversation/${conversation.id}`}>
-                <FlowbiteConversationItem
-                  {...conversation}
-                  isActive={conversation.id === selectedConversationId}
-                  onClick={() => setSelectedConversationId(conversation.id)}
-                />
-              </Link>
-            ))
+          {isLoading ? (
+            <div className="p-4 space-y-3">
+              {[...Array(5)].map((_, i) => (
+                <Skeleton key={i} className="h-20 w-full" />
+              ))}
+            </div>
+          ) : filteredConversations.length > 0 ? (
+            filteredConversations.map((conversation) => {
+              const lastMessageTime = conversation.last_message_at 
+                ? formatDistanceToNow(new Date(conversation.last_message_at), { addSuffix: true, locale: nl })
+                : '';
+              
+              return (
+                <Link key={conversation.id} to={`/unified-inbox/conversation/${conversation.id}`}>
+                  <FlowbiteConversationItem
+                    id={conversation.id}
+                    name={conversation.klant_naam}
+                    lastMessage={conversation.onderwerp || 'Geen onderwerp'}
+                    timestamp={lastMessageTime}
+                    channel={conversation.primary_channel.toLowerCase() as ChannelType}
+                    unreadCount={conversation.is_unread ? 1 : 0}
+                    isActive={conversation.id === selectedConversationId}
+                    onClick={() => setSelectedConversationId(conversation.id)}
+                    avatarUrl={`https://api.dicebear.com/7.x/avataaars/svg?seed=${conversation.klant_naam}`}
+                  />
+                </Link>
+              );
+            })
           ) : (
             <div className="flex flex-col items-center justify-center h-full p-8 text-center">
               <Search className="w-12 h-12 text-muted-foreground mb-3" />
@@ -136,12 +126,12 @@ export default function FlowbiteUnifiedInbox() {
       <div className="flex-1 flex flex-col">
         {selectedConversation && (
           <FlowbiteChatView
-            conversationName={selectedConversation.name}
-            conversationAvatar={selectedConversation.avatarUrl}
-            channel={selectedConversation.channel}
-            messages={messages}
-            isOnline={selectedConversation.id === "1"}
-            clientId={selectedConversation.clientId}
+            conversationName={selectedConversation.klant_naam}
+            conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation.klant_naam}`}
+            channel={selectedConversation.primary_channel.toLowerCase() as ChannelType}
+            messages={transformedMessages}
+            isOnline={selectedConversation.status === 'open'}
+            clientId={selectedConversation.klant_id}
           />
         )}
       </div>
@@ -153,15 +143,21 @@ export default function FlowbiteUnifiedInbox() {
           <div className="text-center mb-6">
             <img
               className="w-24 h-24 rounded-full mx-auto mb-4"
-              src={selectedConversation?.avatarUrl}
-              alt={selectedConversation?.name}
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation?.klant_naam}`}
+              alt={selectedConversation?.klant_naam}
             />
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              {selectedConversation?.name}
+              {selectedConversation?.klant_naam}
             </h3>
-            <Badge variant="secondary" className="bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]">
-              <span className="w-2 h-2 mr-1.5 bg-[hsl(var(--status-online))] rounded-full"></span>
-              Actieve klant
+            <Badge variant="secondary" className={
+              selectedConversation?.status === 'open' 
+                ? "bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]"
+                : "bg-[hsl(var(--status-away)/0.1)] text-[hsl(var(--status-away))] border-[hsl(var(--status-away)/0.2)]"
+            }>
+              <span className={`w-2 h-2 mr-1.5 rounded-full ${
+                selectedConversation?.status === 'open' ? 'bg-[hsl(var(--status-online))]' : 'bg-[hsl(var(--status-away))]'
+              }`}></span>
+              {selectedConversation?.status === 'open' ? 'Actieve conversatie' : 'Gesloten'}
             </Badge>
           </div>
 
@@ -172,16 +168,16 @@ export default function FlowbiteUnifiedInbox() {
             </h4>
             <dl className="text-sm text-foreground divide-y divide-border">
               <div className="flex flex-col pb-3">
-                <dt className="mb-1 text-muted-foreground">Email</dt>
-                <dd className="font-semibold">rosemary.braun@example.com</dd>
+                <dt className="mb-1 text-muted-foreground">Klant ID</dt>
+                <dd className="font-semibold">{selectedConversation?.klant_id}</dd>
               </div>
               <div className="flex flex-col py-3">
-                <dt className="mb-1 text-muted-foreground">Telefoon</dt>
-                <dd className="font-semibold">+31 6 12345678</dd>
+                <dt className="mb-1 text-muted-foreground">Primary Channel</dt>
+                <dd className="font-semibold">{selectedConversation?.primary_channel}</dd>
               </div>
               <div className="flex flex-col pt-3">
-                <dt className="mb-1 text-muted-foreground">Bedrijf</dt>
-                <dd className="font-semibold">Tech Solutions BV</dd>
+                <dt className="mb-1 text-muted-foreground">Toegewezen aan</dt>
+                <dd className="font-semibold">{selectedConversation?.toegewezen_aan || 'Niet toegewezen'}</dd>
               </div>
             </dl>
           </div>
@@ -193,12 +189,12 @@ export default function FlowbiteUnifiedInbox() {
             </h4>
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
-                <dt className="mb-1 text-xs text-muted-foreground">Gesprekken</dt>
-                <dd className="text-2xl font-bold text-foreground">23</dd>
+                <dt className="mb-1 text-xs text-muted-foreground">Berichten</dt>
+                <dd className="text-2xl font-bold text-foreground">{selectedConversation?.message_count || 0}</dd>
               </div>
               <div className="col-span-1">
-                <dt className="mb-1 text-xs text-muted-foreground">Orders</dt>
-                <dd className="text-2xl font-bold text-foreground">12</dd>
+                <dt className="mb-1 text-xs text-muted-foreground">Prioriteit</dt>
+                <dd className="text-2xl font-bold text-foreground capitalize">{selectedConversation?.priority || 'Normal'}</dd>
               </div>
             </div>
           </div>
@@ -207,8 +203,13 @@ export default function FlowbiteUnifiedInbox() {
           <div>
             <h4 className="text-sm font-semibold text-foreground mb-3">Tags</h4>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary">VIP</Badge>
-              <Badge variant="secondary" className="bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20">Premium</Badge>
+              {selectedConversation?.tags && selectedConversation.tags.length > 0 ? (
+                selectedConversation.tags.map((tag, idx) => (
+                  <Badge key={idx} variant="secondary">{tag}</Badge>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">Geen tags</p>
+              )}
             </div>
           </div>
         </div>
