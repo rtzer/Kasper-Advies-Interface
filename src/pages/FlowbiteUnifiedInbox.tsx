@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { InboxFilterDialog } from "@/components/inbox/InboxFilterDialog";
+import { CreateConversationDialog } from "@/components/inbox/CreateConversationDialog";
 import { FlowbiteConversationItem } from "@/components/inbox/FlowbiteConversationItem";
 import { FlowbiteChatView } from "@/components/inbox/FlowbiteChatView";
 import { Search, Filter, Plus } from "lucide-react";
@@ -20,6 +21,7 @@ export default function FlowbiteUnifiedInbox() {
   const [selectedConversationId, setSelectedConversationId] = useState<string>(conversations[0]?.id || "1");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [filters, setFilters] = useState({
     status: 'all',
     channel: 'all',
@@ -90,6 +92,7 @@ export default function FlowbiteUnifiedInbox() {
               <Button 
                 size="icon"
                 title="Start nieuwe conversatie"
+                onClick={() => setCreateDialogOpen(true)}
               >
                 <Plus className="w-4 h-4" />
               </Button>
@@ -263,6 +266,12 @@ export default function FlowbiteUnifiedInbox() {
         onOpenChange={setFilterDialogOpen}
         filters={filters}
         onFiltersChange={setFilters}
+      />
+
+      {/* Create Conversation Dialog */}
+      <CreateConversationDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
       />
     </div>
   );

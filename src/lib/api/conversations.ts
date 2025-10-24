@@ -209,3 +209,92 @@ export function useUpdateConversationPriority() {
     },
   });
 }
+
+export function useCreateConversation() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ 
+      klant_id, 
+      klant_naam,
+      primary_channel,
+      onderwerp,
+      initial_message 
+    }: { 
+      klant_id: string;
+      klant_naam: string;
+      primary_channel: string;
+      onderwerp: string;
+      initial_message?: string;
+    }) => {
+      await delay(500);
+      
+      const newConversation: Conversation = {
+        id: `conv_${Date.now()}`,
+        conversation_nummer: `CONV-2024-${String(mockConversations.length + 1).padStart(4, '0')}`,
+        status: 'open',
+        klant_id,
+        klant_naam,
+        primary_channel: primary_channel as any,
+        all_channels: [primary_channel as any],
+        onderwerp,
+        tags: [],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        last_message_at: new Date().toISOString(),
+        toegewezen_aan: 'Harm-Jan Kaspers',
+        team_members: ['Harm-Jan Kaspers'],
+        opvolging_nodig: false,
+        priority: 'normal',
+        is_unread: false,
+        message_count: initial_message ? 1 : 0,
+        sentiment: 'neutral',
+      };
+      
+      mockConversations.unshift(newConversation);
+      
+      // Create initial message if provided
+      if (initial_message) {
+        const newMessage: Message = {
+          id: `m${Date.now()}`,
+          conversation_id: newConversation.id,
+          content: initial_message,
+          timestamp: new Date().toISOString(),
+          channel: primary_channel as any,
+          direction: 'outbound',
+          from: {
+            id: 'team1',
+            naam: 'Harm-Jan Kaspers',
+            type: 'team_member',
+          },
+          to: {
+            id: klant_id,
+            naam: klant_naam,
+            type: 'client',
+          },
+          channel_metadata: {
+            channel: primary_channel as any,
+            whatsapp_message_id: `wa_${Date.now()}`,
+            status: 'sent',
+          },
+          is_thread_start: true,
+          delivery_status: 'sent',
+          attachments: [],
+          contains_question: false,
+          action_required: false,
+          marked_important: false,
+        };
+        
+        if (!mockMessages[newConversation.id]) {
+          mockMessages[newConversation.id] = [];
+        }
+        mockMessages[newConversation.id].push(newMessage);
+      }
+      
+      return newConversation;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    },
+  });
+}
