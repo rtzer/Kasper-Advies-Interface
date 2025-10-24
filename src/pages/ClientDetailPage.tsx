@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Send, Video, Linkedin, Globe, Building2, Calendar, ShieldAlert, CreditCard, MessageCircle, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Send, Video, Linkedin, Globe, Building2, Calendar, ShieldAlert, CreditCard, MessageCircle, MessageSquare, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useKlant } from '@/lib/api/klanten';
 import { useInteractiesByKlant } from '@/lib/api/interacties';
 import ClientInteractionsTimeline from '@/components/clients/ClientInteractionsTimeline';
@@ -27,6 +28,12 @@ export default function ClientDetailPage() {
   const { data: interacties } = useInteractiesByKlant(id!);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
+  
+  // Collapsible states
+  const [isBedrijfsOpen, setIsBedrijfsOpen] = useState(false);
+  const [isPersoonlijkOpen, setIsPersoonlijkOpen] = useState(false);
+  const [isFinancieelOpen, setIsFinancieelOpen] = useState(false);
+  const [isNotitiesOpen, setIsNotitiesOpen] = useState(false);
   
   if (isLoading) {
     return (
@@ -368,162 +375,198 @@ export default function ClientDetailPage() {
           </Card>
         </div>
 
-        {/* Bedrijfs- en Persoonlijke gegevens */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Bedrijfsgegevens (alleen voor ZZP/MKB) */}
-          {(klant.type_klant === 'ZZP' || klant.type_klant === 'MKB') && (klant.kvk_nummer || klant.btw_nummer) && (
+        {/* Bedrijfsgegevens - Collapsible (alleen voor ZZP/MKB) */}
+        {(klant.type_klant === 'ZZP' || klant.type_klant === 'MKB') && (klant.kvk_nummer || klant.btw_nummer) && (
+          <Collapsible open={isBedrijfsOpen} onOpenChange={setIsBedrijfsOpen} className="mb-6">
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center">
-                  <Building2 className="w-5 h-5 mr-2 text-ka-green" />
-                  Bedrijfsgegevens
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {klant.kvk_nummer && (
-                  <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">KvK nummer</div>
-                    <div className="text-sm font-mono text-ka-navy dark:text-white">
-                      {klant.kvk_nummer}
+              <CollapsibleTrigger className="w-full">
+                <CardHeader className="cursor-pointer hover:bg-ka-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                  <CardTitle className="text-lg flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Building2 className="w-5 h-5 mr-2 text-ka-green" />
+                      Bedrijfsgegevens
                     </div>
-                  </div>
-                )}
-                
-                {klant.btw_nummer && (
-                  <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">BTW nummer</div>
-                    <div className="text-sm font-mono text-ka-navy dark:text-white">
-                      {klant.btw_nummer}
-                    </div>
-                  </div>
-                )}
-
-                {klant.jaren_actief_als_ondernemer && (
-                  <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Jaren actief als ondernemer</div>
-                    <div className="text-sm text-ka-navy dark:text-white">
-                      {klant.jaren_actief_als_ondernemer} jaar
-                    </div>
-                  </div>
-                )}
-
-                {klant.omzet_categorie && (
-                  <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Omzet categorie</div>
-                    <Badge variant="secondary">{klant.omzet_categorie}</Badge>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Persoonlijke gegevens */}
-          {(klant.geboortedatum || klant.bsn) && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center">
-                  <Calendar className="w-5 h-5 mr-2 text-ka-green" />
-                  Persoonlijke gegevens
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {klant.geboortedatum && (
-                  <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Geboortedatum</div>
-                    <div className="text-sm text-ka-navy dark:text-white">
-                      {formatDate(klant.geboortedatum, currentUser?.language || 'nl')}
-                    </div>
-                  </div>
-                )}
-                
-                {klant.bsn && (
-                  <div>
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1 flex items-center">
-                      <ShieldAlert className="w-3 h-3 mr-1 text-amber-500" />
-                      BSN (Gevoelig)
-                    </div>
-                    <div className="text-sm font-mono text-ka-navy dark:text-white bg-amber-50 dark:bg-amber-950/20 px-2 py-1 rounded border border-amber-200 dark:border-amber-800">
-                      {klant.bsn}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Financiële gegevens */}
-        {(klant.iban || klant.betalingstermijn) && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center">
-                <CreditCard className="w-5 h-5 mr-2 text-ka-green" />
-                Financiële gegevens
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  {klant.iban && (
+                    <ChevronDown className={`w-5 h-5 text-ka-gray-500 transition-transform ${isBedrijfsOpen ? 'rotate-180' : ''}`} />
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="pt-0 space-y-3">
+                  {klant.kvk_nummer && (
                     <div>
-                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">IBAN</div>
+                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">KvK nummer</div>
                       <div className="text-sm font-mono text-ka-navy dark:text-white">
-                        {klant.iban}
+                        {klant.kvk_nummer}
                       </div>
-                      {klant.bank_naam && (
-                        <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
-                          {klant.bank_naam}
+                    </div>
+                  )}
+                  
+                  {klant.btw_nummer && (
+                    <div>
+                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">BTW nummer</div>
+                      <div className="text-sm font-mono text-ka-navy dark:text-white">
+                        {klant.btw_nummer}
+                      </div>
+                    </div>
+                  )}
+
+                  {klant.jaren_actief_als_ondernemer && (
+                    <div>
+                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Jaren actief als ondernemer</div>
+                      <div className="text-sm text-ka-navy dark:text-white">
+                        {klant.jaren_actief_als_ondernemer} jaar
+                      </div>
+                    </div>
+                  )}
+
+                  {klant.omzet_categorie && (
+                    <div>
+                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Omzet categorie</div>
+                      <Badge variant="secondary">{klant.omzet_categorie}</Badge>
+                    </div>
+                  )}
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+        )}
+
+        {/* Persoonlijke gegevens - Collapsible */}
+        {(klant.geboortedatum || klant.bsn) && (
+          <Collapsible open={isPersoonlijkOpen} onOpenChange={setIsPersoonlijkOpen} className="mb-6">
+            <Card>
+              <CollapsibleTrigger className="w-full">
+                <CardHeader className="cursor-pointer hover:bg-ka-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                  <CardTitle className="text-lg flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Calendar className="w-5 h-5 mr-2 text-ka-green" />
+                      Persoonlijke gegevens
+                    </div>
+                    <ChevronDown className={`w-5 h-5 text-ka-gray-500 transition-transform ${isPersoonlijkOpen ? 'rotate-180' : ''}`} />
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="pt-0 space-y-3">
+                  {klant.geboortedatum && (
+                    <div>
+                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Geboortedatum</div>
+                      <div className="text-sm text-ka-navy dark:text-white">
+                        {formatDate(klant.geboortedatum, currentUser?.language || 'nl')}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {klant.bsn && (
+                    <div>
+                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1 flex items-center">
+                        <ShieldAlert className="w-3 h-3 mr-1 text-amber-500" />
+                        BSN (Gevoelig)
+                      </div>
+                      <div className="text-sm font-mono text-ka-navy dark:text-white bg-amber-50 dark:bg-amber-950/20 px-2 py-1 rounded border border-amber-200 dark:border-amber-800">
+                        {klant.bsn}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+        )}
+
+        {/* Financiële gegevens - Collapsible */}
+        {(klant.iban || klant.betalingstermijn) && (
+          <Collapsible open={isFinancieelOpen} onOpenChange={setIsFinancieelOpen} className="mb-6">
+            <Card>
+              <CollapsibleTrigger className="w-full">
+                <CardHeader className="cursor-pointer hover:bg-ka-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                  <CardTitle className="text-lg flex items-center justify-between">
+                    <div className="flex items-center">
+                      <CreditCard className="w-5 h-5 mr-2 text-ka-green" />
+                      Financiële gegevens
+                    </div>
+                    <ChevronDown className={`w-5 h-5 text-ka-gray-500 transition-transform ${isFinancieelOpen ? 'rotate-180' : ''}`} />
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      {klant.iban && (
+                        <div>
+                          <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">IBAN</div>
+                          <div className="text-sm font-mono text-ka-navy dark:text-white">
+                            {klant.iban}
+                          </div>
+                          {klant.bank_naam && (
+                            <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
+                              {klant.bank_naam}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {klant.bic && (
+                        <div>
+                          <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">BIC</div>
+                          <div className="text-sm font-mono text-ka-navy dark:text-white">
+                            {klant.bic}
+                          </div>
                         </div>
                       )}
                     </div>
-                  )}
 
-                  {klant.bic && (
-                    <div>
-                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">BIC</div>
-                      <div className="text-sm font-mono text-ka-navy dark:text-white">
-                        {klant.bic}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                    <div className="space-y-3">
+                      {klant.alternatief_iban && (
+                        <div>
+                          <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Alternatief IBAN</div>
+                          <div className="text-sm font-mono text-ka-navy dark:text-white">
+                            {klant.alternatief_iban}
+                          </div>
+                        </div>
+                      )}
 
-                <div className="space-y-3">
-                  {klant.alternatief_iban && (
-                    <div>
-                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Alternatief IBAN</div>
-                      <div className="text-sm font-mono text-ka-navy dark:text-white">
-                        {klant.alternatief_iban}
-                      </div>
+                      {klant.betalingstermijn && (
+                        <div>
+                          <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Betalingstermijn</div>
+                          <div className="text-sm text-ka-navy dark:text-white">
+                            {klant.betalingstermijn} dagen
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-
-                  {klant.betalingstermijn && (
-                    <div>
-                      <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Betalingstermijn</div>
-                      <div className="text-sm text-ka-navy dark:text-white">
-                        {klant.betalingstermijn} dagen
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
         )}
 
-        {/* Notities */}
+        {/* Notities - Collapsible */}
         {klant.notities && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="text-lg">Notities</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm text-ka-gray-700 dark:text-gray-300 whitespace-pre-wrap bg-ka-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-                {klant.notities}
-              </div>
-            </CardContent>
-          </Card>
+          <Collapsible open={isNotitiesOpen} onOpenChange={setIsNotitiesOpen} className="mb-6">
+            <Card>
+              <CollapsibleTrigger className="w-full">
+                <CardHeader className="cursor-pointer hover:bg-ka-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                  <CardTitle className="text-lg flex items-center justify-between">
+                    <div className="flex items-center">
+                      <FileText className="w-5 h-5 mr-2 text-ka-green" />
+                      Notities
+                    </div>
+                    <ChevronDown className={`w-5 h-5 text-ka-gray-500 transition-transform ${isNotitiesOpen ? 'rotate-180' : ''}`} />
+                  </CardTitle>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="pt-0">
+                  <div className="text-sm text-ka-gray-700 dark:text-gray-300 whitespace-pre-wrap bg-ka-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                    {klant.notities}
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
         )}
         
         {/* Tabs */}
