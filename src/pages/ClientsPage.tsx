@@ -141,7 +141,7 @@ export default function ClientsPage() {
             ))}
           </>
         ) : filteredKlanten.length === 0 ? (
-          <Card className="px-4 xs:px-6 sm:px-8 py-6 xs:py-7 sm:py-8 text-center border-ka-gray-200 dark:border-gray-700">
+          <Card className="px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6 text-center border-ka-gray-200 dark:border-gray-700">
             <Users className="w-10 h-10 xs:w-12 xs:h-12 text-ka-gray-400 mx-auto mb-2 xs:mb-3" />
             <h3 className={`${responsiveHeading.h4} mb-1`}>
               Geen klanten gevonden
