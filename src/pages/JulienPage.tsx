@@ -290,6 +290,212 @@ const baserowTasks: BaserowTask[] = [
     ],
     testPage: '/tasks',
     notes: 'CRITICAL WORKFLOW: Task lifecycle: Created → Assigned → In uitvoering → Gereed voor controle (submitted) → Approved → Afgerond. Harm-Jan must approve tasks before reports can be sent.'
+  },
+  {
+    id: 'task-9',
+    title: 'Contact Moment Tracking System',
+    description: 'Track all client interactions with channel-specific IDs and multi-project linking',
+    priority: 'critical',
+    table: 'Interacties + Interactie_Koppelingen',
+    fields: [
+      {
+        name: '📊 TABLE 1: Interacties',
+        type: '---',
+        required: false,
+        example: 'Main interactions table'
+      },
+      {
+        name: 'id',
+        type: 'Auto-number with prefix',
+        config: 'Prefix: "INT-", Format: INT-2024-001',
+        required: true,
+        example: 'INT-2024-001'
+      },
+      {
+        name: 'klant_id',
+        type: 'Link to Klanten table',
+        required: true,
+        example: 'Link to Hans Mulder'
+      },
+      {
+        name: 'datum',
+        type: 'DateTime',
+        required: true,
+        example: '2024-03-15T10:30:00'
+      },
+      {
+        name: 'type',
+        type: 'Single select',
+        config: 'Options: "email", "whatsapp", "telefoongesprek", "videogesprek", "sms", "brief"',
+        required: true,
+        example: '"telefoongesprek"'
+      },
+      {
+        name: 'onderwerp',
+        type: 'Text',
+        required: true,
+        example: 'Meerdere fiscale vragen'
+      },
+      {
+        name: 'samenvatting',
+        type: 'Long Text',
+        required: false,
+        example: 'Hans belde met vragen over zijn privé IB, Maria\'s aangifte en BTW voor de slagerij'
+      },
+      {
+        name: 'richting',
+        type: 'Single select',
+        config: 'Options: "Inkomend", "Uitgaand"',
+        required: true,
+        example: '"Inkomend"'
+      },
+      {
+        name: 'behandeld_door',
+        type: 'Text',
+        required: false,
+        example: 'Harm-Jan Kaspers'
+      },
+      {
+        name: '--- EMAIL FIELDS ---',
+        type: '---',
+        required: false,
+        example: 'For Outlook integration (future)'
+      },
+      {
+        name: 'thread_id',
+        type: 'Text',
+        required: false,
+        example: 'THREAD-1234567890abcdef'
+      },
+      {
+        name: 'message_id',
+        type: 'Text',
+        required: false,
+        example: 'MSG-abc123def456'
+      },
+      {
+        name: '--- WHATSAPP FIELDS ---',
+        type: '---',
+        required: false,
+        example: 'For WhatsApp Business API'
+      },
+      {
+        name: 'whatsapp_phone_id',
+        type: 'Phone',
+        required: false,
+        example: '+31612345678'
+      },
+      {
+        name: 'whatsapp_message_id',
+        type: 'Text',
+        required: false,
+        example: 'wamid.HBgNMzE2MTIzNDU2Nzg...'
+      },
+      {
+        name: '--- PHONE/VIDEO FIELDS ---',
+        type: '---',
+        required: false,
+        example: 'For Voys VoIP integration'
+      },
+      {
+        name: 'call_id',
+        type: 'Text',
+        required: false,
+        example: 'CALL-20240315-103045'
+      },
+      {
+        name: 'call_duration',
+        type: 'Number',
+        config: 'Duration in minutes',
+        required: false,
+        example: '25'
+      },
+      {
+        name: '📊 TABLE 2: Interactie_Koppelingen',
+        type: '---',
+        required: false,
+        example: 'Links interactions to projects/assignments/tasks'
+      },
+      {
+        name: 'id',
+        type: 'Auto-number',
+        required: true,
+        example: '1, 2, 3...'
+      },
+      {
+        name: 'interactie_id',
+        type: 'Link to Interacties table',
+        required: true,
+        example: 'Link to INT-2024-001'
+      },
+      {
+        name: 'project_id',
+        type: 'Link to Projecten table',
+        required: false,
+        example: 'Link to PROJ-HM-IB24'
+      },
+      {
+        name: 'opdracht_id',
+        type: 'Link to Opdrachten table',
+        required: false,
+        example: 'Link to OPD-SLAGERIJ-BTW-Q1'
+      },
+      {
+        name: 'taak_ids',
+        type: 'Link to Taken table (multiple)',
+        required: false,
+        example: 'Link to TAAK-BALANS-2024'
+      },
+      {
+        name: 'onderwerp',
+        type: 'Text',
+        required: true,
+        example: 'BTW aangifte Q1 slagerij'
+      },
+      {
+        name: 'notities',
+        type: 'Long Text',
+        required: false,
+        example: 'Vraag over aftrek BTW op nieuwe koelinstallatie'
+      }
+    ],
+    testPage: '/clients/1',
+    notes: `🔴 CRITICAL SYSTEM FOR THREAD CONTINUITY & MULTI-PROJECT TRACKING
+
+WHY THIS STRUCTURE?
+- Email: Gmail/Outlook thread_id preserves conversation continuity (future integration)
+- WhatsApp: WhatsApp Business API provides phone_id + message_id for tracking
+- Phone/Video: Voys VoIP system generates unique call_ids via n8n integration
+- Multi-linking: One conversation can cover multiple projects (e.g., Hans talks about private tax, partner's tax, AND business BTW in one call)
+
+INTEGRATION ROADMAP:
+1. ✅ WhatsApp Business API - ACTIVE (provides message_id per message)
+2. 🔄 Voys VoIP + n8n - ACTIVE (call_id generation via n8n automation)
+3. ⏳ Outlook API - FUTURE (thread_id + message_id for email tracking)
+
+TWO TABLE APPROACH:
+Table 1 (Interacties) = The conversation itself with channel metadata
+Table 2 (Interactie_Koppelingen) = What was discussed in that conversation (1 conversation → multiple topics)
+
+EXAMPLE USE CASE:
+Hans Mulder calls (1 interaction = INT-2024-001, call_id = CALL-20240315-103045)
+→ Koppeling 1: His private income tax (project: PROJ-HM-IB24)
+→ Koppeling 2: Partner Maria's income tax (project: PROJ-MARIA-IB24)  
+→ Koppeling 3: Business BTW Q1 (opdracht: OPD-SLAGERIJ-BTW-Q1)
+
+All 3 topics in ONE phone call, properly tracked across 3 different projects.
+
+n8n INTEGRATION NOTES:
+- Voys VoIP webhook can trigger n8n workflow
+- n8n can auto-create Interactie record with call_id
+- n8n has good Baserow integration for automated record creation
+- See Voys documentation for webhook setup: https://www.voys.nl/webservice/
+
+WHATSAPP BUSINESS API:
+- Each message has unique wamid (WhatsApp Message ID)
+- Thread tracking via phone number + conversation_id
+- Can be integrated via n8n WhatsApp Business node
+- See: https://developers.facebook.com/docs/whatsapp/cloud-api`
   }
 ];
 
