@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, Clock, CheckCircle, AlertCircle, FileText, Download } from 'lucide-react';
+import { Upload, Clock, CheckCircle, AlertCircle, FileText, Download, User, LogOut } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,10 +8,18 @@ import { useProjects } from '@/lib/api/projects';
 import { formatDeadline, getStatusColor, getStatusLabel } from '@/lib/utils/projectHelpers';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function ClientPortalPage() {
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const { user, logout } = useAuth();
   
   // In production, this would be filtered by authenticated client
   // For now, showing mock data
@@ -64,6 +72,37 @@ export default function ClientPortalPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-ka-navy/5 to-ka-green/5 p-6">
       <div className="max-w-4xl mx-auto space-y-6">
+        {/* User Menu - Top Right */}
+        <div className="flex justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="gap-2">
+                <div className="w-8 h-8 rounded-full bg-ka-navy dark:bg-ka-green text-white flex items-center justify-center text-sm font-medium">
+                  {user?.full_name?.substring(0, 2).toUpperCase() || 'HK'}
+                </div>
+                <div className="text-left hidden sm:block">
+                  <p className="text-sm font-medium">
+                    {user?.full_name || 'Gebruiker'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Klant
+                  </p>
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="px-2 py-1.5 text-sm">
+                <p className="font-medium">{user?.full_name || 'Gebruiker'}</p>
+                <p className="text-xs text-muted-foreground">{user?.email || 'klant@voorbeeld.nl'}</p>
+              </div>
+              <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600">
+                <LogOut className="w-4 h-4 mr-2" />
+                Uitloggen
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         {/* Header */}
         <div className="text-center">
           <h1 className="text-3xl font-bold text-foreground mb-2">
