@@ -5,10 +5,11 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useInteractiesByKlant } from '@/lib/api/interacties';
-import { Channel } from '@/types';
+import { Channel, Interactie } from '@/types';
 import { getChannelIcon, getChannelColor } from '@/lib/utils/channelHelpers';
 import { formatDateTime } from '@/lib/utils/dateHelpers';
 import { useUserStore } from '@/store/userStore';
+import InteractieDetailModal from './InteractieDetailModal';
 
 interface ClientInteractionsTimelineProps {
   klantId: string;
@@ -19,6 +20,7 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
   const { data: interacties, isLoading } = useInteractiesByKlant(klantId);
   const [filterChannel, setFilterChannel] = useState<Channel | 'all'>('all');
   const [filterSentiment, setFilterSentiment] = useState<string>('all');
+  const [selectedInteractie, setSelectedInteractie] = useState<Interactie | null>(null);
   
   const filteredInteracties = interacties?.results.filter((int) => {
     const matchesChannel = filterChannel === 'all' || int.kanaal === filterChannel;
@@ -95,12 +97,7 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
                 <Card 
                   key={int.id} 
                   className="p-4 hover:shadow-lg transition-all cursor-pointer hover:scale-[1.01] border-2 border-transparent hover:border-ka-green relative group"
-                  onClick={() => {
-                    // Navigate based on channel type
-                    if (int.kanaal === 'WhatsApp' || int.kanaal === 'E-mail') {
-                      window.location.href = '/inbox';
-                    }
-                  }}
+                  onClick={() => setSelectedInteractie(int)}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
@@ -168,6 +165,12 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
           </div>
         ))
       )}
+      
+      <InteractieDetailModal
+        interactie={selectedInteractie}
+        open={!!selectedInteractie}
+        onOpenChange={(open) => !open && setSelectedInteractie(null)}
+      />
     </div>
   );
 }

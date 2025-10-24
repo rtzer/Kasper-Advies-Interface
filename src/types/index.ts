@@ -135,7 +135,7 @@ export interface Interactie {
   status: 'Nieuw' | 'In behandeling' | 'Afgerond';
   opvolging_nodig: boolean;
   opvolging_datum?: string;
-  priority?: 'Urgent' | 'Hoog' | 'Normaal' | 'Laag';
+  priority: 'Urgent' | 'Hoog' | 'Normaal' | 'Laag';  // Required now
   
   // Categorisatie
   tags: string[];
@@ -152,6 +152,9 @@ export interface Interactie {
   // Thread info
   thread_id?: string;
   reply_to_id?: string;
+  
+  // Linked to inbox conversation (NEW)
+  conversatie_id?: string;
 }
 
 // ============================================
@@ -335,11 +338,13 @@ export interface Taak {
   toegewezen_aan: string;
   created_by: string;
   
-  // Relaties
+  // Relaties (EXPANDED)
   klant_id: string;
   klant_naam: string;
   gerelateerde_interactie_id?: string;
   gerelateerde_opdracht_id?: string;
+  project_id?: string;                   // NEW: Link to project
+  parent_taak_id?: string;               // NEW: For subtasks
   
   // Status & Priority
   status: 'Te doen' | 'In uitvoering' | 'Geblokkeerd' | 'Afgerond';
@@ -531,4 +536,51 @@ export interface Project {
   last_reminder_sent: string | null;
   reminder_count: number;
   created_at: string;
+  
+  // NEW FIELDS
+  interactie_id?: string;                // Link to original interaction
+  stages?: ProjectStage[];               // Project stages with checklists
+  taken?: Taak[];                        // Related tasks
+  documenten?: ProjectDocument[];        // Related documents
+  tijdregistraties?: TimeEntry[];        // Time tracking
+  beschrijving?: string;                 // Project description
+  bedrag?: number;                       // Project amount
+}
+
+export interface ProjectStage {
+  id: number;
+  name: string;
+  completed: boolean;
+  startDate?: string;
+  completedDate?: string;
+  expectedCompletion?: string;
+  checklist: ProjectChecklistItem[];
+}
+
+export interface ProjectChecklistItem {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
+export interface ProjectDocument {
+  id: string;
+  naam: string;
+  type: 'Factuur' | 'Bankafschrift' | 'Contract' | 'Aangifte' | 'Overig';
+  bestandsnaam: string;
+  upload_datum: string;
+  uploaded_by: string;
+  file_size: number;
+  url: string;
+}
+
+export interface TimeEntry {
+  id: string;
+  project_id: string;
+  medewerker: string;
+  datum: string;
+  uren: number;
+  beschrijving: string;
+  tarief?: number;
+  factureerbaar: boolean;
 }

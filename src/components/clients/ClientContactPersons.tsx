@@ -7,6 +7,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import ContactPersoonModal from './ContactPersoonModal';
+import { ContactPersoon as ContactPersoonType } from '@/types';
 
 interface ContactPersoon {
   id: string;
@@ -180,56 +182,11 @@ export default function ClientContactPersons({ klantId }: { klantId: string }) {
         ))}
       </div>
 
-      {/* Detail Dialog */}
-      {selectedContact && (
-        <Dialog open={!!selectedContact} onOpenChange={() => setSelectedContact(null)}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{selectedContact.naam}</DialogTitle>
-              <DialogDescription>{selectedContact.functie}</DialogDescription>
-            </DialogHeader>
-            
-            <div className="space-y-4">
-              <div>
-                <h4 className="text-sm font-semibold text-ka-navy dark:text-white mb-2">Contactgegevens</h4>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2 text-sm">
-                    <Mail className="w-4 h-4 text-ka-gray-500" />
-                    <a href={`mailto:${selectedContact.email}`} className="hover:text-ka-green">
-                      {selectedContact.email}
-                    </a>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <Phone className="w-4 h-4 text-ka-gray-500" />
-                    <a href={`tel:${selectedContact.telefoon}`} className="hover:text-ka-green">
-                      {selectedContact.telefoon}
-                    </a>
-                  </div>
-                  {selectedContact.mobiel && (
-                    <div className="flex items-center space-x-2 text-sm">
-                      <Phone className="w-4 h-4 text-ka-gray-500" />
-                      <a href={`tel:${selectedContact.mobiel}`} className="hover:text-ka-green">
-                        {selectedContact.mobiel} (mobiel)
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex space-x-2 pt-4">
-                <Button className="flex-1" variant="outline" onClick={() => window.location.href = `mailto:${selectedContact.email}`}>
-                  <Mail className="w-4 h-4 mr-2" />
-                  E-mail
-                </Button>
-                <Button className="flex-1" variant="outline" onClick={() => window.location.href = `tel:${selectedContact.telefoon}`}>
-                  <Phone className="w-4 h-4 mr-2" />
-                  Bellen
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
+      <ContactPersoonModal
+        contactPersoon={selectedContact as ContactPersoonType | null}
+        open={!!selectedContact}
+        onOpenChange={(open) => !open && setSelectedContact(null)}
+      />
     </div>
   );
 }
