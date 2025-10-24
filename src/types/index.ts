@@ -113,7 +113,10 @@ export interface Interactie {
   // Klant relatie
   klant_id: string;
   klant_naam: string;
+  klant_nummer?: string;                 // For display: "K-2021-045"
+  gerelateerde_klanten?: string;         // Comma-separated klant namen
   contactpersoon_id?: string;
+  contactpersoon?: string;               // Naam als text voor display
   
   // Medewerker
   medewerker: string;                    // "Harm-Jan Kaspers" | "Jan Jansen" | "Linda Prins"
@@ -130,6 +133,7 @@ export interface Interactie {
   // Opdracht link
   opdracht_id?: string;
   opdracht_naam?: string;
+  opdracht?: string;                     // Alias for opdracht_naam (CSV compatibility)
   
   // Status & Opvolging
   status: 'Nieuw' | 'In behandeling' | 'Afgerond';
@@ -182,6 +186,7 @@ export interface Klant {
   postcode: string;
   plaats: string;
   land: string;                          // Default: "Nederland"
+  branche?: string;                      // Bedrijfstak/sector
   
   // Alternatief postadres (voor facturen)
   factuur_adres?: string;
@@ -208,6 +213,7 @@ export interface Klant {
   
   // Verantwoordelijkheid
   accountmanager: string;
+  facturatie_frequentie?: string;        // "Jaarlijks", "Maandelijks", "Kwartaal"
   
   // Tijdlijn
   sinds_wanneer_klant: string;           // "2020-01-15"
@@ -219,7 +225,7 @@ export interface Klant {
   
   // Groei & Ontwikkeling (voor MKB/ZZP)
   jaren_actief_als_ondernemer?: number;
-  groei_fase?: 'Starter' | 'Groei' | 'Stabiel' | 'Exit' | 'N.V.T.';
+  groei_fase?: 'Starter' | 'Groei' | 'Schaal-op' | 'Professionalisering' | 'Digitalisering' | 'Stabiel' | 'Exit' | 'N.V.T.';
   omzet_categorie?: '< 50k' | '50k-250k' | '250k-1M' | '> 1M';
   
   // Tags & Segmentatie
@@ -264,6 +270,8 @@ export interface Opdracht {
   // Type & Classificatie
   type_opdracht: OpdrachtType;
   categorie: 'Traditie' | 'Groei' | 'Advies';
+  boekjaar_periode?: string;             // "2024", "2025 Q1", "maart 2025"
+  bijzonderheden?: string;               // Extra opmerkingen
   
   // Status workflow
   status: 'Intake' | 'In behandeling' | 'Wacht op klant' | 'Gereed' | 'Afgerond' | 'Ingediend';
@@ -342,6 +350,7 @@ export interface Taak {
   klant_id: string;
   klant_naam: string;
   gerelateerde_interactie_id?: string;
+  gerelateerde_interactie?: string;      // Onderwerp/naam voor display (CSV compatibility)
   gerelateerde_opdracht_id?: string;
   project_id?: string;                   // NEW: Link to project
   parent_taak_id?: string;               // NEW: For subtasks
@@ -402,6 +411,7 @@ export interface ContactPersoon {
   
   // Dubbele rol
   is_ook_klant_id?: string;
+  is_ook_klant?: string;                 // Klant naam voor display (CSV compatibility)
   
   // Notities
   notities?: string;
