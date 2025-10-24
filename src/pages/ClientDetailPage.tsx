@@ -79,143 +79,148 @@ export default function ClientDetailPage() {
     <div className="h-full overflow-y-auto bg-ka-gray-50 dark:bg-gray-900">
       {/* Header - Responsive */}
       <div className="bg-white dark:bg-gray-800 border-b border-ka-gray-200 dark:border-gray-700">
-        <div className={`max-w-7xl mx-auto ${spacing.container.md} ${spacing.section.sm}`}>
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
+        <div className="max-w-7xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8 py-4 xs:py-5 sm:py-6 lg:py-8">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-3 xs:space-y-4 lg:space-y-0">
             {/* Avatar + Client info - Stacked on mobile, side-by-side on desktop */}
-            <div className="flex items-start space-x-3 sm:space-x-4">
-              {/* Avatar - Smaller on mobile */}
-              <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-ka-navy dark:bg-ka-green text-white flex items-center justify-center text-lg sm:text-2xl font-bold flex-shrink-0">
+            <div className="flex items-start space-x-2 xs:space-x-3 sm:space-x-4">
+              {/* Avatar - Optimized for 360px */}
+              <div className="w-12 h-12 xs:w-14 xs:h-14 sm:w-20 sm:h-20 rounded-full bg-ka-navy dark:bg-ka-green text-white flex items-center justify-center text-base xs:text-lg sm:text-2xl font-bold flex-shrink-0">
                 {klant.naam.substring(0, 2).toUpperCase()}
               </div>
               
               {/* Client info */}
               <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <h1 className={`${responsiveHeading.h2} truncate`}>
+                <div className="flex flex-wrap items-center gap-1.5 xs:gap-2 mb-1.5 xs:mb-2">
+                  <h1 className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-bold text-ka-navy dark:text-white truncate max-w-[180px] xs:max-w-[220px] sm:max-w-none">
                     {klant.naam}
                   </h1>
-                  <Badge className={
+                  <Badge className={`text-[10px] xs:text-xs px-1.5 xs:px-2 ${
                     klant.status === 'Actief' 
                       ? 'bg-ka-green text-white' 
                       : klant.status === 'Prospect'
                       ? 'bg-ka-warning text-white'
                       : 'bg-ka-gray-500 text-white'
-                  }>
+                  }`}>
                     {klant.status}
                   </Badge>
                   {klant.segment && (
-                    <Badge variant="secondary">
+                    <Badge variant="secondary" className="text-[10px] xs:text-xs px-1.5 xs:px-2">
                       {klant.segment}
                     </Badge>
                   )}
                 </div>
                 
-                {/* Client metadata - Stack on mobile */}
-                <div className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 ${responsiveBody.small}`}>
-                  <span className="flex items-center gap-1">
-                    <span className="font-medium">{klant.type_klant}</span>
-                    <span className="hidden sm:inline">•</span>
-                    <span className="text-ka-gray-500 dark:text-gray-400">{klant.klant_type_details}</span>
+                {/* Client metadata - Stack on xs, inline on sm+ */}
+                <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-1.5 sm:gap-3 text-xs xs:text-sm">
+                  <span className="flex items-center gap-1 flex-wrap">
+                    <span className="font-medium text-ka-navy dark:text-white">{klant.type_klant}</span>
+                    <span className="hidden xs:inline text-ka-gray-400">•</span>
+                    <span className="text-ka-gray-500 dark:text-gray-400 truncate max-w-[200px] xs:max-w-none">{klant.klant_type_details}</span>
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1 text-ka-gray-600 dark:text-gray-300">
                     <span className="text-ka-gray-500 dark:text-gray-400">Klant#:</span>
                     <span className="font-mono font-medium">{klant.klant_nummer}</span>
                   </span>
                 </div>
                 
-                {/* Tags */}
+                {/* Tags - More compact on mobile */}
                 {klant.tags && klant.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {klant.tags.map((tag) => (
-                      <Badge key={tag} variant="outline" className="text-xs">
+                  <div className="flex flex-wrap gap-1 xs:gap-1.5 sm:gap-2 mt-2 xs:mt-3">
+                    {klant.tags.slice(0, isMobile ? 3 : klant.tags.length).map((tag) => (
+                      <Badge key={tag} variant="outline" className="text-[10px] xs:text-xs px-1.5 py-0.5">
                         {tag}
                       </Badge>
                     ))}
+                    {isMobile && klant.tags.length > 3 && (
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0.5">
+                        +{klant.tags.length - 3}
+                      </Badge>
+                    )}
                   </div>
                 )}
               </div>
             </div>
             
-            {/* Actions - Full width on mobile, inline on desktop */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 w-full lg:w-auto">
-              {/* Quick Communication Actions - Horizontal scroll on mobile */}
-              <div className="flex items-center gap-1 overflow-x-auto pb-2 sm:pb-0 sm:border-r sm:border-ka-gray-200 sm:dark:border-gray-700 sm:pr-3 -mx-1 px-1">
+            {/* Actions - Optimized for 360px */}
+            <div className="flex flex-col xs:flex-row gap-2 xs:gap-2.5 sm:gap-2 w-full lg:w-auto">
+              {/* Quick Communication Actions - Horizontal scroll, tighter on xs */}
+              <div className="flex items-center gap-0.5 xs:gap-1 overflow-x-auto pb-1.5 xs:pb-2 sm:pb-0 sm:border-r sm:border-ka-gray-200 sm:dark:border-gray-700 sm:pr-3 -mx-1 px-1 scrollbar-hide">
                 <Button 
                   variant="ghost" 
-                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
+                  size="icon"
                   onClick={() => window.location.href = `mailto:${klant.email}`}
                   title="Stuur e-mail"
-                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0"
+                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0 h-10 w-10 xs:h-11 xs:w-11"
                 >
-                  <Mail className="w-5 h-5" />
+                  <Mail className="w-4 h-4 xs:w-5 xs:h-5" />
                 </Button>
                 <Button 
                   variant="ghost" 
-                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
+                  size="icon"
                   onClick={() => window.open(`https://wa.me/${klant.telefoonnummer.replace(/\D/g, '')}`, '_blank')}
                   title="WhatsApp"
-                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0"
+                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0 h-10 w-10 xs:h-11 xs:w-11"
                 >
-                  <MessageCircle className="w-5 h-5" />
+                  <MessageCircle className="w-4 h-4 xs:w-5 xs:h-5" />
                 </Button>
                 <Button 
                   variant="ghost" 
-                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
+                  size="icon"
                   onClick={() => window.location.href = `tel:${klant.telefoonnummer}`}
                   title="Bel klant"
-                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0"
+                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0 h-10 w-10 xs:h-11 xs:w-11"
                 >
-                  <Phone className="w-5 h-5" />
+                  <Phone className="w-4 h-4 xs:w-5 xs:h-5" />
                 </Button>
                 <Button 
                   variant="ghost" 
-                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
+                  size="icon"
                   onClick={() => toast.info('Video call functionaliteit komt binnenkort')}
                   title="Start video call"
-                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0"
+                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0 h-10 w-10 xs:h-11 xs:w-11"
                 >
-                  <Video className="w-5 h-5" />
+                  <Video className="w-4 h-4 xs:w-5 xs:h-5" />
                 </Button>
                 <Button 
                   variant="ghost" 
-                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
+                  size="icon"
                   onClick={() => toast.info('SMS functionaliteit komt binnenkort')}
                   title="Stuur SMS"
-                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0"
+                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0 h-10 w-10 xs:h-11 xs:w-11"
                 >
-                  <MessageSquare className="w-5 h-5" />
+                  <MessageSquare className="w-4 h-4 xs:w-5 xs:h-5" />
                 </Button>
               </div>
               
-              {/* Primary actions - Full width on mobile */}
-              <div className="flex items-center gap-2 w-full sm:w-auto">
+              {/* Primary actions - Optimized for 360px */}
+              <div className="flex items-center gap-1.5 xs:gap-2 w-full xs:w-auto">
                 <Button 
                   variant="outline" 
                   onClick={() => setIsEditDialogOpen(true)}
-                  size={touchSize}
-                  className="flex-1 sm:flex-initial"
+                  size="default"
+                  className="flex-1 xs:flex-initial h-10 xs:h-11 text-xs xs:text-sm"
                 >
-                  <Edit className="w-4 h-4 sm:mr-2" />
-                  <span className={isMobile ? "sr-only sm:not-sr-only" : ""}>Bewerken</span>
+                  <Edit className="w-3.5 h-3.5 xs:w-4 xs:h-4 xs:mr-2" />
+                  <span className="xs:inline">Bewerken</span>
                 </Button>
                 <Button 
                   variant="ghost" 
-                  size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
+                  size="icon"
                   onClick={() => setIsArchiveDialogOpen(true)}
                   title="Archiveer deze klant"
-                  className="flex-shrink-0"
+                  className="flex-shrink-0 h-10 w-10 xs:h-11 xs:w-11"
                 >
-                  <Archive className="w-5 h-5" />
+                  <Archive className="w-4 h-4 xs:w-5 xs:h-5" />
                 </Button>
                 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
                       variant="ghost" 
-                      size={touchSize === 'lg' ? 'icon-lg' : 'icon'}
-                      className="flex-shrink-0"
+                      size="icon"
+                      className="flex-shrink-0 h-10 w-10 xs:h-11 xs:w-11"
                     >
-                      <MoreVertical className="w-5 h-5" />
+                      <MoreVertical className="w-4 h-4 xs:w-5 xs:h-5" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 bg-white dark:bg-gray-800 z-50">
@@ -239,17 +244,17 @@ export default function ClientDetailPage() {
         </div>
       </div>
       
-      {/* Stats Cards - Responsive grid */}
-      <div className={`max-w-7xl mx-auto ${spacing.container.md}`}>
-        <div className={`grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 ${spacing.grid.md} mb-6`}>
+      {/* Stats Cards - Optimized for 360px */}
+      <div className="max-w-7xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4 lg:gap-6 mb-4 xs:mb-5 sm:mb-6">
           {/* Eerste contact */}
           <Card className="border-ka-gray-200 dark:border-gray-700">
-            <CardContent className="pt-6">
-              <div className={`${responsiveBody.small} text-ka-gray-500 dark:text-gray-400 mb-1`}>Klant sinds</div>
-              <div className={`${responsiveHeading.h3} text-ka-navy dark:text-white`}>
+            <CardContent className="pt-3 xs:pt-4 sm:pt-6 pb-3 xs:pb-4 sm:pb-6 px-3 xs:px-4 sm:px-6">
+              <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mb-0.5 xs:mb-1 font-medium">Klant sinds</div>
+              <div className="text-base xs:text-lg sm:text-xl lg:text-2xl font-semibold text-ka-navy dark:text-white leading-tight">
                 {formatDate(klant.sinds_wanneer_klant, currentUser?.language || 'nl')}
               </div>
-              <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
+              <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mt-0.5 xs:mt-1">
                 {klant.jaren_als_klant} jaar
               </div>
             </CardContent>
@@ -257,26 +262,26 @@ export default function ClientDetailPage() {
           
           {/* Totaal gesprekken */}
           <Card className="border-ka-gray-200 dark:border-gray-700">
-            <CardContent className="pt-6">
-              <div className={`${responsiveBody.small} text-ka-gray-500 dark:text-gray-400 mb-1`}>Totaal gesprekken</div>
-              <div className={`${responsiveHeading.h3} text-ka-navy dark:text-white`}>
+            <CardContent className="pt-3 xs:pt-4 sm:pt-6 pb-3 xs:pb-4 sm:pb-6 px-3 xs:px-4 sm:px-6">
+              <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mb-0.5 xs:mb-1 font-medium">Gesprekken</div>
+              <div className="text-base xs:text-lg sm:text-xl lg:text-2xl font-semibold text-ka-navy dark:text-white leading-tight">
                 {klant.aantal_interacties || 0}
               </div>
-              <div className="text-xs text-ka-green dark:text-ka-green-light mt-1 flex items-center">
-                <TrendingUp className="w-3 h-3 mr-1" />
-                Laatste: {interacties?.results[0]?.datum || '-'}
+              <div className="text-[10px] xs:text-xs text-ka-green dark:text-ka-green-light mt-0.5 xs:mt-1 flex items-center truncate">
+                <TrendingUp className="w-2.5 h-2.5 xs:w-3 xs:h-3 mr-0.5 xs:mr-1 flex-shrink-0" />
+                <span className="truncate">Laatste: {interacties?.results[0]?.datum || '-'}</span>
               </div>
             </CardContent>
           </Card>
           
           {/* Opdrachten */}
           <Card className="border-ka-gray-200 dark:border-gray-700">
-            <CardContent className="pt-6">
-              <div className={`${responsiveBody.small} text-ka-gray-500 dark:text-gray-400 mb-1`}>Opdrachten</div>
-              <div className={`${responsiveHeading.h3} text-ka-navy dark:text-white`}>
+            <CardContent className="pt-3 xs:pt-4 sm:pt-6 pb-3 xs:pb-4 sm:pb-6 px-3 xs:px-4 sm:px-6">
+              <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mb-0.5 xs:mb-1 font-medium">Opdrachten</div>
+              <div className="text-base xs:text-lg sm:text-xl lg:text-2xl font-semibold text-ka-navy dark:text-white leading-tight">
                 {klant.aantal_actieve_opdrachten || 0}
               </div>
-              <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
+              <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mt-0.5 xs:mt-1">
                 Totaal: {klant.aantal_opdrachten || 0}
               </div>
             </CardContent>
@@ -284,51 +289,51 @@ export default function ClientDetailPage() {
           
           {/* Lifetime value */}
           <Card className="border-ka-gray-200 dark:border-gray-700">
-            <CardContent className="pt-6">
-              <div className={`${responsiveBody.small} text-ka-gray-500 dark:text-gray-400 mb-1`}>Lifetime Value</div>
-              <div className={`${responsiveHeading.h3} text-ka-green dark:text-ka-green-light`}>
+            <CardContent className="pt-3 xs:pt-4 sm:pt-6 pb-3 xs:pb-4 sm:pb-6 px-3 xs:px-4 sm:px-6">
+              <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mb-0.5 xs:mb-1 font-medium">Lifetime Value</div>
+              <div className="text-base xs:text-lg sm:text-xl lg:text-2xl font-semibold text-ka-green dark:text-ka-green-light leading-tight">
                 €{klant.totale_omzet?.toLocaleString('nl-NL') || '0'}
               </div>
-              <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
-                Gemiddeld: €{klant.totale_omzet && klant.aantal_opdrachten 
+              <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mt-0.5 xs:mt-1 truncate">
+                Gem: €{klant.totale_omzet && klant.aantal_opdrachten 
                   ? Math.round(klant.totale_omzet / klant.aantal_opdrachten).toLocaleString('nl-NL')
                   : '0'
-                } per opdracht
+                }
               </div>
             </CardContent>
           </Card>
         </div>
         
-        {/* Contact Information Cards - Responsive grid */}
-        <div className={`grid grid-cols-1 lg:grid-cols-2 ${spacing.grid.md} mb-6`}>
+        {/* Contact Information Cards - Optimized for 360px */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 xs:gap-3 sm:gap-4 lg:gap-6 mb-4 xs:mb-5 sm:mb-6">
           {/* Contactgegevens */}
           <Card className="border-ka-gray-200 dark:border-gray-700">
-            <CardHeader>
-              <CardTitle className={`${responsiveHeading.h4} flex items-center`}>
-                <Mail className="w-5 h-5 mr-2 text-ka-green" />
-                Contactgegevens
+            <CardHeader className="pb-3 xs:pb-4 sm:pb-6 px-3 xs:px-4 sm:px-6 pt-3 xs:pt-4 sm:pt-6">
+              <CardTitle className="text-sm xs:text-base sm:text-lg font-semibold flex items-center text-ka-navy dark:text-white">
+                <Mail className="w-4 h-4 xs:w-5 xs:h-5 mr-1.5 xs:mr-2 text-ka-green flex-shrink-0" />
+                <span>Contactgegevens</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className={spacing.stack.sm}>
-              <div className="flex items-start space-x-3">
-                <Mail className="w-5 h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5" />
-                <div className="flex-1">
-                  <div className="text-xs text-ka-gray-500 dark:text-gray-400">E-mail</div>
-                  <a href={`mailto:${klant.email}`} className="text-sm text-ka-navy dark:text-white hover:underline">
+            <CardContent className="space-y-2 xs:space-y-3 sm:space-y-4 px-3 xs:px-4 sm:px-6 pb-3 xs:pb-4 sm:pb-6">
+              <div className="flex items-start space-x-2 xs:space-x-2.5 sm:space-x-3">
+                <Mail className="w-4 h-4 xs:w-5 xs:h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 font-medium">E-mail</div>
+                  <a href={`mailto:${klant.email}`} className="text-xs xs:text-sm text-ka-navy dark:text-white hover:underline break-all">
                     {klant.email}
                   </a>
                 </div>
               </div>
               
-              <div className="flex items-start space-x-3">
-                <Phone className="w-5 h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5" />
-                <div className="flex-1">
-                  <div className="text-xs text-ka-gray-500 dark:text-gray-400">Telefoon</div>
-                  <a href={`tel:${klant.telefoonnummer}`} className="text-sm text-ka-navy dark:text-white hover:underline">
+              <div className="flex items-start space-x-2 xs:space-x-2.5 sm:space-x-3">
+                <Phone className="w-4 h-4 xs:w-5 xs:h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 font-medium">Telefoon</div>
+                  <a href={`tel:${klant.telefoonnummer}`} className="text-xs xs:text-sm text-ka-navy dark:text-white hover:underline">
                     {klant.telefoonnummer}
                   </a>
                   {klant.mobiel && (
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
+                    <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mt-0.5 xs:mt-1">
                       Mobiel: <a href={`tel:${klant.mobiel}`} className="hover:underline">{klant.mobiel}</a>
                     </div>
                   )}
@@ -336,11 +341,11 @@ export default function ClientDetailPage() {
               </div>
 
               {klant.website && (
-                <div className="flex items-start space-x-3">
-                  <Globe className="w-5 h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5" />
-                  <div className="flex-1">
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400">Website</div>
-                    <a href={klant.website} target="_blank" rel="noopener noreferrer" className="text-sm text-ka-navy dark:text-white hover:underline">
+                <div className="flex items-start space-x-2 xs:space-x-2.5 sm:space-x-3">
+                  <Globe className="w-4 h-4 xs:w-5 xs:h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 font-medium">Website</div>
+                    <a href={klant.website} target="_blank" rel="noopener noreferrer" className="text-xs xs:text-sm text-ka-navy dark:text-white hover:underline break-all">
                       {klant.website}
                     </a>
                   </div>
@@ -348,28 +353,28 @@ export default function ClientDetailPage() {
               )}
 
               {klant.linkedin_url && (
-                <div className="flex items-start space-x-3">
-                  <Linkedin className="w-5 h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5" />
-                  <div className="flex-1">
-                    <div className="text-xs text-ka-gray-500 dark:text-gray-400">LinkedIn</div>
-                    <a href={klant.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-sm text-ka-navy dark:text-white hover:underline">
+                <div className="flex items-start space-x-2 xs:space-x-2.5 sm:space-x-3">
+                  <Linkedin className="w-4 h-4 xs:w-5 xs:h-5 text-ka-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 font-medium">LinkedIn</div>
+                    <a href={klant.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-xs xs:text-sm text-ka-navy dark:text-white hover:underline break-all">
                       {klant.linkedin_url}
                     </a>
                   </div>
                 </div>
               )}
 
-              <div className="pt-4 border-t border-ka-gray-200 dark:border-gray-700">
-                <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Accountmanager</div>
-                <div className="text-sm font-medium text-ka-navy dark:text-white">
+              <div className="pt-2 xs:pt-3 sm:pt-4 border-t border-ka-gray-200 dark:border-gray-700">
+                <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mb-0.5 xs:mb-1 font-medium">Accountmanager</div>
+                <div className="text-xs xs:text-sm font-medium text-ka-navy dark:text-white">
                   {klant.accountmanager}
                 </div>
               </div>
               
               {klant.voorkeur_kanaal && (
                 <div>
-                  <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Voorkeur communicatie</div>
-                  <Badge variant="secondary">{klant.voorkeur_kanaal}</Badge>
+                  <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mb-0.5 xs:mb-1 font-medium">Voorkeur communicatie</div>
+                  <Badge variant="secondary" className="text-[10px] xs:text-xs">{klant.voorkeur_kanaal}</Badge>
                 </div>
               )}
             </CardContent>
@@ -377,16 +382,16 @@ export default function ClientDetailPage() {
 
           {/* Adresgegevens */}
           <Card className="border-ka-gray-200 dark:border-gray-700">
-            <CardHeader>
-              <CardTitle className={`${responsiveHeading.h4} flex items-center`}>
-                <MapPin className="w-5 h-5 mr-2 text-ka-green" />
-                Adresgegevens
+            <CardHeader className="pb-3 xs:pb-4 sm:pb-6 px-3 xs:px-4 sm:px-6 pt-3 xs:pt-4 sm:pt-6">
+              <CardTitle className="text-sm xs:text-base sm:text-lg font-semibold flex items-center text-ka-navy dark:text-white">
+                <MapPin className="w-4 h-4 xs:w-5 xs:h-5 mr-1.5 xs:mr-2 text-ka-green flex-shrink-0" />
+                <span>Adresgegevens</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className={spacing.stack.sm}>
+            <CardContent className="space-y-2 xs:space-y-3 sm:space-y-4 px-3 xs:px-4 sm:px-6 pb-3 xs:pb-4 sm:pb-6">
               <div>
-                <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-2">Primair adres</div>
-                <div className="text-sm text-ka-gray-900 dark:text-gray-100">
+                <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mb-1 xs:mb-2 font-medium">Primair adres</div>
+                <div className="text-xs xs:text-sm text-ka-gray-900 dark:text-gray-100 leading-relaxed">
                   {klant.adres}<br />
                   {klant.postcode} {klant.plaats}<br />
                   {klant.land}
@@ -394,9 +399,9 @@ export default function ClientDetailPage() {
               </div>
 
               {(klant.factuur_adres || klant.factuur_postcode || klant.factuur_plaats) && (
-                <div className="pt-4 border-t border-ka-gray-200 dark:border-gray-700">
-                  <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-2">Factuuradres</div>
-                  <div className="text-sm text-ka-gray-900 dark:text-gray-100">
+                <div className="pt-2 xs:pt-3 sm:pt-4 border-t border-ka-gray-200 dark:border-gray-700">
+                  <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mb-1 xs:mb-2 font-medium">Factuuradres</div>
+                  <div className="text-xs xs:text-sm text-ka-gray-900 dark:text-gray-100 leading-relaxed">
                     {klant.factuur_adres || klant.adres}<br />
                     {klant.factuur_postcode || klant.postcode} {klant.factuur_plaats || klant.plaats}<br />
                     {klant.factuur_land || klant.land}
@@ -405,17 +410,17 @@ export default function ClientDetailPage() {
               )}
 
               {klant.groei_fase && klant.groei_fase !== 'N.V.T.' && (
-                <div className="pt-4 border-t border-ka-gray-200 dark:border-gray-700">
-                  <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-2">Groei fase</div>
-                  <Badge className="bg-ka-green">{klant.groei_fase}</Badge>
+                <div className="pt-2 xs:pt-3 sm:pt-4 border-t border-ka-gray-200 dark:border-gray-700">
+                  <div className="text-[10px] xs:text-xs text-ka-gray-500 dark:text-gray-400 mb-1 xs:mb-2 font-medium">Groei fase</div>
+                  <Badge className="bg-ka-green text-[10px] xs:text-xs">{klant.groei_fase}</Badge>
                 </div>
               )}
             </CardContent>
           </Card>
         </div>
 
-        {/* NEW SECTIONS - Responsive spacing */}
-        <div className={spacing.stack.md}>
+        {/* NEW SECTIONS - Optimized spacing for all breakpoints */}
+        <div className="space-y-2 xs:space-y-3 sm:space-y-4 lg:space-y-6">
           {/* Gerelateerde klanten */}
           <RelatedClientsSection klant={klant} relatedClients={relatedClients} />
           
@@ -629,27 +634,26 @@ export default function ClientDetailPage() {
           </Collapsible>
         )}
         
-        {/* Tabs - Responsive, scroll on mobile */}
-        <Tabs defaultValue="timeline" className={spacing.stack.md}>
-          <TabsList className="w-full overflow-x-auto flex-nowrap justify-start">
-            <TabsTrigger value="timeline" className="flex-shrink-0">
-              <span className="hidden sm:inline">Tijdlijn</span>
-              <span className="sm:hidden">Tijdlijn</span>
-              <span className="ml-1">({interacties?.results.length || 0})</span>
+        {/* Tabs - Optimized for 360px with horizontal scroll */}
+        <Tabs defaultValue="timeline" className="space-y-2 xs:space-y-3 sm:space-y-4 lg:space-y-6">
+          <TabsList className="w-full overflow-x-auto flex-nowrap justify-start scrollbar-hide h-9 xs:h-10 sm:h-11 p-0.5 xs:p-1">
+            <TabsTrigger value="timeline" className="flex-shrink-0 text-[11px] xs:text-xs sm:text-sm px-2 xs:px-3 sm:px-4">
+              <span className="hidden xs:inline">Tijdlijn</span>
+              <span className="xs:hidden">Tijd</span>
+              <span className="ml-0.5 xs:ml-1 text-[10px] xs:text-xs">({interacties?.results.length || 0})</span>
             </TabsTrigger>
-            <TabsTrigger value="assignments" className="flex-shrink-0">
-              <span className="hidden sm:inline">Opdrachten</span>
-              <span className="sm:hidden">Opdr</span>
-              <span className="ml-1">({klant.aantal_opdrachten || 0})</span>
+            <TabsTrigger value="assignments" className="flex-shrink-0 text-[11px] xs:text-xs sm:text-sm px-2 xs:px-3 sm:px-4">
+              <span className="hidden xs:inline">Opdrachten</span>
+              <span className="xs:hidden">Opdr</span>
+              <span className="ml-0.5 xs:ml-1 text-[10px] xs:text-xs">({klant.aantal_opdrachten || 0})</span>
             </TabsTrigger>
-            <TabsTrigger value="tasks" className="flex-shrink-0">
-              <span className="hidden sm:inline">Taken</span>
-              <span className="sm:hidden">Taken</span>
-              <span className="ml-1">({klant.aantal_openstaande_taken || 0})</span>
+            <TabsTrigger value="tasks" className="flex-shrink-0 text-[11px] xs:text-xs sm:text-sm px-2 xs:px-3 sm:px-4">
+              <span>Taken</span>
+              <span className="ml-0.5 xs:ml-1 text-[10px] xs:text-xs">({klant.aantal_openstaande_taken || 0})</span>
             </TabsTrigger>
-            <TabsTrigger value="contacts" className="flex-shrink-0">
-              <span className="hidden sm:inline">Contactpersonen</span>
-              <span className="sm:hidden">Cont</span>
+            <TabsTrigger value="contacts" className="flex-shrink-0 text-[11px] xs:text-xs sm:text-sm px-2 xs:px-3 sm:px-4">
+              <span className="hidden xs:inline">Contactpersonen</span>
+              <span className="xs:hidden">Cont</span>
             </TabsTrigger>
           </TabsList>
           
