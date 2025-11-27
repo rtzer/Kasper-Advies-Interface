@@ -430,12 +430,14 @@ export interface Opdracht {
   // Uren & Planning
   geschat_aantal_uren: number;
   bestede_uren?: number;
+  budget_uren?: number;
   
   // Financieel
   gefactureerd_bedrag: number;
   betaald: boolean;
   betalings_datum?: string;
   factuur_nummer?: string;
+  facturatie_status?: 'niet_gefactureerd' | 'gefactureerd' | 'betaald';
   
   // Documenten
   document_ids: string[];

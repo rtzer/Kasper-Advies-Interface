@@ -418,6 +418,72 @@
     "invitationWillBeSent": "An invitation email will be sent to {{email}}",
     "userCreated": "Team member invited"
   },
+  "assignments": {
+    "title": "Assignments",
+    "subtitle": "Manage all assignments and deadlines",
+    "newAssignment": "New assignment",
+    "bulkBTW": "Bulk VAT creation",
+    "count": "{{count}} assignment",
+    "count_plural": "{{count}} assignments",
+    "stats": {
+      "totalActive": "Total active",
+      "deadlineThisWeek": "Deadline this week",
+      "overdue": "Overdue",
+      "awaitingApproval": "Awaiting approval",
+      "completedMonth": "Completed (month)"
+    },
+    "views": {
+      "list": "List",
+      "kanban": "Kanban",
+      "calendar": "Calendar",
+      "byClient": "By client"
+    },
+    "filters": {
+      "allStatuses": "All statuses",
+      "allTypes": "All types",
+      "allResponsible": "All responsible",
+      "onlyMine": "Only my assignments",
+      "deadlineFrom": "Deadline from",
+      "deadlineTo": "Deadline to",
+      "searchClient": "Search client...",
+      "invoiceStatus": "Invoice status"
+    },
+    "status": {
+      "intake": "Intake",
+      "inProgress": "In progress",
+      "waitingClient": "Waiting for client",
+      "readyForReview": "Ready for review",
+      "completed": "Completed",
+      "submitted": "Submitted"
+    },
+    "table": {
+      "assignment": "Assignment",
+      "client": "Client",
+      "type": "Type",
+      "status": "Status",
+      "deadline": "Deadline",
+      "responsible": "Responsible",
+      "progress": "Progress",
+      "hours": "Hours",
+      "invoice": "Invoice"
+    },
+    "daysLate": "{{count}} day late",
+    "daysLate_plural": "{{count}} days late",
+    "daysLeft": "{{count}} day left",
+    "daysLeft_plural": "{{count}} days left",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "selectDate": "Select a date",
+    "noAssignmentsOnDate": "No assignments on this date",
+    "progress": "Progress",
+    "statusUpdated": "Status updated",
+    "statusChangedTo": "Status changed to {{status}}",
+    "statusUpdateFailed": "Failed to update status",
+    "hoursFormat": "{{spent}} / {{budget}} hrs",
+    "notInvoiced": "Not invoiced",
+    "invoiced": "Invoiced",
+    "paid": "Paid"
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",
