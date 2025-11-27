@@ -663,6 +663,20 @@
     "category": "Categorie",
     "allCategories": "Alle categorieën",
     "allStatuses": "Alle statussen",
+    "tabs": {
+      "overview": "Overzicht",
+      "assignments": "Opdrachten",
+      "tasks": "Taken",
+      "documents": "Documenten",
+      "timeline": "Tijdlijn"
+    },
+    "linkedAssignments": "Gekoppelde Opdrachten",
+    "noAssignments": "Geen opdrachten gekoppeld aan dit project",
+    "projectTasks": "Project Taken",
+    "noTasks": "Geen taken voor dit project",
+    "documents": "Documenten",
+    "noDocuments": "Nog geen documenten toegevoegd",
+    "activityTimeline": "Activiteiten Tijdlijn",
     "stats": {
       "active": "Actieve projecten",
       "deadlineMonth": "Deadline deze maand",

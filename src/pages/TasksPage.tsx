@@ -102,6 +102,7 @@ export default function TasksPage() {
   useEffect(() => {
     if (takenData?.results) {
       let filtered = [...takenData.results];
+      const today = startOfToday();
       
       // Apply filters
       if (searchQuery) {
@@ -116,7 +117,17 @@ export default function TasksPage() {
         filtered = filtered.filter(t => t.toegewezen_aan === filterAssigned);
       }
       
-      if (filterPriority !== 'all') {
+      // Special stat-based filters
+      if (filterPriority === 'deadline-today') {
+        filtered = filtered.filter(t => t.deadline && isToday(new Date(t.deadline)) && t.status !== 'Afgerond');
+      } else if (filterPriority === 'overdue') {
+        filtered = filtered.filter(t => {
+          if (!t.deadline || t.status === 'Afgerond') return false;
+          return isBefore(new Date(t.deadline), today);
+        });
+      } else if (filterPriority === 'needs-review') {
+        filtered = filtered.filter(t => t.status === 'Gereed voor controle' || (t.needs_approval && t.approval_status === 'pending'));
+      } else if (filterPriority !== 'all') {
         filtered = filtered.filter(t => t.priority === filterPriority);
       }
       
@@ -269,9 +280,12 @@ export default function TasksPage() {
         </Button>
       </div>
       
-      {/* Stats Row */}
+      {/* Stats Row - Clickable for filtering */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-        <Card className="p-3">
+        <Card 
+          className="p-3 cursor-pointer hover:shadow-md transition-shadow hover:border-ka-navy/50"
+          onClick={() => { setOnlyMine(false); setFilterPriority('all'); }}
+        >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-ka-navy/10 rounded-lg">
               <ClipboardList className="w-4 h-4 text-ka-navy" />
@@ -283,7 +297,10 @@ export default function TasksPage() {
           </div>
         </Card>
         
-        <Card className="p-3">
+        <Card 
+          className="p-3 cursor-pointer hover:shadow-md transition-shadow hover:border-blue-500/50"
+          onClick={() => setOnlyMine(true)}
+        >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
               <User className="w-4 h-4 text-blue-600" />
@@ -295,7 +312,10 @@ export default function TasksPage() {
           </div>
         </Card>
         
-        <Card className="p-3">
+        <Card 
+          className="p-3 cursor-pointer hover:shadow-md transition-shadow hover:border-orange-500/50"
+          onClick={() => setFilterPriority('deadline-today')}
+        >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
               <Calendar className="w-4 h-4 text-orange-600" />
@@ -307,7 +327,10 @@ export default function TasksPage() {
           </div>
         </Card>
         
-        <Card className="p-3">
+        <Card 
+          className="p-3 cursor-pointer hover:shadow-md transition-shadow hover:border-red-500/50"
+          onClick={() => setFilterPriority('overdue')}
+        >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
               <AlertTriangle className="w-4 h-4 text-red-600" />
@@ -319,7 +342,10 @@ export default function TasksPage() {
           </div>
         </Card>
         
-        <Card className="p-3 col-span-2 sm:col-span-1">
+        <Card 
+          className="p-3 col-span-2 sm:col-span-1 cursor-pointer hover:shadow-md transition-shadow hover:border-purple-500/50"
+          onClick={() => setFilterPriority('needs-review')}
+        >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
               <Eye className="w-4 h-4 text-purple-600" />

@@ -102,8 +102,25 @@ export default function AssignmentsPage() {
   
   // Filter assignments
   const filteredOpdrachten = useMemo(() => {
+    const now = new Date();
+    const weekStart = startOfWeek(now, { weekStartsOn: 1 });
+    const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
+    const activeStatuses = ['Intake', 'In behandeling', 'Wacht op klant', 'Gereed voor controle'];
+    
     return opdrachten.filter((opdracht) => {
-      if (filterStatus !== 'all' && opdracht.status !== filterStatus) return false;
+      // Special stat filters
+      if (filterStatus === 'deadline-week') {
+        if (!opdracht.deadline) return false;
+        const deadline = new Date(opdracht.deadline);
+        return isWithinInterval(deadline, { start: weekStart, end: weekEnd }) && activeStatuses.includes(opdracht.status);
+      }
+      if (filterStatus === 'overdue') {
+        if (!opdracht.deadline || opdracht.status === 'Afgerond' || opdracht.status === 'Ingediend') return false;
+        return isPast(new Date(opdracht.deadline));
+      }
+      
+      // Regular status filter
+      if (filterStatus !== 'all' && filterStatus !== 'deadline-week' && filterStatus !== 'overdue' && opdracht.status !== filterStatus) return false;
       if (filterType !== 'all' && opdracht.type_opdracht !== filterType) return false;
       if (filterVerantwoordelijke !== 'all' && opdracht.verantwoordelijk !== filterVerantwoordelijke) return false;
       if (filterInvoice !== 'all' && opdracht.facturatie_status !== filterInvoice) return false;
@@ -162,9 +179,12 @@ export default function AssignmentsPage() {
         </div>
       </div>
       
-      {/* Stats Row */}
+      {/* Stats Row - Clickable for filtering */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        <Card className="p-4">
+        <Card 
+          className="p-4 cursor-pointer hover:shadow-md transition-shadow hover:border-ka-navy/50"
+          onClick={() => setFilterStatus('all')}
+        >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-ka-navy/10 rounded-lg">
               <Briefcase className="w-5 h-5 text-ka-navy" />
@@ -176,7 +196,10 @@ export default function AssignmentsPage() {
           </div>
         </Card>
         
-        <Card className="p-4">
+        <Card 
+          className="p-4 cursor-pointer hover:shadow-md transition-shadow hover:border-orange-500/50"
+          onClick={() => setFilterStatus('deadline-week')}
+        >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
               <Calendar className="w-5 h-5 text-orange-600" />
@@ -188,7 +211,10 @@ export default function AssignmentsPage() {
           </div>
         </Card>
         
-        <Card className="p-4">
+        <Card 
+          className="p-4 cursor-pointer hover:shadow-md transition-shadow hover:border-red-500/50"
+          onClick={() => setFilterStatus('overdue')}
+        >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
               <AlertTriangle className="w-5 h-5 text-red-600" />
@@ -200,7 +226,10 @@ export default function AssignmentsPage() {
           </div>
         </Card>
         
-        <Card className="p-4">
+        <Card 
+          className="p-4 cursor-pointer hover:shadow-md transition-shadow hover:border-blue-500/50"
+          onClick={() => setFilterStatus('Gereed voor controle')}
+        >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
               <Clock className="w-5 h-5 text-blue-600" />
@@ -212,7 +241,10 @@ export default function AssignmentsPage() {
           </div>
         </Card>
         
-        <Card className="p-4 col-span-2 sm:col-span-1">
+        <Card 
+          className="p-4 col-span-2 sm:col-span-1 cursor-pointer hover:shadow-md transition-shadow hover:border-ka-green/50"
+          onClick={() => setFilterStatus('Afgerond')}
+        >
           <div className="flex items-center gap-3">
             <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
               <CheckCircle className="w-5 h-5 text-ka-green" />
