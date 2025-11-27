@@ -1,4 +1,42 @@
 // ============================================
+// PROSPECT (Lead/Potential Client)
+// ============================================
+export interface Prospect {
+  id: string;
+  prospect_nummer: string;                 // Format: PR-2025-001
+  bedrijfsnaam?: string;
+  voornaam: string;
+  achternaam: string;
+  email: string;
+  telefoon?: string;
+  mobiel?: string;                         // WhatsApp nummer
+  adres?: string;
+  postcode?: string;
+  plaats?: string;
+  type_prospect: 'MKB' | 'ZZP' | 'Particulier';
+  bron: 'Website' | 'Referral' | 'LinkedIn' | 'Telefoon' | 'Event' | 'Netwerk' | 'Anders';
+  bron_details?: string;                   // Bijv. "Via klant De Vries BV"
+  status: 'Nieuw' | 'Contact gehad' | 'Gekwalificeerd' | 'Offerte' | 'Gewonnen' | 'Verloren';
+  verloren_reden?: string;                 // Als status = Verloren
+  interesse: string[];                     // Multi-select: BTW-aangifte, Jaarrekening, etc.
+  notities?: string;
+  toegewezen_aan: string;                  // User ID (standaard Linda)
+  verwachte_waarde?: number;               // Geschatte jaaromzet
+  verwachte_start?: string;                // Wanneer zouden ze willen starten
+  volgende_actie: string;
+  volgende_actie_datum: string;
+  eerste_contact_datum: string;
+  laatste_contact_datum: string;
+  created_at: string;
+  updated_at: string;
+  converted_to_klant_id?: string;          // Als gewonnen: link naar nieuwe klant
+}
+
+export type ProspectStatus = Prospect['status'];
+export type ProspectBron = Prospect['bron'];
+export type ProspectType = Prospect['type_prospect'];
+
+// ============================================
 // CONVERSATION (Main entity for Communication Hub)
 // ============================================
 export interface Conversation {

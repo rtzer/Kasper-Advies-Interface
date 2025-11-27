@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Users,
+  UserPlus,
   FolderKanban,
   FileText,
   CheckSquare,
@@ -75,6 +76,16 @@ export function AppSidebar() {
                   <NavLink to="/" end className={getNavCls(isActive('/'))}>
                     <Home className="h-4 w-4" />
                     {!collapsed && <span>Inbox</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {/* Prospects */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/prospects" className={getNavCls(isActive('/prospects'))}>
+                    <UserPlus className="h-4 w-4" />
+                    {!collapsed && <span>Prospects</span>}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
