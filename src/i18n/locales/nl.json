@@ -549,6 +549,70 @@
     "taskMoved": "Taak verplaatst naar {{column}}",
     "undo": "Ongedaan maken"
   },
+  "projects": {
+    "title": "Projecten & Workflows",
+    "description": "Beheer klantprojecten en terugkerende workflows",
+    "lateClients": "Late Klanten",
+    "workload": "Workload",
+    "bulkBTW": "Bulk BTW",
+    "backToProjects": "Terug naar projecten",
+    "workloadOverview": "Team Workload Overzicht",
+    "workloadDescription": "Verdeling van projecten en taken over het team",
+    "workloadWarning": "Let op: Er zijn teamleden met een hoge werkbelasting!",
+    "projectsTotal": "projecten totaal",
+    "statusDistribution": "Status verdeling",
+    "recentProjects": "Recente projecten",
+    "noProjects": "Geen projecten gevonden",
+    "noProjectsInColumn": "Geen projecten",
+    "progress": "Voortgang",
+    "tasks": "taken",
+    "completed": "afgerond",
+    "category": "Categorie",
+    "allCategories": "Alle categorieën",
+    "allStatuses": "Alle statussen",
+    "stats": {
+      "active": "Actieve projecten",
+      "deadlineMonth": "Deadline deze maand",
+      "overdue": "Achterstallig",
+      "myProjects": "Mijn projecten",
+      "completedQuarter": "Afgerond (kwartaal)"
+    },
+    "views": {
+      "list": "Lijst",
+      "calendar": "Kalender",
+      "timeline": "Tijdlijn"
+    },
+    "columns": {
+      "planned": "Gepland",
+      "active": "Actief",
+      "inReview": "In Review",
+      "waitingClient": "Wacht op Klant",
+      "completed": "Afgerond"
+    },
+    "categories": {
+      "jaarwerk": "Jaarwerk",
+      "btw": "BTW",
+      "advies": "Advies",
+      "loonadministratie": "Loonadministratie",
+      "bijzonder": "Bijzonder"
+    },
+    "status": {
+      "label": "Status",
+      "notStarted": "Niet gestart",
+      "inProgress": "In uitvoering",
+      "inReview": "In review",
+      "waitingClient": "Wacht op klant",
+      "blocked": "Geblokkeerd",
+      "completed": "Afgerond"
+    },
+    "workload": {
+      "label": "Belasting",
+      "low": "Laag",
+      "normal": "Normaal",
+      "high": "Hoog",
+      "overloaded": "Overbelast"
+    }
+  },
   "common": {
     "save": "Opslaan",
     "cancel": "Annuleren",
@@ -559,6 +623,9 @@
     "error": "Fout",
     "success": "Succes",
     "confirm": "Bevestigen",
+    "today": "Vandaag",
+    "more": "meer",
+    "filters": "Filters",
     "actions": {
       "reply": "Antwoorden"
     },

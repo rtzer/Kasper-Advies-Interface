@@ -709,11 +709,12 @@ export interface Project {
   client_name: string;
   
   // Type & Classificatie
-  category: 'BTW' | 'BTW Bulk' | 'Fiscale begeleiding' | 'Groeibegeleiding' | 'Jaarrekening' | 'Hypotheek' | 'Advies' | 'Other';
+  category: 'BTW' | 'BTW Bulk' | 'Fiscale begeleiding' | 'Groeibegeleiding' | 'Jaarrekening' | 'Hypotheek' | 'Advies' | 'Loonadministratie' | 'Bijzonder' | 'Other';
+  project_category?: 'Jaarwerk' | 'BTW' | 'Advies' | 'Loonadministratie' | 'Bijzonder';
   beschrijving?: string;
   
   // Status
-  status: 'niet-gestart' | 'in-uitvoering' | 'wacht-op-klant' | 'geblokkeerd' | 'afgerond';
+  status: 'niet-gestart' | 'in-uitvoering' | 'wacht-op-klant' | 'in-review' | 'geblokkeerd' | 'afgerond';
   
   // Tijdlijn
   start_date: string;
@@ -724,6 +725,7 @@ export interface Project {
   // Verantwoordelijkheid
   assigned_to?: string;
   team_members?: string[];
+  team_member_ids?: string[];            // User IDs for avatars
   responsible_team_member?: string;
   responsible_initials?: string;
   
@@ -734,8 +736,15 @@ export interface Project {
   last_reminder_sent?: string | null;
   reminder_count?: number;
   
+  // Task tracking (NIEUW)
+  tasks_total?: number;
+  tasks_completed?: number;
+  
   // Hiërarchie (NIEUW)
   opdracht_ids?: string[];               // Links naar Opdrachten binnen dit project
+  
+  // Milestones (NIEUW)
+  milestones?: ProjectMilestone[];
   
   // Template (optional)
   template_id?: string;
@@ -754,6 +763,13 @@ export interface Project {
   aantal_openstaande_opdrachten?: number;
   totaal_geschatte_uren?: number;
   totaal_bestede_uren?: number;
+}
+
+export interface ProjectMilestone {
+  id: string;
+  name: string;
+  date: string;
+  completed: boolean;
 }
 
 export interface ProjectStage {
