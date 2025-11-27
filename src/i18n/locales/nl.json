@@ -549,6 +549,70 @@
     "taskMoved": "Taak verplaatst naar {{column}}",
     "undo": "Ongedaan maken"
   },
+  "analytics": {
+    "title": "Analytics & Rapportage",
+    "subtitle": "Inzicht in je communicatie performance",
+    "period": "Periode",
+    "periods": {
+      "week": "Deze week",
+      "month": "Deze maand",
+      "quarter": "Dit kwartaal",
+      "year": "Dit jaar",
+      "custom": "Aangepast"
+    },
+    "from": "Van",
+    "to": "Tot",
+    "comparePrevious": "Vergelijk met vorige periode",
+    "vsPrevious": "vs vorige periode",
+    "metrics": {
+      "totalInteractions": "Totaal interacties",
+      "activeClients": "Actieve klanten",
+      "avgResponseTime": "Gem. gesprekstijd",
+      "satisfaction": "Tevredenheid"
+    },
+    "positive": "positief",
+    "channelBreakdown": "Communicatie per kanaal",
+    "channels": {
+      "phone": "Telefoon",
+      "email": "E-mail",
+      "video": "Video"
+    },
+    "interactions": "interacties",
+    "interactionsOverTime": "Interacties over tijd",
+    "teamPerformance": "Team Performance",
+    "teamMember": "Medewerker",
+    "clients": "Klanten",
+    "avgTime": "Gem. tijd",
+    "tasksCompleted": "Taken afgerond",
+    "clientHealth": "Klant Health Overzicht",
+    "totalClients": "klanten",
+    "health": {
+      "healthy": "Gezond (>75)",
+      "attention": "Aandacht nodig",
+      "atRisk": "At-risk (<50)"
+    },
+    "atRiskClients": "At-risk klanten",
+    "daysAgo": "dagen geleden",
+    "noAtRiskClients": "Geen at-risk klanten!",
+    "assignmentStatus": "Opdrachten Status",
+    "total": "Totaal",
+    "assignments": "opdrachten",
+    "topClients": "Top Klanten",
+    "client": "Klant",
+    "revenue": "Omzet",
+    "taskMetrics": "Opvolging Metrics",
+    "tasksCreated": "Taken aangemaakt",
+    "tasksOverdue": "Achterstallig",
+    "avgCompletionTime": "Gem. doorlooptijd",
+    "days": "dagen",
+    "noData": "Geen data beschikbaar",
+    "export": {
+      "pdfTitle": "PDF Export",
+      "comingSoon": "Deze functie komt binnenkort beschikbaar.",
+      "csvSuccess": "CSV geëxporteerd",
+      "csvDescription": "Het rapport is gedownload."
+    }
+  },
   "projects": {
     "title": "Projecten & Workflows",
     "description": "Beheer klantprojecten en terugkerende workflows",

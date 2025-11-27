@@ -549,6 +549,70 @@
     "taskMoved": "Task moved to {{column}}",
     "undo": "Undo"
   },
+  "analytics": {
+    "title": "Analytics & Reporting",
+    "subtitle": "Insight into your communication performance",
+    "period": "Period",
+    "periods": {
+      "week": "This week",
+      "month": "This month",
+      "quarter": "This quarter",
+      "year": "This year",
+      "custom": "Custom"
+    },
+    "from": "From",
+    "to": "To",
+    "comparePrevious": "Compare with previous period",
+    "vsPrevious": "vs previous period",
+    "metrics": {
+      "totalInteractions": "Total interactions",
+      "activeClients": "Active clients",
+      "avgResponseTime": "Avg. conversation time",
+      "satisfaction": "Satisfaction"
+    },
+    "positive": "positive",
+    "channelBreakdown": "Communication by channel",
+    "channels": {
+      "phone": "Phone",
+      "email": "Email",
+      "video": "Video"
+    },
+    "interactions": "interactions",
+    "interactionsOverTime": "Interactions over time",
+    "teamPerformance": "Team Performance",
+    "teamMember": "Team Member",
+    "clients": "Clients",
+    "avgTime": "Avg. time",
+    "tasksCompleted": "Tasks completed",
+    "clientHealth": "Client Health Overview",
+    "totalClients": "clients",
+    "health": {
+      "healthy": "Healthy (>75)",
+      "attention": "Needs attention",
+      "atRisk": "At-risk (<50)"
+    },
+    "atRiskClients": "At-risk clients",
+    "daysAgo": "days ago",
+    "noAtRiskClients": "No at-risk clients!",
+    "assignmentStatus": "Assignment Status",
+    "total": "Total",
+    "assignments": "assignments",
+    "topClients": "Top Clients",
+    "client": "Client",
+    "revenue": "Revenue",
+    "taskMetrics": "Follow-up Metrics",
+    "tasksCreated": "Tasks created",
+    "tasksOverdue": "Overdue",
+    "avgCompletionTime": "Avg. completion time",
+    "days": "days",
+    "noData": "No data available",
+    "export": {
+      "pdfTitle": "PDF Export",
+      "comingSoon": "This feature is coming soon.",
+      "csvSuccess": "CSV exported",
+      "csvDescription": "The report has been downloaded."
+    }
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",
