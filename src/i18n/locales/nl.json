@@ -65,7 +65,8 @@
       "actions": "Acties"
     },
     "actions": {
-      "call": "Bellen"
+      "call": "Bellen",
+      "newInteraction": "Nieuwe interactie"
     },
     "bulk": {
       "selected": "{{count}} geselecteerd",
@@ -335,6 +336,34 @@
       "send": "Versturen",
       "navigate": "Navigeren",
       "close": "Sluiten"
+    },
+    "newMessages": "Nieuwe berichten",
+    "quickReplies": {
+      "title": "Snelle antwoorden",
+      "greeting": {
+        "title": "Begroeting",
+        "content": "Hallo! Hoe kan ik u vandaag helpen?"
+      },
+      "thanksContact": {
+        "title": "Bedankt voor contact",
+        "content": "Bedankt voor uw bericht. Ik help u graag verder."
+      },
+      "patience": {
+        "title": "Even geduld",
+        "content": "Momentje geduld alstublieft, ik zoek dit voor u uit."
+      },
+      "moreInfo": {
+        "title": "Meer informatie nodig",
+        "content": "Kunt u mij wat meer informatie geven over uw vraag?"
+      },
+      "problemSolved": {
+        "title": "Probleem opgelost",
+        "content": "Ik ben blij dat ik u kon helpen. Is er nog iets anders waarmee ik u kan helpen?"
+      },
+      "closing": {
+        "title": "Afsluiting",
+        "content": "Bedankt voor uw contact. Neem gerust opnieuw contact op als u nog vragen heeft!"
+      }
     }
   },
   "customer": {

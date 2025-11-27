@@ -12,6 +12,8 @@ import { useUserStore } from '@/store/userStore';
 import InteractieDetailModal from './InteractieDetailModal';
 import InteractieKanaalBadge from './InteractieKanaalBadge';
 
+type PeriodFilter = 'all' | 'week' | 'month' | 'quarter' | 'year';
+
 interface ClientInteractionsTimelineProps {
   klantId: string;
 }
@@ -21,12 +23,32 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
   const { data: interacties, isLoading } = useInteractiesByKlant(klantId);
   const [filterChannel, setFilterChannel] = useState<Channel | 'all'>('all');
   const [filterSentiment, setFilterSentiment] = useState<string>('all');
+  const [filterPeriod, setFilterPeriod] = useState<PeriodFilter>('all');
   const [selectedInteractie, setSelectedInteractie] = useState<Interactie | null>(null);
+
+  // Period filter helper
+  const getDateCutoff = (period: PeriodFilter): Date | null => {
+    const now = new Date();
+    switch (period) {
+      case 'week':
+        return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      case 'month':
+        return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      case 'quarter':
+        return new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+      case 'year':
+        return new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+      default:
+        return null;
+    }
+  };
   
   const filteredInteracties = interacties?.results.filter((int) => {
     const matchesChannel = filterChannel === 'all' || int.kanaal === filterChannel;
     const matchesSentiment = filterSentiment === 'all' || int.sentiment === filterSentiment;
-    return matchesChannel && matchesSentiment;
+    const dateCutoff = getDateCutoff(filterPeriod);
+    const matchesPeriod = !dateCutoff || new Date(int.datum) >= dateCutoff;
+    return matchesChannel && matchesSentiment && matchesPeriod;
   });
   
   // Group by month
@@ -44,11 +66,11 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
     <div className="space-y-6">
       {/* Filters */}
       <Card className="p-4">
-        <div className="flex items-center space-x-4">
+        <div className="flex flex-wrap items-center gap-3">
           <Filter className="w-5 h-5 text-ka-gray-500 dark:text-gray-400" />
           
           <Select value={filterChannel} onValueChange={(v) => setFilterChannel(v as Channel | 'all')}>
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger className="w-[160px]">
               <SelectValue placeholder="Alle kanalen" />
             </SelectTrigger>
             <SelectContent>
@@ -61,7 +83,7 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
           </Select>
           
           <Select value={filterSentiment} onValueChange={setFilterSentiment}>
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger className="w-[160px]">
               <SelectValue placeholder="Alle sentimenten" />
             </SelectTrigger>
             <SelectContent>
@@ -69,6 +91,19 @@ export default function ClientInteractionsTimeline({ klantId }: ClientInteractio
               <SelectItem value="Positief">Positief</SelectItem>
               <SelectItem value="Neutraal">Neutraal</SelectItem>
               <SelectItem value="Negatief">Negatief</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={filterPeriod} onValueChange={(v) => setFilterPeriod(v as PeriodFilter)}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Periode" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Alle tijd</SelectItem>
+              <SelectItem value="week">Afgelopen week</SelectItem>
+              <SelectItem value="month">Afgelopen maand</SelectItem>
+              <SelectItem value="quarter">Afgelopen kwartaal</SelectItem>
+              <SelectItem value="year">Afgelopen jaar</SelectItem>
             </SelectContent>
           </Select>
         </div>

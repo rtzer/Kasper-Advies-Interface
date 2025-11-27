@@ -65,7 +65,8 @@
       "actions": "Actions"
     },
     "actions": {
-      "call": "Call"
+      "call": "Call",
+      "newInteraction": "New interaction"
     },
     "bulk": {
       "selected": "{{count}} selected",
@@ -335,6 +336,34 @@
       "send": "Send",
       "navigate": "Navigate",
       "close": "Close"
+    },
+    "newMessages": "New messages",
+    "quickReplies": {
+      "title": "Quick replies",
+      "greeting": {
+        "title": "Greeting",
+        "content": "Hello! How can I help you today?"
+      },
+      "thanksContact": {
+        "title": "Thanks for contacting",
+        "content": "Thank you for your message. I'm happy to help you."
+      },
+      "patience": {
+        "title": "Please wait",
+        "content": "One moment please, I'm looking into this for you."
+      },
+      "moreInfo": {
+        "title": "More info needed",
+        "content": "Could you provide me with more information about your question?"
+      },
+      "problemSolved": {
+        "title": "Problem solved",
+        "content": "I'm glad I could help. Is there anything else I can assist you with?"
+      },
+      "closing": {
+        "title": "Closing",
+        "content": "Thank you for contacting us. Feel free to reach out again if you have any questions!"
+      }
     }
   },
   "customer": {

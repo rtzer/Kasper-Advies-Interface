@@ -17,8 +17,9 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { 
   Search, Users, Plus, Mail, Phone, MessageSquare, Star, 
-  UserCheck, AlertTriangle, UserPlus, CheckSquare, Download
+  UserCheck, AlertTriangle, UserPlus, CheckSquare, Download, MessageCirclePlus
 } from 'lucide-react';
+import CreateInteractionDialog from '@/components/clients/CreateInteractionDialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { responsiveHeading, responsiveBody } from '@/lib/utils/typography';
 import { useDeviceChecks } from '@/hooks/useBreakpoint';
@@ -41,6 +42,8 @@ export default function ClientsPage() {
   const [quickTab, setQuickTab] = useState<QuickTab>('all');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [interactionDialogOpen, setInteractionDialogOpen] = useState(false);
+  const [selectedKlantForInteraction, setSelectedKlantForInteraction] = useState<string | null>(null);
   
   const { isMobile } = useDeviceChecks();
   const { data, isLoading } = useKlanten();
@@ -457,6 +460,23 @@ export default function ClientsPage() {
                           </TooltipTrigger>
                           <TooltipContent>{t('clients.actions.call')}</TooltipContent>
                         </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setSelectedKlantForInteraction(klant.id);
+                                setInteractionDialogOpen(true);
+                              }}
+                            >
+                              <MessageCirclePlus className="w-4 h-4 text-ka-green" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{t('clients.actions.newInteraction')}</TooltipContent>
+                        </Tooltip>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -472,6 +492,19 @@ export default function ClientsPage() {
         <div className="text-center text-xs xs:text-sm text-muted-foreground py-2">
           {t('clients.resultsCount', { shown: filteredKlanten.length, total: klanten.length })}
         </div>
+      )}
+
+      {/* Create Interaction Dialog */}
+      {selectedKlantForInteraction && (
+        <CreateInteractionDialog
+          klantId={selectedKlantForInteraction}
+          klantNaam={klanten.find(k => k.id === selectedKlantForInteraction)?.naam || ''}
+          open={interactionDialogOpen}
+          onOpenChange={(open) => {
+            setInteractionDialogOpen(open);
+            if (!open) setSelectedKlantForInteraction(null);
+          }}
+        />
       )}
     </div>
   );
