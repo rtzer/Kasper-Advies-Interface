@@ -764,6 +764,7 @@ export const mockKlanten: Klant[] = [
     klant_type_details: 'Particulier - alleenstaand',
     email: 'h.mulder@gmail.com',
     telefoonnummer: '+31-599-612345',
+    mobiel: '+31-6-12345678',
     adres: 'Stationsstraat 12',
     postcode: '9501 AB',
     plaats: 'Stadskanaal',
@@ -774,17 +775,22 @@ export const mockKlanten: Klant[] = [
     accountmanager: 'Harm-Jan Kaspers',
     sinds_wanneer_klant: '2021-03-15',
     facturatie_frequentie: 'Jaarlijks',
-    gerelateerde_klanten: ['2'], // Link to Installatiebedrijf Mulder BV
+    gerelateerde_klanten: ['2'],
     relatie_type: 'Eigenaar van',
     notities: 'DGA van Installatiebedrijf Mulder BV. Privé aangifte + optimalisatie salary/dividend.',
     tags: ['DGA', 'Particulier'],
     voorkeur_kanaal: 'Telefoon',
     taal_voorkeur: 'nl',
-    // Factuuradres (zelfde als woonadres in dit geval)
     factuur_adres: 'Stationsstraat 12',
     factuur_postcode: '9501 AB',
     factuur_plaats: 'Stadskanaal',
     factuur_land: 'Nederland',
+    // New lifecycle fields
+    lifecycle_stage: 'Actief',
+    health_score: 85,
+    focus_client: true,
+    last_contact_date: '2025-11-25',
+    open_tasks_count: 2,
   },
   // Installatiebedrijf Mulder BV - Zakelijk (bedrijf van Hans Mulder)
   {
@@ -795,6 +801,7 @@ export const mockKlanten: Klant[] = [
     klant_type_details: 'Zakelijk - BV',
     email: 'info@mulder-installatie.nl',
     telefoonnummer: '+31-599-612388',
+    mobiel: '+31-6-23456789',
     adres: 'Industrieweg 8',
     postcode: '9501 DK',
     plaats: 'Stadskanaal',
@@ -810,23 +817,27 @@ export const mockKlanten: Klant[] = [
     jaren_actief_als_ondernemer: 4,
     facturatie_frequentie: 'Maandelijks',
     groei_fase: 'Groei',
-    gerelateerde_klanten: ['1'], // Link to Hans Mulder particulier
+    gerelateerde_klanten: ['1'],
     relatie_type: 'Eigendom van',
     notities: 'CV-installaties, sanitair, duurzame energie. 3 medewerkers, groeiambitie naar 8 medewerkers.',
     tags: ['MKB', 'Installatie', 'Groei'],
     voorkeur_kanaal: 'E-mail',
     taal_voorkeur: 'nl',
-    // Externe accountant
     externe_accountant: 'Petra de Vries RA',
     accountant_email: 'p.devries@bakkeraccount.nl',
     accountant_telefoonnummer: '+31-50-1234567',
     accountant_kantoor: 'Bakker Accountants & Adviseurs',
     samenwerking_sinds: '2021-03-15',
-    // Bankgegevens
     iban: 'NL45 RABO 0123 4567 89',
     bic: 'RABONL2U',
     bank_naam: 'Rabobank',
     betalingstermijn: 30,
+    // New lifecycle fields
+    lifecycle_stage: 'Actief',
+    health_score: 92,
+    focus_client: true,
+    last_contact_date: '2025-11-27',
+    open_tasks_count: 3,
   },
   // Lisa de Vries - Particulier (privé klant van onderneemster)
   {
@@ -837,6 +848,7 @@ export const mockKlanten: Klant[] = [
     klant_type_details: 'Particulier - alleenstaand',
     email: 'lisa.devries@hotmail.com',
     telefoonnummer: '+31-599-623456',
+    mobiel: '+31-6-34567890',
     adres: 'Hoofdstraat 45',
     postcode: '9501 CC',
     plaats: 'Stadskanaal',
@@ -847,12 +859,18 @@ export const mockKlanten: Klant[] = [
     accountmanager: 'Jan Jansen',
     sinds_wanneer_klant: '2020-09-01',
     facturatie_frequentie: 'Jaarlijks',
-    gerelateerde_klanten: ['4'], // Link to Webshop TechGadgets
+    gerelateerde_klanten: ['4'],
     relatie_type: 'Eigenaar van',
     notities: 'Eigenaar webshop TechGadgets. Privé aangifte IB.',
     tags: ['Particulier', 'ZZP'],
     voorkeur_kanaal: 'E-mail',
     taal_voorkeur: 'nl',
+    // New lifecycle fields
+    lifecycle_stage: 'Actief',
+    health_score: 78,
+    focus_client: false,
+    last_contact_date: '2025-11-20',
+    open_tasks_count: 1,
   },
   // Webshop TechGadgets - Zakelijk (eenmanszaak van Lisa)
   {
@@ -863,6 +881,7 @@ export const mockKlanten: Klant[] = [
     klant_type_details: 'Zakelijk - Eenmanszaak',
     email: 'info@techgadgets.nl',
     telefoonnummer: '+31-599-623457',
+    mobiel: '+31-6-45678901',
     adres: 'Hoofdstraat 45',
     postcode: '9501 CC',
     plaats: 'Stadskanaal',
@@ -878,12 +897,18 @@ export const mockKlanten: Klant[] = [
     jaren_actief_als_ondernemer: 4,
     facturatie_frequentie: 'Kwartaal',
     groei_fase: 'Schaal-op',
-    gerelateerde_klanten: ['3'], // Link to Lisa de Vries privé
+    gerelateerde_klanten: ['3'],
     relatie_type: 'Eigendom van',
     notities: 'Online verkoop gadgets en elektronica. Groei 40% per jaar, overweegt personeel.',
     tags: ['ZZP', 'E-commerce', 'Groei'],
     voorkeur_kanaal: 'WhatsApp',
     taal_voorkeur: 'nl',
+    // New lifecycle fields
+    lifecycle_stage: 'Actief',
+    health_score: 88,
+    focus_client: true,
+    last_contact_date: '2025-11-22',
+    open_tasks_count: 2,
   },
   // P. Bakker & M. Bakker-Smit - Particulier (gehuwd koppel)
   {
@@ -894,6 +919,7 @@ export const mockKlanten: Klant[] = [
     klant_type_details: 'Particulier - gehuwd',
     email: 'p.bakker@gmail.com',
     telefoonnummer: '+31-599-634567',
+    mobiel: '+31-6-56789012',
     adres: 'Europaweg 23',
     postcode: '9501 TG',
     plaats: 'Stadskanaal',
@@ -909,11 +935,15 @@ export const mockKlanten: Klant[] = [
     tags: ['Particulier', 'Gezin', 'Toeslagen'],
     voorkeur_kanaal: 'E-mail',
     taal_voorkeur: 'nl',
-    // Partner relatie (gezamenlijk)
     is_gezamenlijk: true,
-    // Bankgegevens
     iban: 'NL12 RABO 0123 4567 89',
     bank_naam: 'Rabobank',
+    // New lifecycle fields
+    lifecycle_stage: 'Actief',
+    health_score: 72,
+    focus_client: false,
+    last_contact_date: '2025-11-19',
+    open_tasks_count: 0,
   },
   // Fysiotherapie Vitaal VOF - Zakelijk (vennootschap)
   {
@@ -924,6 +954,7 @@ export const mockKlanten: Klant[] = [
     klant_type_details: 'Zakelijk - VOF/Maatschap',
     email: 'info@fysiovitaal.nl',
     telefoonnummer: '+31-599-645678',
+    mobiel: '+31-6-67890123',
     adres: 'Wilhelminastraat 12',
     postcode: '9501 HD',
     plaats: 'Stadskanaal',
@@ -939,12 +970,18 @@ export const mockKlanten: Klant[] = [
     jaren_actief_als_ondernemer: 3,
     facturatie_frequentie: 'Kwartaal',
     groei_fase: 'Professionalisering',
-    gerelateerde_klanten: ['7', '8'], // Links to Anne Bakker and Tom Willems
+    gerelateerde_klanten: ['7', '8'],
     relatie_type: 'Vennoot',
     notities: 'Fysiotherapiepraktijk, 2 vennoten, 1 medewerker. Overweging omzetting naar BV.',
     tags: ['MKB', 'Gezondheidszorg', 'VOF'],
     voorkeur_kanaal: 'E-mail',
     taal_voorkeur: 'nl',
+    // New lifecycle fields
+    lifecycle_stage: 'Actief',
+    health_score: 95,
+    focus_client: true,
+    last_contact_date: '2025-11-26',
+    open_tasks_count: 1,
   },
   // Anne Bakker - Particulier (vennoot VOF)
   {
@@ -965,12 +1002,18 @@ export const mockKlanten: Klant[] = [
     accountmanager: 'Harm-Jan Kaspers',
     sinds_wanneer_klant: '2021-06-01',
     facturatie_frequentie: 'Jaarlijks',
-    gerelateerde_klanten: ['6'], // Link to Fysiotherapie Vitaal VOF
+    gerelateerde_klanten: ['6'],
     relatie_type: 'Vennoot',
     notities: 'Vennoot Fysiotherapie Vitaal VOF (50%). Privé aangifte winst uit onderneming.',
     tags: ['Particulier', 'Vennoot'],
     voorkeur_kanaal: 'E-mail',
     taal_voorkeur: 'nl',
+    // New lifecycle fields
+    lifecycle_stage: 'Actief',
+    health_score: 80,
+    focus_client: false,
+    last_contact_date: '2025-11-15',
+    open_tasks_count: 0,
   },
   // Tom Willems - Particulier (vennoot VOF)
   {
@@ -991,12 +1034,18 @@ export const mockKlanten: Klant[] = [
     accountmanager: 'Harm-Jan Kaspers',
     sinds_wanneer_klant: '2021-06-01',
     facturatie_frequentie: 'Jaarlijks',
-    gerelateerde_klanten: ['6'], // Link to Fysiotherapie Vitaal VOF
+    gerelateerde_klanten: ['6'],
     relatie_type: 'Vennoot',
     notities: 'Vennoot Fysiotherapie Vitaal VOF (50%). Privé aangifte winst uit onderneming.',
     tags: ['Particulier', 'Vennoot'],
     voorkeur_kanaal: 'E-mail',
     taal_voorkeur: 'nl',
+    // New lifecycle fields
+    lifecycle_stage: 'At-risk',
+    health_score: 45,
+    focus_client: false,
+    last_contact_date: '2025-05-10',
+    open_tasks_count: 3,
   },
   // Slagerij Van Dijk - Zakelijk (eenmanszaak)
   {
@@ -1007,6 +1056,7 @@ export const mockKlanten: Klant[] = [
     klant_type_details: 'Zakelijk - Eenmanszaak',
     email: 'info@slagerijvandijk.nl',
     telefoonnummer: '+31-599-678901',
+    mobiel: '+31-6-78901234',
     adres: 'Marktplein 5',
     postcode: '9501 AB',
     plaats: 'Stadskanaal',
@@ -1022,16 +1072,21 @@ export const mockKlanten: Klant[] = [
     jaren_actief_als_ondernemer: 5,
     facturatie_frequentie: 'Maandelijks',
     groei_fase: 'Digitalisering',
-    gerelateerde_klanten: ['10'], // Link to Jan van Dijk privé
+    gerelateerde_klanten: ['10'],
     relatie_type: 'Eigendom van',
     notities: 'Traditionele slagerij, bestaat sinds 1995. Nu digitalisering: webshop, online bestellingen.',
     tags: ['MKB', 'Retail', 'Digitalisering'],
     voorkeur_kanaal: 'WhatsApp',
     taal_voorkeur: 'nl',
-    // Bankgegevens
     iban: 'NL78 RABO 0234 5678 90',
     bank_naam: 'Rabobank',
     betalingstermijn: 14,
+    // New lifecycle fields
+    lifecycle_stage: 'Onboarding',
+    health_score: 65,
+    focus_client: false,
+    last_contact_date: '2025-11-10',
+    open_tasks_count: 4,
   },
   // Jan van Dijk - Particulier (eigenaar slagerij)
   {
@@ -1047,17 +1102,23 @@ export const mockKlanten: Klant[] = [
     plaats: 'Stadskanaal',
     land: 'Nederland',
     bsn: '789012346',
-    status: 'Actief',
+    status: 'Inactief',
     status_historisch: false,
     accountmanager: 'Linda Prins',
     sinds_wanneer_klant: '2019-02-01',
     facturatie_frequentie: 'Jaarlijks',
-    gerelateerde_klanten: ['9'], // Link to Slagerij Van Dijk
+    gerelateerde_klanten: ['9'],
     relatie_type: 'Eigenaar van',
     notities: 'Eigenaar Slagerij Van Dijk. Zoon Pieter werkt mee in bedrijf (geen vennoot).',
     tags: ['Particulier', 'ZZP'],
     voorkeur_kanaal: 'Telefoon',
     taal_voorkeur: 'nl',
+    // New lifecycle fields
+    lifecycle_stage: 'Churned',
+    health_score: 25,
+    focus_client: false,
+    last_contact_date: '2024-06-15',
+    open_tasks_count: 0,
   },
 ];
 

@@ -1,4 +1,80 @@
 {
+  "clients": {
+    "title": "Klanten",
+    "subtitle": "Beheer al uw klantrelaties op één plek",
+    "new": "Nieuwe Klant",
+    "newShort": "Nieuw",
+    "searchPlaceholder": "Zoek op naam, nummer, email...",
+    "noResults": "Geen klanten gevonden",
+    "noResultsHint": "Probeer een andere zoekterm of filter",
+    "resultsCount": "{{shown}} van {{total}} klanten",
+    "stats": {
+      "total": "Totaal",
+      "active": "Actief",
+      "focus": "Focus",
+      "lowHealth": "Health < 50",
+      "new30days": "Nieuw (30d)"
+    },
+    "tabs": {
+      "all": "Alle",
+      "focus": "Focus",
+      "atRisk": "At-risk",
+      "new": "Nieuw"
+    },
+    "filters": {
+      "status": "Status",
+      "type": "Type",
+      "lifecycle": "Lifecycle",
+      "accountmanager": "Accountmanager",
+      "allStatuses": "Alle statussen",
+      "allTypes": "Alle types",
+      "allLifecycle": "Alle lifecycle",
+      "allAccountmanagers": "Alle",
+      "active": "Actief",
+      "inactive": "Inactief",
+      "prospect": "Prospect",
+      "particulier": "Particulier",
+      "focusOnly": "Alleen focus klanten",
+      "hasOpenTasks": "Heeft openstaande taken"
+    },
+    "lifecycle": {
+      "onboarding": "Onboarding",
+      "active": "Actief",
+      "atRisk": "At-risk",
+      "churned": "Churned",
+      "reactivated": "Reactivated"
+    },
+    "health": {
+      "title": "Health Score",
+      "critical": "Kritiek",
+      "atRisk": "At-risk",
+      "good": "Goed",
+      "excellent": "Uitstekend"
+    },
+    "lastContact": {
+      "overdue": "Geen contact voor {{months}} maanden"
+    },
+    "table": {
+      "client": "Klant",
+      "type": "Type",
+      "lifecycle": "Lifecycle",
+      "health": "Health",
+      "accountmanager": "Accountmanager",
+      "lastContact": "Laatste contact",
+      "openTasks": "Open taken",
+      "actions": "Acties"
+    },
+    "actions": {
+      "call": "Bellen"
+    },
+    "bulk": {
+      "selected": "{{count}} geselecteerd",
+      "assign": "Toewijzen aan...",
+      "export": "Exporteren",
+      "assignSuccess": "{{count}} klanten toegewezen",
+      "exportSuccess": "{{count}} klanten geëxporteerd"
+    }
+  },
   "prospects": {
     "title": "Prospects",
     "subtitle": "Beheer potentiële klanten",
