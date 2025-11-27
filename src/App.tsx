@@ -56,12 +56,12 @@ import TeamPage from "./pages/TeamPage";
 const queryClient = new QueryClient();
 
 const AppContent = () => {
+  useTheme();
   useKeyboardShortcuts();
   return null;
 };
 
 const App = () => {
-  useTheme();
   
   return (
     <QueryClientProvider client={queryClient}>
