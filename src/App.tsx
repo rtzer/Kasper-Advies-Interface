@@ -51,6 +51,7 @@ import FlowbiteAnalytics from "./pages/FlowbiteAnalytics";
 import FlowbiteNotFound from "./pages/FlowbiteNotFound";
 import ProspectsPage from "./pages/ProspectsPage";
 import InboxReviewPage from "./pages/InboxReviewPage";
+import TeamPage from "./pages/TeamPage";
 
 const queryClient = new QueryClient();
 
@@ -118,6 +119,7 @@ const App = () => {
               
               {/* Other protected routes */}
               <Route path="/settings" element={<ProtectedRoute><AppLayout><FlowbiteSettings /></AppLayout></ProtectedRoute>} />
+              <Route path="/settings/team" element={<ProtectedRoute><AppLayout><TeamPage /></AppLayout></ProtectedRoute>} />
               <Route path="/analytics" element={<ProtectedRoute><AppLayout><FlowbiteAnalytics /></AppLayout></ProtectedRoute>} />
               <Route path="/channels/sms" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="SMS" icon={MessageCircle} color="text-blue-600" /></AppLayout></ProtectedRoute>} />
               <Route path="/channels/facebook" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="Facebook" icon={Facebook} color="text-indigo-600" /></AppLayout></ProtectedRoute>} />
