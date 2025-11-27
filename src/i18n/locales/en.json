@@ -73,6 +73,54 @@
       "export": "Export",
       "assignSuccess": "{{count}} clients assigned",
       "exportSuccess": "{{count}} clients exported"
+    },
+    "focus": {
+      "added": "Client added to focus list",
+      "removed": "Client removed from focus list",
+      "clickToAdd": "Click to mark as focus client",
+      "clickToRemove": "Click to remove focus mark"
+    },
+    "interactions": {
+      "newInteraction": "New interaction",
+      "newInteractionDesc": "Register a new interaction with {{name}}",
+      "channel": "Channel",
+      "direction": "Direction",
+      "inbound": "Inbound",
+      "outbound": "Outbound",
+      "subject": "Subject",
+      "subjectPlaceholder": "E.g. Question about VAT return",
+      "summary": "Summary",
+      "summaryPlaceholder": "Brief description of the conversation...",
+      "sentiment": "Sentiment",
+      "followupRequired": "Follow-up required",
+      "selectFollowupDate": "Select follow-up date",
+      "created": "Interaction created successfully",
+      "fillRequired": "Please fill all required fields",
+      "filterByChannel": "Filter by channel",
+      "filterByPeriod": "Filter by period",
+      "allChannels": "All channels",
+      "allPeriods": "All periods",
+      "thisWeek": "This week",
+      "thisMonth": "This month",
+      "thisQuarter": "This quarter",
+      "thisYear": "This year"
+    },
+    "audit": {
+      "title": "History",
+      "createdAt": "Created at",
+      "createdBy": "Created by",
+      "lastModified": "Last modified",
+      "modifiedBy": "Modified by",
+      "noChanges": "No changes",
+      "viewFullLog": "View full audit log"
+    },
+    "relatedWarning": {
+      "exPartner": "Note: This client has an ex-partner relationship. Do not discuss matters of the other party."
+    },
+    "quickActions": {
+      "newInteraction": "New interaction",
+      "newTask": "New task",
+      "newAssignment": "New assignment"
     }
   },
   "prospects": {
