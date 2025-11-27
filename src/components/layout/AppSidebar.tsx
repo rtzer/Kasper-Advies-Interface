@@ -18,7 +18,11 @@ import {
   DollarSign,
   UserCircle,
   AlertCircle,
+  Inbox,
 } from 'lucide-react';
+import { useProspectStats } from '@/lib/api/prospects';
+import { useInboxStats } from '@/lib/api/inboxItems';
+import { Badge } from '@/components/ui/badge';
 
 import {
   Sidebar,
@@ -45,6 +49,12 @@ export function AppSidebar() {
   const currentPath = location.pathname;
   
   const collapsed = state === 'collapsed';
+  
+  // Stats for badges
+  const { data: prospectStats } = useProspectStats();
+  const { data: inboxStats } = useInboxStats();
+  const nieuwProspects = prospectStats?.nieuwDezeWeek ?? 0;
+  const nieuwInbox = inboxStats?.nieuw ?? 0;
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     klanten: false,
@@ -85,19 +95,16 @@ export function AppSidebar() {
               {/* Inbox Review */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <NavLink to="/inbox/review" className={getNavCls(isActive('/inbox/review'))}>
-                    <AlertCircle className="h-4 w-4" />
-                    {!collapsed && <span>Inbox Review</span>}
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              {/* Prospects */}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <NavLink to="/prospects" className={getNavCls(isActive('/prospects'))}>
-                    <UserPlus className="h-4 w-4" />
-                    {!collapsed && <span>Prospects</span>}
+                  <NavLink to="/inbox/review" className={`${getNavCls(isActive('/inbox/review'))} flex items-center justify-between`}>
+                    <div className="flex items-center gap-2">
+                      <Inbox className="h-4 w-4" />
+                      {!collapsed && <span>Inbox Review</span>}
+                    </div>
+                    {!collapsed && nieuwInbox > 0 && (
+                      <Badge variant="destructive" className={`h-5 px-1.5 text-xs ${nieuwInbox > 5 ? 'animate-pulse' : ''}`}>
+                        {nieuwInbox}
+                      </Badge>
+                    )}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -142,6 +149,23 @@ export function AppSidebar() {
                   )}
                 </SidebarMenuItem>
               </Collapsible>
+
+              {/* Prospects (na Klanten) */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/prospects" className={`${getNavCls(isActive('/prospects'))} flex items-center justify-between`}>
+                    <div className="flex items-center gap-2">
+                      <UserPlus className="h-4 w-4" />
+                      {!collapsed && <span>Prospects</span>}
+                    </div>
+                    {!collapsed && nieuwProspects > 0 && (
+                      <Badge variant="secondary" className="h-5 px-1.5 text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                        {nieuwProspects}
+                      </Badge>
+                    )}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
               {/* Projecten met submenu */}
               <Collapsible
