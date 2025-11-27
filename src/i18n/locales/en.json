@@ -642,6 +642,84 @@
       "csvDescription": "The report has been downloaded."
     }
   },
+  "projects": {
+    "title": "Projects & Workflows",
+    "description": "Manage client projects and recurring workflows",
+    "lateClients": "Late Clients",
+    "workload": "Workload",
+    "bulkBTW": "Bulk BTW",
+    "backToProjects": "Back to projects",
+    "workloadOverview": "Team Workload Overview",
+    "workloadDescription": "Distribution of projects and tasks across the team",
+    "workloadWarning": "Warning: Some team members have a high workload!",
+    "projectsTotal": "projects total",
+    "statusDistribution": "Status distribution",
+    "recentProjects": "Recent projects",
+    "noProjects": "No projects found",
+    "noProjectsInColumn": "No projects",
+    "progress": "Progress",
+    "tasks": "tasks",
+    "completed": "completed",
+    "category": "Category",
+    "allCategories": "All categories",
+    "allStatuses": "All statuses",
+    "tabs": {
+      "overview": "Overview",
+      "assignments": "Assignments",
+      "tasks": "Tasks",
+      "documents": "Documents",
+      "timeline": "Timeline"
+    },
+    "linkedAssignments": "Linked Assignments",
+    "noAssignments": "No assignments linked to this project",
+    "projectTasks": "Project Tasks",
+    "noTasks": "No tasks for this project",
+    "documents": "Documents",
+    "noDocuments": "No documents added yet",
+    "activityTimeline": "Activity Timeline",
+    "stats": {
+      "active": "Active projects",
+      "deadlineMonth": "Deadline this month",
+      "overdue": "Overdue",
+      "myProjects": "My projects",
+      "completedQuarter": "Completed (quarter)"
+    },
+    "views": {
+      "list": "List",
+      "calendar": "Calendar",
+      "timeline": "Timeline"
+    },
+    "columns": {
+      "planned": "Planned",
+      "active": "Active",
+      "inReview": "In Review",
+      "waitingClient": "Waiting for Client",
+      "completed": "Completed"
+    },
+    "categories": {
+      "jaarwerk": "Annual work",
+      "btw": "VAT",
+      "advies": "Advisory",
+      "loonadministratie": "Payroll",
+      "bijzonder": "Special"
+    },
+    "status": {
+      "label": "Status",
+      "notStarted": "Not started",
+      "inProgress": "In progress",
+      "inReview": "In review",
+      "waitingClient": "Waiting for client",
+      "blocked": "Blocked",
+      "completed": "Completed"
+    },
+    "workload": {
+      "label": "Workload",
+      "low": "Low",
+      "normal": "Normal",
+      "high": "High",
+      "overloaded": "Overloaded"
+    }
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",

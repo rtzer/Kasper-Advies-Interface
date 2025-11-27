@@ -1,9 +1,13 @@
 import { useParams, Link } from 'react-router-dom';
 import { useProject, useSendReminder } from '@/lib/api/projects';
-import { CheckCircle, Circle, Clock, AlertCircle, Send, ArrowLeft, Phone, Mail } from 'lucide-react';
+import { useOpdrachten } from '@/lib/api/opdrachten';
+import { useTaken } from '@/lib/api/taken';
+import { CheckCircle, Circle, Clock, AlertCircle, Send, ArrowLeft, Phone, Mail, FileText, ClipboardList, LayoutList, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getStatusColor, getStatusLabel, formatDeadline, getCategoryColor } from '@/lib/utils/projectHelpers';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -13,19 +17,35 @@ import { useState } from 'react';
 import { useKlanten } from '@/lib/api/klanten';
 import { responsiveHeading, responsiveBody } from '@/lib/utils/typography';
 import { useDeviceChecks } from '@/hooks/useBreakpoint';
+import { useTranslation } from 'react-i18next';
+import { format } from 'date-fns';
+import { nl, enUS } from 'date-fns/locale';
+import { OpdrachtTypeBadge } from '@/components/assignments/OpdrachtTypeBadge';
+import { TaskDeadlineBadge } from '@/components/tasks/TaskDeadlineBadge';
 
 export default function ProjectDetailPage() {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === 'nl' ? nl : enUS;
   const { id } = useParams<{ id: string }>();
   const { data: project, isLoading } = useProject(id || '');
   const { data: klantenData } = useKlanten();
+  const { data: opdrachtenData } = useOpdrachten();
+  const { data: takenData } = useTaken();
   const sendReminderMutation = useSendReminder();
   const { toast } = useToast();
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
   
   const { isMobile } = useDeviceChecks();
 
   // Find client details
   const client = klantenData?.results?.find(k => k.id === project?.client_id);
+  
+  // Find related opdrachten and taken
+  const relatedOpdrachten = opdrachtenData?.results?.filter(o => o.project_id === id) || [];
+  const relatedTaken = takenData?.results?.filter(t => 
+    relatedOpdrachten.some(o => o.id === t.gerelateerde_opdracht_id)
+  ) || [];
 
   const handleSendReminder = () => {
     if (!project) return;
@@ -53,32 +73,12 @@ export default function ProjectDetailPage() {
   const handlePhoneCall = () => {
     if (client?.telefoonnummer) {
       window.location.href = `tel:${client.telefoonnummer}`;
-      toast({
-        title: "Bellen...",
-        description: `${client.telefoonnummer}`,
-      });
-    } else {
-      toast({
-        title: "Geen telefoonnummer",
-        description: "Er is geen telefoonnummer beschikbaar voor deze klant.",
-        variant: "destructive",
-      });
     }
   };
 
   const handleEmail = () => {
     if (client?.email) {
       window.location.href = `mailto:${client.email}`;
-      toast({
-        title: "Email openen...",
-        description: `${client.email}`,
-      });
-    } else {
-      toast({
-        title: "Geen email",
-        description: "Er is geen email beschikbaar voor deze klant.",
-        variant: "destructive",
-      });
     }
   };
 
@@ -118,11 +118,10 @@ export default function ProjectDetailPage() {
         Terug naar projecten
       </Link>
 
-      {/* Project Header Card - Optimized for 360px */}
+      {/* Project Header Card */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6 mb-3 xs:mb-4 sm:mb-6">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 xs:gap-4">
           <div className="flex-1 min-w-0">
-            {/* Badges - Wrap and smaller on mobile */}
             <div className="flex flex-wrap items-center gap-1.5 xs:gap-2 mb-2">
               <Badge variant="outline" className={`${getCategoryColor(project.category)} text-[10px] xs:text-xs px-1.5 xs:px-2`}>
                 {project.category}
@@ -145,7 +144,6 @@ export default function ProjectDetailPage() {
             </p>
           </div>
 
-          {/* Action buttons - Stack on mobile */}
           <div className="flex flex-col xs:flex-row gap-1.5 xs:gap-2 w-full lg:w-auto">
             <Button 
               variant="outline" 
@@ -177,69 +175,217 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      {/* Two-column layout - Stack on mobile */}
+      {/* Two-column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-6">
-        {/* Workflow Stages - Full width on mobile */}
+        {/* Main content with tabs */}
         <div className="lg:col-span-2">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6">
-            <h2 className={`${responsiveHeading.h4} mb-3 xs:mb-4`}>
-              Workflow Stadia
-            </h2>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid grid-cols-5 w-full mb-4">
+              <TabsTrigger value="overview" className="text-xs xs:text-sm">
+                <LayoutList className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1" />
+                <span className="hidden xs:inline">{t('projects.tabs.overview', 'Overzicht')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="opdrachten" className="text-xs xs:text-sm">
+                <FileText className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1" />
+                <span className="hidden xs:inline">{t('projects.tabs.assignments', 'Opdrachten')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="taken" className="text-xs xs:text-sm">
+                <ClipboardList className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1" />
+                <span className="hidden xs:inline">{t('projects.tabs.tasks', 'Taken')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="documenten" className="text-xs xs:text-sm">
+                <FileText className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1" />
+                <span className="hidden xs:inline">{t('projects.tabs.documents', 'Docs')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="tijdlijn" className="text-xs xs:text-sm">
+                <Calendar className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1" />
+                <span className="hidden xs:inline">{t('projects.tabs.timeline', 'Tijdlijn')}</span>
+              </TabsTrigger>
+            </TabsList>
 
-            <ProjectStageTracker 
-              stages={[
-                {
-                  id: 1,
-                  name: 'Documentatie aanvragen',
-                  completed: true,
-                  completedDate: '5 oktober 2025',
-                  checklist: [
-                    { id: '1-1', text: 'Verkoopfacturen verzameld', completed: true },
-                    { id: '1-2', text: 'Aankoopfacturen verzameld', completed: true },
-                    { id: '1-3', text: 'Bankafschriften ontvangen', completed: true },
-                  ]
-                },
-                {
-                  id: 2,
-                  name: 'Controle & Verwerking',
-                  completed: false,
-                  startDate: '6 oktober',
-                  expectedCompletion: '13 oktober',
-                  checklist: [
-                    { id: '2-1', text: 'Facturen verwerkt in systeem', completed: true },
-                    { id: '2-2', text: 'BTW berekend (bezig)', completed: false },
-                    { id: '2-3', text: 'Controle op fouten', completed: false },
-                  ]
-                },
-                {
-                  id: 3,
-                  name: 'Aangifte indienen',
-                  completed: false,
-                  startDate: '14 oktober',
-                  checklist: [
-                    { id: '3-1', text: 'Definitieve controle', completed: false },
-                    { id: '3-2', text: 'BTW aangifte indienen bij Belastingdienst', completed: false },
-                    { id: '3-3', text: 'Bevestiging ontvangen', completed: false },
-                  ]
-                },
-                {
-                  id: 4,
-                  name: 'Betaling & Afsluiting',
-                  completed: false,
-                  startDate: '17 oktober',
-                  checklist: [
-                    { id: '4-1', text: 'Betaling gecontroleerd', completed: false },
-                    { id: '4-2', text: 'Klant geïnformeerd', completed: false },
-                    { id: '4-3', text: 'Project afgesloten', completed: false },
-                  ]
-                }
-              ]}
-              projectId={project.id}
-            />
-          </div>
+            {/* Overview Tab */}
+            <TabsContent value="overview" className="mt-0">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6">
+                <h2 className={`${responsiveHeading.h4} mb-3 xs:mb-4`}>
+                  Workflow Stadia
+                </h2>
+                <ProjectStageTracker 
+                  stages={[
+                    {
+                      id: 1,
+                      name: 'Documentatie aanvragen',
+                      completed: true,
+                      completedDate: '5 oktober 2025',
+                      checklist: [
+                        { id: '1-1', text: 'Verkoopfacturen verzameld', completed: true },
+                        { id: '1-2', text: 'Aankoopfacturen verzameld', completed: true },
+                        { id: '1-3', text: 'Bankafschriften ontvangen', completed: true },
+                      ]
+                    },
+                    {
+                      id: 2,
+                      name: 'Controle & Verwerking',
+                      completed: false,
+                      startDate: '6 oktober',
+                      expectedCompletion: '13 oktober',
+                      checklist: [
+                        { id: '2-1', text: 'Facturen verwerkt in systeem', completed: true },
+                        { id: '2-2', text: 'BTW berekend (bezig)', completed: false },
+                        { id: '2-3', text: 'Controle op fouten', completed: false },
+                      ]
+                    },
+                    {
+                      id: 3,
+                      name: 'Aangifte indienen',
+                      completed: false,
+                      startDate: '14 oktober',
+                      checklist: [
+                        { id: '3-1', text: 'Definitieve controle', completed: false },
+                        { id: '3-2', text: 'BTW aangifte indienen bij Belastingdienst', completed: false },
+                        { id: '3-3', text: 'Bevestiging ontvangen', completed: false },
+                      ]
+                    },
+                    {
+                      id: 4,
+                      name: 'Betaling & Afsluiting',
+                      completed: false,
+                      startDate: '17 oktober',
+                      checklist: [
+                        { id: '4-1', text: 'Betaling gecontroleerd', completed: false },
+                        { id: '4-2', text: 'Klant geïnformeerd', completed: false },
+                        { id: '4-3', text: 'Project afgesloten', completed: false },
+                      ]
+                    }
+                  ]}
+                  projectId={project.id}
+                />
+              </div>
+            </TabsContent>
+
+            {/* Opdrachten Tab */}
+            <TabsContent value="opdrachten" className="mt-0">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6">
+                <h2 className={`${responsiveHeading.h4} mb-3 xs:mb-4`}>
+                  {t('projects.linkedAssignments', 'Gekoppelde Opdrachten')}
+                </h2>
+                {relatedOpdrachten.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">{t('projects.noAssignments', 'Geen opdrachten gekoppeld aan dit project')}</p>
+                ) : (
+                  <div className="space-y-3">
+                    {relatedOpdrachten.map((opdracht) => (
+                      <Link key={opdracht.id} to={`/assignments/${opdracht.id}`}>
+                        <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <OpdrachtTypeBadge type={opdracht.type_opdracht} />
+                              <Badge variant="outline">{opdracht.status}</Badge>
+                            </div>
+                            <h4 className="font-medium text-sm">{opdracht.opdracht_naam}</h4>
+                            <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+                              <span>{opdracht.verantwoordelijk}</span>
+                              {opdracht.deadline && (
+                                <span>Deadline: {format(new Date(opdracht.deadline), 'dd MMM', { locale })}</span>
+                              )}
+                            </div>
+                            {opdracht.voortgang_percentage !== undefined && (
+                              <Progress value={opdracht.voortgang_percentage} className="h-1.5 mt-2" />
+                            )}
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            {/* Taken Tab */}
+            <TabsContent value="taken" className="mt-0">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6">
+                <h2 className={`${responsiveHeading.h4} mb-3 xs:mb-4`}>
+                  {t('projects.projectTasks', 'Project Taken')}
+                </h2>
+                {relatedTaken.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">{t('projects.noTasks', 'Geen taken voor dit project')}</p>
+                ) : (
+                  <div className="space-y-3">
+                    {relatedTaken.map((taak) => (
+                      <Card key={taak.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <Badge variant={taak.status === 'Afgerond' ? 'default' : 'outline'}>
+                              {taak.status}
+                            </Badge>
+                            {taak.deadline && <TaskDeadlineBadge deadline={taak.deadline} />}
+                          </div>
+                          <h4 className="font-medium text-sm">{taak.taak_omschrijving}</h4>
+                          <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+                            <span>{taak.toegewezen_aan}</span>
+                            <span>{taak.priority}</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            {/* Documenten Tab */}
+            <TabsContent value="documenten" className="mt-0">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6">
+                <h2 className={`${responsiveHeading.h4} mb-3 xs:mb-4`}>
+                  {t('projects.documents', 'Documenten')}
+                </h2>
+                <div className="text-center py-8 text-muted-foreground">
+                  <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p className="text-sm">{t('projects.noDocuments', 'Nog geen documenten toegevoegd')}</p>
+                  <Button variant="outline" size="sm" className="mt-3">
+                    Document uploaden
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Tijdlijn Tab */}
+            <TabsContent value="tijdlijn" className="mt-0">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6">
+                <h2 className={`${responsiveHeading.h4} mb-3 xs:mb-4`}>
+                  {t('projects.activityTimeline', 'Activiteiten Tijdlijn')}
+                </h2>
+                <div className="space-y-4">
+                  <div className="flex gap-3">
+                    <div className="w-2 h-2 bg-ka-green rounded-full mt-2" />
+                    <div>
+                      <p className="text-sm font-medium">Project aangemaakt</p>
+                      <p className="text-xs text-muted-foreground">{project.created_at ? format(new Date(project.created_at), 'dd MMMM yyyy HH:mm', { locale }) : 'Datum onbekend'}</p>
+                    </div>
+                  </div>
+                  {project.start_date && (
+                    <div className="flex gap-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2" />
+                      <div>
+                        <p className="text-sm font-medium">Project gestart</p>
+                        <p className="text-xs text-muted-foreground">{format(new Date(project.start_date), 'dd MMMM yyyy', { locale })}</p>
+                      </div>
+                    </div>
+                  )}
+                  {project.last_reminder_sent && (
+                    <div className="flex gap-3">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2" />
+                      <div>
+                        <p className="text-sm font-medium">Herinnering verzonden</p>
+                        <p className="text-xs text-muted-foreground">{project.last_reminder_sent}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
 
-        {/* Sidebar - Stack on mobile */}
+        {/* Sidebar */}
         <div className="space-y-3 xs:space-y-4 sm:space-y-6">
           {/* Client card */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 py-3 xs:py-4">
@@ -294,6 +440,25 @@ export default function ProjectDetailPage() {
                   <p className="text-xs xs:text-sm font-medium text-foreground truncate">{project.responsible_team_member}</p>
                   <p className="text-[10px] xs:text-xs text-muted-foreground">Verantwoordelijk</p>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats card */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 py-3 xs:py-4">
+            <h3 className={`${responsiveBody.base} font-semibold mb-2 xs:mb-3`}>Statistieken</h3>
+            <div className="space-y-2 text-xs xs:text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Opdrachten</span>
+                <span className="font-medium">{relatedOpdrachten.length}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Taken</span>
+                <span className="font-medium">{relatedTaken.length}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Afgerond</span>
+                <span className="font-medium">{relatedTaken.filter(t => t.status === 'Afgerond').length}</span>
               </div>
             </div>
           </div>
