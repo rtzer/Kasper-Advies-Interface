@@ -523,6 +523,9 @@ export interface Taak {
   // Checklist
   checklist_items?: ChecklistItem[];
   
+  // Comments
+  comments?: TaskComment[];
+  
   // Tags
   tags: string[];
   
@@ -540,6 +543,14 @@ export interface ChecklistItem {
   completed: boolean;
   completed_by?: string;
   completed_at?: string;
+}
+
+export interface TaskComment {
+  id: string;
+  author: string;
+  content: string;
+  created_at: string;
+  mentions?: string[];
 }
 
 // ============================================
