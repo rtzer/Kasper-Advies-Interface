@@ -2,11 +2,16 @@
   "menu": {
     "dashboard": "Overzicht",
     "inbox": "Inbox",
+    "allMessages": "Alle berichten",
+    "inboxReview": "Review",
     "conversations": "Gesprekken",
+    "prospects": "Prospects",
     "clients": "Klanten",
     "assignments": "Opdrachten",
     "tasks": "Taken",
+    "projects": "Projecten",
     "statistics": "Statistieken",
+    "team": "Team",
     "settings": "Instellingen"
   },
   "channels": {

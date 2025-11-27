@@ -2,11 +2,16 @@
   "menu": {
     "dashboard": "Overview",
     "inbox": "Inbox",
+    "allMessages": "All messages",
+    "inboxReview": "Review",
     "conversations": "Conversations",
+    "prospects": "Prospects",
     "clients": "Clients",
     "assignments": "Assignments",
     "tasks": "Tasks",
+    "projects": "Projects",
     "statistics": "Statistics",
+    "team": "Team",
     "settings": "Settings"
   },
   "channels": {
