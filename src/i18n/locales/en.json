@@ -1,4 +1,80 @@
 {
+  "clients": {
+    "title": "Clients",
+    "subtitle": "Manage all your client relationships in one place",
+    "new": "New Client",
+    "newShort": "New",
+    "searchPlaceholder": "Search by name, number, email...",
+    "noResults": "No clients found",
+    "noResultsHint": "Try a different search term or filter",
+    "resultsCount": "{{shown}} of {{total}} clients",
+    "stats": {
+      "total": "Total",
+      "active": "Active",
+      "focus": "Focus",
+      "lowHealth": "Health < 50",
+      "new30days": "New (30d)"
+    },
+    "tabs": {
+      "all": "All",
+      "focus": "Focus",
+      "atRisk": "At-risk",
+      "new": "New"
+    },
+    "filters": {
+      "status": "Status",
+      "type": "Type",
+      "lifecycle": "Lifecycle",
+      "accountmanager": "Account Manager",
+      "allStatuses": "All statuses",
+      "allTypes": "All types",
+      "allLifecycle": "All lifecycle",
+      "allAccountmanagers": "All",
+      "active": "Active",
+      "inactive": "Inactive",
+      "prospect": "Prospect",
+      "particulier": "Individual",
+      "focusOnly": "Focus clients only",
+      "hasOpenTasks": "Has open tasks"
+    },
+    "lifecycle": {
+      "onboarding": "Onboarding",
+      "active": "Active",
+      "atRisk": "At-risk",
+      "churned": "Churned",
+      "reactivated": "Reactivated"
+    },
+    "health": {
+      "title": "Health Score",
+      "critical": "Critical",
+      "atRisk": "At-risk",
+      "good": "Good",
+      "excellent": "Excellent"
+    },
+    "lastContact": {
+      "overdue": "No contact for {{months}} months"
+    },
+    "table": {
+      "client": "Client",
+      "type": "Type",
+      "lifecycle": "Lifecycle",
+      "health": "Health",
+      "accountmanager": "Account Manager",
+      "lastContact": "Last Contact",
+      "openTasks": "Open Tasks",
+      "actions": "Actions"
+    },
+    "actions": {
+      "call": "Call"
+    },
+    "bulk": {
+      "selected": "{{count}} selected",
+      "assign": "Assign to...",
+      "export": "Export",
+      "assignSuccess": "{{count}} clients assigned",
+      "exportSuccess": "{{count}} clients exported"
+    }
+  },
   "prospects": {
     "title": "Prospects",
     "subtitle": "Manage potential clients",

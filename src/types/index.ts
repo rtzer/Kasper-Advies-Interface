@@ -360,6 +360,13 @@ export interface Klant {
   notities?: string;
   interne_notities?: string;
   
+  // Lifecycle & Health (NEW)
+  lifecycle_stage: 'Onboarding' | 'Actief' | 'At-risk' | 'Churned' | 'Reactivated';
+  health_score: number;                    // 0-100
+  focus_client: boolean;                   // Priority client flag
+  last_contact_date: string;               // ISO date of last contact
+  open_tasks_count: number;                // Number of open tasks
+  
   // Calculated fields (rollups)
   laatste_contact_datum?: string;
   aantal_interacties?: number;
@@ -371,6 +378,8 @@ export interface Klant {
   jaren_als_klant?: number;
   engagement_score?: number;
 }
+
+export type LifecycleStage = Klant['lifecycle_stage'];
 
 // ============================================
 // OPDRACHT (Assignment) - Parent of Tasks, Child of Project
