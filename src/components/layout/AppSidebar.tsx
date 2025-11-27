@@ -17,6 +17,7 @@ import {
   Clock,
   DollarSign,
   UserCircle,
+  AlertCircle,
 } from 'lucide-react';
 
 import {
@@ -76,6 +77,16 @@ export function AppSidebar() {
                   <NavLink to="/" end className={getNavCls(isActive('/'))}>
                     <Home className="h-4 w-4" />
                     {!collapsed && <span>Inbox</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {/* Inbox Review */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/inbox/review" className={getNavCls(isActive('/inbox/review'))}>
+                    <AlertCircle className="h-4 w-4" />
+                    {!collapsed && <span>Inbox Review</span>}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>

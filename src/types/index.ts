@@ -1,4 +1,47 @@
 // ============================================
+// INBOX ITEM (Staging Queue for Unidentified Messages)
+// ============================================
+export interface InboxItem {
+  id: string;
+  inbox_id: string;                        // Format: INB-2025-001
+  timestamp: string;                       // Wanneer binnengekomen
+  kanaal: 'Telefoon' | 'E-mail' | 'WhatsApp';
+  richting: 'Inbound';                     // Altijd inbound in deze queue
+  
+  // Raw data van bericht
+  raw_afzender: string;                    // Telefoonnummer of email adres
+  raw_naam?: string;                       // Naam indien bekend (bijv. WhatsApp naam)
+  raw_onderwerp?: string;                  // Email subject indien email
+  raw_content: string;                     // Bericht inhoud
+  
+  // Match status
+  status: 'Nieuw' | 'In behandeling' | 'Gematcht' | 'Nieuwe klant aangemaakt' | 'Spam';
+  match_type: 'Exact' | 'Telefoon' | 'Email' | 'Naam' | 'Geen match';
+  match_score: number;                     // 0-100
+  match_details?: string;
+  
+  // Suggested en final match
+  suggested_klant_id?: string;
+  suggested_klant_naam?: string;
+  matched_klant_id?: string;
+  matched_klant_naam?: string;
+  
+  // Resultaat
+  created_interactie_id?: string;
+  created_klant_id?: string;
+  
+  // Review
+  notities?: string;
+  reviewed_by?: string;
+  reviewed_at?: string;
+  
+  created_at: string;
+}
+
+export type InboxItemStatus = InboxItem['status'];
+export type InboxMatchType = InboxItem['match_type'];
+
+// ============================================
 // PROSPECT (Lead/Potential Client)
 // ============================================
 export interface Prospect {

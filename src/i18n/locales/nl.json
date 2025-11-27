@@ -79,6 +79,47 @@
       "wonThisMonth": "Gewonnen deze maand"
     }
   },
+  "inboxReview": {
+    "title": "Inbox Review",
+    "subtitle": "Review en match inkomende berichten",
+    "selectItem": "Selecteer een bericht om te bekijken",
+    "messageContent": "Berichtinhoud",
+    "subject": "Onderwerp",
+    "senderInfo": "Afzender informatie",
+    "suggestedMatch": "Voorgestelde match",
+    "confidence": "zekerheid",
+    "confirm": "Bevestigen",
+    "confirmMatch": "Match bevestigen",
+    "searchClient": "Zoek klant",
+    "searchClientPlaceholder": "Zoek op naam, email of telefoon...",
+    "createClient": "Nieuwe klant",
+    "markSpam": "Spam",
+    "matched": "Bericht gematcht aan klant",
+    "clientCreated": "Nieuwe klant aangemaakt",
+    "markedAsSpam": "Gemarkeerd als spam",
+    "matchedTo": "Gematcht aan",
+    "newClientCreated": "Nieuwe klant aangemaakt vanuit dit bericht",
+    "markedAsSpamStatus": "Gemarkeerd als spam",
+    "reviewedBy": "Beoordeeld door",
+    "on": "op",
+    "noClientsFound": "Geen klanten gevonden",
+    "noItems": "Geen berichten in deze categorie",
+    "channel": "Kanaal",
+    "allChannels": "Alle kanalen",
+    "phone": "Telefoon",
+    "email": "E-mail",
+    "tabs": {
+      "new": "Nieuw",
+      "inProgress": "In behandeling",
+      "processed": "Afgehandeld",
+      "spam": "Spam"
+    },
+    "sort": {
+      "newest": "Nieuwste eerst",
+      "oldest": "Oudste eerst",
+      "matchScore": "Hoogste match"
+    }
+  },
   "nav": {
     "title": "Multi-Channel Communicatie Platform"
   },
