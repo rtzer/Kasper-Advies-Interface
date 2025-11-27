@@ -418,6 +418,72 @@
     "invitationWillBeSent": "Er wordt een uitnodigingsmail verstuurd naar {{email}}",
     "userCreated": "Medewerker uitgenodigd"
   },
+  "assignments": {
+    "title": "Opdrachten",
+    "subtitle": "Beheer alle opdrachten en deadlines",
+    "newAssignment": "Nieuwe opdracht",
+    "bulkBTW": "Bulk BTW aanmaken",
+    "count": "{{count}} opdracht",
+    "count_plural": "{{count}} opdrachten",
+    "stats": {
+      "totalActive": "Totaal actief",
+      "deadlineThisWeek": "Deadline deze week",
+      "overdue": "Achterstallig",
+      "awaitingApproval": "Wacht op goedkeuring",
+      "completedMonth": "Afgerond (maand)"
+    },
+    "views": {
+      "list": "Lijst",
+      "kanban": "Kanban",
+      "calendar": "Kalender",
+      "byClient": "Per klant"
+    },
+    "filters": {
+      "allStatuses": "Alle statussen",
+      "allTypes": "Alle types",
+      "allResponsible": "Alle verantwoordelijken",
+      "onlyMine": "Alleen mijn opdrachten",
+      "deadlineFrom": "Deadline vanaf",
+      "deadlineTo": "Deadline tot",
+      "searchClient": "Zoek klant...",
+      "invoiceStatus": "Facturatiestatus"
+    },
+    "status": {
+      "intake": "Intake",
+      "inProgress": "In behandeling",
+      "waitingClient": "Wacht op klant",
+      "readyForReview": "Gereed voor controle",
+      "completed": "Afgerond",
+      "submitted": "Ingediend"
+    },
+    "table": {
+      "assignment": "Opdracht",
+      "client": "Klant",
+      "type": "Type",
+      "status": "Status",
+      "deadline": "Deadline",
+      "responsible": "Verantwoordelijke",
+      "progress": "Voortgang",
+      "hours": "Uren",
+      "invoice": "Facturatie"
+    },
+    "daysLate": "{{count}} dag te laat",
+    "daysLate_plural": "{{count}} dagen te laat",
+    "daysLeft": "Nog {{count}} dag",
+    "daysLeft_plural": "Nog {{count}} dagen",
+    "today": "Vandaag",
+    "tomorrow": "Morgen",
+    "selectDate": "Selecteer een datum",
+    "noAssignmentsOnDate": "Geen opdrachten op deze datum",
+    "progress": "Voortgang",
+    "statusUpdated": "Status bijgewerkt",
+    "statusChangedTo": "Status gewijzigd naar {{status}}",
+    "statusUpdateFailed": "Status bijwerken mislukt",
+    "hoursFormat": "{{spent}} / {{budget}} uur",
+    "notInvoiced": "Niet gefactureerd",
+    "invoiced": "Gefactureerd",
+    "paid": "Betaald"
+  },
   "common": {
     "save": "Opslaan",
     "cancel": "Annuleren",
