@@ -73,6 +73,54 @@
       "export": "Exporteren",
       "assignSuccess": "{{count}} klanten toegewezen",
       "exportSuccess": "{{count}} klanten geëxporteerd"
+    },
+    "focus": {
+      "added": "Klant toegevoegd aan focus lijst",
+      "removed": "Klant verwijderd van focus lijst",
+      "clickToAdd": "Klik om als focus klant te markeren",
+      "clickToRemove": "Klik om focus markering te verwijderen"
+    },
+    "interactions": {
+      "newInteraction": "Nieuwe interactie",
+      "newInteractionDesc": "Registreer een nieuwe interactie met {{name}}",
+      "channel": "Kanaal",
+      "direction": "Richting",
+      "inbound": "Inkomend",
+      "outbound": "Uitgaand",
+      "subject": "Onderwerp",
+      "subjectPlaceholder": "Bijv. Vraag over BTW aangifte",
+      "summary": "Samenvatting",
+      "summaryPlaceholder": "Korte beschrijving van het gesprek...",
+      "sentiment": "Sentiment",
+      "followupRequired": "Opvolging nodig",
+      "selectFollowupDate": "Selecteer opvolgdatum",
+      "created": "Interactie succesvol aangemaakt",
+      "fillRequired": "Vul alle verplichte velden in",
+      "filterByChannel": "Filter op kanaal",
+      "filterByPeriod": "Filter op periode",
+      "allChannels": "Alle kanalen",
+      "allPeriods": "Alle periodes",
+      "thisWeek": "Deze week",
+      "thisMonth": "Deze maand",
+      "thisQuarter": "Dit kwartaal",
+      "thisYear": "Dit jaar"
+    },
+    "audit": {
+      "title": "Geschiedenis",
+      "createdAt": "Aangemaakt op",
+      "createdBy": "Aangemaakt door",
+      "lastModified": "Laatst gewijzigd",
+      "modifiedBy": "Gewijzigd door",
+      "noChanges": "Geen wijzigingen",
+      "viewFullLog": "Bekijk volledige audit log"
+    },
+    "relatedWarning": {
+      "exPartner": "Let op: Deze klant heeft een ex-partner relatie. Bespreek geen zaken van de andere partij."
+    },
+    "quickActions": {
+      "newInteraction": "Nieuwe interactie",
+      "newTask": "Nieuwe taak",
+      "newAssignment": "Nieuwe opdracht"
     }
   },
   "prospects": {

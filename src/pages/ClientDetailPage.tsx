@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Send, Video, Linkedin, Globe, Building2, Calendar, ShieldAlert, CreditCard, MessageCircle, MessageSquare, ChevronDown } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Send, Video, Linkedin, Globe, Building2, Calendar, ShieldAlert, CreditCard, MessageCircle, MessageSquare, ChevronDown, Plus, ClipboardList, ListTodo } from 'lucide-react';
 import { responsiveHeading, responsiveBody } from '@/lib/utils/typography';
 import { spacing } from '@/lib/utils/spacing';
 import { useDeviceChecks, useTouchTargetSize } from '@/hooks/useBreakpoint';
@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { useKlant, useKlanten } from '@/lib/api/klanten';
+import { useKlant, useKlanten, useUpdateKlant } from '@/lib/api/klanten';
 import { useInteractiesByKlant } from '@/lib/api/interacties';
 import ClientInteractionsTimeline from '@/components/clients/ClientInteractionsTimeline';
 import ClientAssignments from '@/components/clients/ClientAssignments';
@@ -25,6 +25,11 @@ import ExternalAccountantCard from '@/components/clients/ExternalAccountantCard'
 import FinancialDetailsSection from '@/components/clients/FinancialDetailsSection';
 import BusinessDetailsSection from '@/components/clients/BusinessDetailsSection';
 import InvoiceAddressSection from '@/components/clients/InvoiceAddressSection';
+import { HealthScoreIndicator } from '@/components/clients/HealthScoreIndicator';
+import { LifecycleBadge } from '@/components/clients/LifecycleBadge';
+import { FocusClientStar } from '@/components/clients/FocusClientStar';
+import { ClientAuditSection } from '@/components/clients/ClientAuditSection';
+import CreateInteractionDialog from '@/components/clients/CreateInteractionDialog';
 import { formatDate } from '@/lib/utils/dateHelpers';
 import { useUserStore } from '@/store/userStore';
 import { toast } from 'sonner';
@@ -52,12 +57,25 @@ export default function ClientDetailPage() {
     : undefined;
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
+  const [isCreateInteractionOpen, setIsCreateInteractionOpen] = useState(false);
   
   // Collapsible states
   const [isBedrijfsOpen, setIsBedrijfsOpen] = useState(false);
   const [isPersoonlijkOpen, setIsPersoonlijkOpen] = useState(false);
   const [isFinancieelOpen, setIsFinancieelOpen] = useState(false);
   const [isNotitiesOpen, setIsNotitiesOpen] = useState(false);
+  
+  // Update klant mutation for focus toggle
+  const updateKlant = useUpdateKlant();
+  
+  const handleToggleFocus = () => {
+    if (klant) {
+      updateKlant.mutate({
+        id: klant.id,
+        data: { focus_client: !klant.focus_client }
+      });
+    }
+  };
   
   if (isLoading) {
     return (
@@ -77,7 +95,7 @@ export default function ClientDetailPage() {
   
   return (
     <div className="h-full overflow-y-auto bg-ka-gray-50 dark:bg-gray-900">
-      {/* Header - Responsive */}
+      {/* Header - Responsive with Health Score, Lifecycle, Focus */}
       <div className="bg-white dark:bg-gray-800 border-b border-ka-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8 py-4 xs:py-5 sm:py-6 lg:py-8">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-3 xs:space-y-4 lg:space-y-0">
@@ -94,6 +112,14 @@ export default function ClientDetailPage() {
                   <h1 className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-bold text-ka-navy dark:text-white truncate max-w-[180px] xs:max-w-[220px] sm:max-w-none">
                     {klant.naam}
                   </h1>
+                  {/* Focus Star */}
+                  <FocusClientStar 
+                    isFocus={klant.focus_client} 
+                    onToggle={handleToggleFocus}
+                    size="sm"
+                  />
+                  {/* Lifecycle Badge */}
+                  <LifecycleBadge stage={klant.lifecycle_stage} showIcon={true} />
                   <Badge className={`text-[10px] xs:text-xs px-1.5 xs:px-2 ${
                     klant.status === 'Actief' 
                       ? 'bg-ka-green text-white' 
@@ -103,11 +129,6 @@ export default function ClientDetailPage() {
                   }`}>
                     {klant.status}
                   </Badge>
-                  {klant.segment && (
-                    <Badge variant="secondary" className="text-[10px] xs:text-xs px-1.5 xs:px-2">
-                      {klant.segment}
-                    </Badge>
-                  )}
                 </div>
                 
                 {/* Client metadata - Stack on xs, inline on sm+ */}
@@ -139,10 +160,22 @@ export default function ClientDetailPage() {
                   </div>
                 )}
               </div>
+              
+              {/* Health Score - Prominent on right of avatar section */}
+              <div className="flex-shrink-0 hidden sm:flex flex-col items-center">
+                <HealthScoreIndicator score={klant.health_score} size="lg" showLabel={false} />
+                <span className="text-[10px] xs:text-xs text-muted-foreground mt-1">Health</span>
+              </div>
             </div>
             
             {/* Actions - Optimized for 360px */}
             <div className="flex flex-col xs:flex-row gap-2 xs:gap-2.5 sm:gap-2 w-full lg:w-auto">
+              {/* Health Score on mobile */}
+              <div className="sm:hidden flex items-center gap-3 mb-2">
+                <HealthScoreIndicator score={klant.health_score} size="md" />
+                <span className="text-xs text-muted-foreground">Health Score</span>
+              </div>
+              
               {/* Quick Communication Actions - Horizontal scroll, tighter on xs */}
               <div className="flex items-center gap-0.5 xs:gap-1 overflow-x-auto pb-1.5 xs:pb-2 sm:pb-0 sm:border-r sm:border-ka-gray-200 sm:dark:border-gray-700 sm:pr-3 -mx-1 px-1 scrollbar-hide">
                 <Button 
@@ -181,14 +214,39 @@ export default function ClientDetailPage() {
                 >
                   <Video className="w-4 h-4 xs:w-5 xs:h-5" />
                 </Button>
+              </div>
+              
+              {/* Quick Action Buttons - New Interaction, Task, Assignment */}
+              <div className="flex items-center gap-1.5 xs:gap-2 overflow-x-auto pb-1.5 xs:pb-2 sm:pb-0 sm:border-r sm:border-ka-gray-200 sm:dark:border-gray-700 sm:pr-3 -mx-1 px-1 scrollbar-hide">
                 <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => toast.info('SMS functionaliteit komt binnenkort')}
-                  title="Stuur SMS"
-                  className="hover:bg-ka-green/10 hover:text-ka-green flex-shrink-0 h-10 w-10 xs:h-11 xs:w-11"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsCreateInteractionOpen(true)}
+                  className="flex-shrink-0 text-xs h-9"
                 >
-                  <MessageSquare className="w-4 h-4 xs:w-5 xs:h-5" />
+                  <Plus className="w-3.5 h-3.5 mr-1" />
+                  <span className="hidden xs:inline">{t('clients.quickActions.newInteraction')}</span>
+                  <span className="xs:hidden">Int.</span>
+                </Button>
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toast.info('Taak aanmaken komt binnenkort')}
+                  className="flex-shrink-0 text-xs h-9"
+                >
+                  <ListTodo className="w-3.5 h-3.5 mr-1" />
+                  <span className="hidden xs:inline">{t('clients.quickActions.newTask')}</span>
+                  <span className="xs:hidden">Taak</span>
+                </Button>
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toast.info('Opdracht aanmaken komt binnenkort')}
+                  className="flex-shrink-0 text-xs h-9"
+                >
+                  <ClipboardList className="w-3.5 h-3.5 mr-1" />
+                  <span className="hidden sm:inline">{t('clients.quickActions.newAssignment')}</span>
+                  <span className="sm:hidden">Opdr.</span>
                 </Button>
               </div>
               
@@ -673,6 +731,9 @@ export default function ClientDetailPage() {
             <ClientContactPersons klantId={id!} />
           </TabsContent>
         </Tabs>
+        
+        {/* Audit Section */}
+        <ClientAuditSection klant={klant} />
       </div>
 
       {/* Edit Dialog */}
@@ -681,6 +742,16 @@ export default function ClientDetailPage() {
           klant={klant}
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
+        />
+      )}
+      
+      {/* Create Interaction Dialog */}
+      {klant && (
+        <CreateInteractionDialog
+          klantId={klant.id}
+          klantNaam={klant.naam}
+          open={isCreateInteractionOpen}
+          onOpenChange={setIsCreateInteractionOpen}
         />
       )}
 

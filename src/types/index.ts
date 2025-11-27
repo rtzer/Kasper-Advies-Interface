@@ -367,6 +367,10 @@ export interface Klant {
   last_contact_date: string;               // ISO date of last contact
   open_tasks_count: number;                // Number of open tasks
   
+  // Audit fields
+  created_at?: string;                     // ISO timestamp
+  updated_at?: string;                     // ISO timestamp
+  
   // Calculated fields (rollups)
   laatste_contact_datum?: string;
   aantal_interacties?: number;
