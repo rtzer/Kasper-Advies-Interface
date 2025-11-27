@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FlowbiteMessageBubble } from "./FlowbiteMessageBubble";
 import { QuickReplyPicker } from "./QuickReplyPicker";
-import { Send, Paperclip, MoreVertical, Phone, Video, Smile, ExternalLink, AtSign } from "lucide-react";
+import { EmojiPicker } from "./EmojiPicker";
+import { Send, Paperclip, MoreVertical, Phone, Video, ExternalLink, AtSign } from "lucide-react";
 import { ChannelIcon } from "./ChannelIcon";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -75,6 +76,21 @@ export const FlowbiteChatView = ({
     toast.info(t('inbox.internalNoteHint', 'Typ @ gevolgd door een naam voor een interne notitie'));
   };
 
+  const handleEmojiSelect = (emoji: string) => {
+    setMessageText(prev => prev + emoji);
+  };
+
+  // Find index of first unread message (for demo, assume last 2 messages are unread for own=false)
+  const unreadDividerIndex = useMemo(() => {
+    // Find the first message that is not own and could be unread
+    const nonOwnMessages = messages.filter(m => !m.isOwn);
+    if (nonOwnMessages.length >= 2) {
+      const targetMessage = nonOwnMessages[nonOwnMessages.length - 2];
+      return messages.findIndex(m => m.id === targetMessage.id);
+    }
+    return -1;
+  }, [messages]);
+
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Chat Header */}
@@ -135,16 +151,27 @@ export const FlowbiteChatView = ({
 
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/30">
-        {messages.map((message) => (
-          <FlowbiteMessageBubble
-            key={message.id}
-            text={message.text}
-            time={message.time}
-            isOwn={message.isOwn}
-            senderName={message.senderName}
-            hasAttachment={message.hasAttachment}
-            status={message.status}
-          />
+        {messages.map((message, index) => (
+          <div key={message.id}>
+            {/* Unread divider */}
+            {index === unreadDividerIndex && unreadDividerIndex > 0 && (
+              <div className="flex items-center gap-3 my-4">
+                <div className="flex-1 h-px bg-primary/50" />
+                <span className="text-xs font-medium text-primary px-2 py-1 bg-primary/10 rounded-full">
+                  {t('inbox.newMessages', 'Nieuwe berichten')}
+                </span>
+                <div className="flex-1 h-px bg-primary/50" />
+              </div>
+            )}
+            <FlowbiteMessageBubble
+              text={message.text}
+              time={message.time}
+              isOwn={message.isOwn}
+              senderName={message.senderName}
+              hasAttachment={message.hasAttachment}
+              status={message.status}
+            />
+          </div>
         ))}
       </div>
 
@@ -187,14 +214,8 @@ export const FlowbiteChatView = ({
           {/* Quick Reply Picker */}
           <QuickReplyPicker onSelect={handleQuickReply} />
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Smile className="w-5 h-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>{t('inbox.emoji', 'Emoji')}</TooltipContent>
-          </Tooltip>
+          {/* Emoji Picker */}
+          <EmojiPicker onSelect={handleEmojiSelect} />
 
           <Tooltip>
             <TooltipTrigger asChild>
