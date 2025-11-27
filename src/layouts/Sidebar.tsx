@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Home, Inbox, MessageSquare, Users, FileText, CheckSquare, BarChart3, Settings, FolderKanban, Palette, ChevronDown } from 'lucide-react';
+import { Home, Inbox, MessageSquare, Users, FileText, CheckSquare, BarChart3, Settings, FolderKanban, Palette, ChevronDown, UserPlus, InboxIcon, UsersRound } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -11,7 +11,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const { t } = useTranslation(['navigation']);
+  const { t } = useTranslation(['navigation', 'common']);
   const location = useLocation();
   
   // Collapsible states
@@ -20,16 +20,23 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   
   // Hergeordend: dagelijks gebruik bovenaan
   const mainNavigation = [
+    { icon: UserPlus, label: t('navigation:menu.prospects', 'Prospects'), href: '/prospects', badge: 5 },
     { icon: Users, label: t('navigation:menu.clients'), href: '/clients', badge: null },
-    { icon: FileText, label: t('navigation:menu.assignments'), href: '/opdrachten', badge: null },
-    { icon: CheckSquare, label: t('navigation:menu.tasks'), href: '/taken', badge: null },
-    { icon: FolderKanban, label: 'Projecten', href: '/projects', badge: null },
+    { icon: FileText, label: t('navigation:menu.assignments'), href: '/assignments', badge: null },
+    { icon: CheckSquare, label: t('navigation:menu.tasks'), href: '/tasks', badge: null },
+    { icon: FolderKanban, label: t('navigation:menu.projects', 'Projecten'), href: '/projects', badge: null },
+  ];
+  
+  // Inbox submenu items
+  const inboxNavigation = [
+    { label: t('navigation:menu.allMessages', 'Alle berichten'), href: '/', badge: 8 },
+    { label: t('navigation:menu.inboxReview', 'Review'), href: '/inbox/review', badge: 3 },
   ];
   
   // Secundaire items (minder frequent gebruik)
   const secondaryNavigation = [
-    { icon: Home, label: t('navigation:menu.dashboard'), href: '/', badge: null },
     { icon: BarChart3, label: t('navigation:menu.statistics'), href: '/analytics', badge: null },
+    { icon: UsersRound, label: t('navigation:menu.team', 'Team'), href: '/settings/team', badge: null },
     { icon: Settings, label: t('navigation:menu.settings'), href: '/settings', badge: null },
   ];
   
@@ -41,9 +48,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     { name: t('navigation:channels.sms'), count: 0, color: 'text-channel-sms', icon: '💬', href: '/channels/sms' },
   ];
   
-  // Check if any channel route is active
+  // Check if any inbox-related route is active
   const isChannelActive = channels.some(channel => location.pathname === channel.href);
-  const isInboxActive = location.pathname === '/inbox' || isChannelActive;
+  const isInboxRouteActive = inboxNavigation.some(item => location.pathname === item.href);
+  const isInboxActive = location.pathname === '/' || location.pathname.startsWith('/inbox') || isChannelActive || isInboxRouteActive;
   
   return (
     <>
@@ -106,17 +114,24 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               
               <CollapsibleContent>
                 <div className="ml-4 mt-1 space-y-1 border-l-2 border-ka-gray-200 dark:border-gray-700 pl-2">
-                  {/* Main Inbox Link */}
-                  <NavLink
-                    to="/inbox"
-                    className={({ isActive }) => `flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${
-                      isActive 
-                        ? 'bg-ka-green/10 text-ka-green dark:bg-ka-green/20' 
-                        : 'text-ka-gray-600 dark:text-gray-300 hover:bg-ka-gray-100 dark:hover:bg-gray-700'
-                    }`}
-                  >
-                    <span>Alle berichten</span>
-                  </NavLink>
+                  {/* Inbox Submenu Links */}
+                  {inboxNavigation.map((item) => (
+                    <NavLink
+                      key={item.href}
+                      to={item.href}
+                      end={item.href === '/'}
+                      className={({ isActive }) => `flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${
+                        isActive 
+                          ? 'bg-ka-green/10 text-ka-green dark:bg-ka-green/20' 
+                          : 'text-ka-gray-600 dark:text-gray-300 hover:bg-ka-gray-100 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      {item.badge && item.badge > 0 && (
+                        <span className="text-xs bg-ka-green/20 text-ka-green px-1.5 py-0.5 rounded-full">{item.badge}</span>
+                      )}
+                    </NavLink>
+                  ))}
                   
                   {/* Channel Links */}
                   {channels.map((channel) => (
