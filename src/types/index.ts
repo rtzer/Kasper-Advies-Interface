@@ -767,3 +767,45 @@ export interface TimeEntry {
   tarief?: number;
   factureerbaar: boolean;
 }
+
+// ============================================
+// USER / TEAM MEMBER
+// ============================================
+export interface User {
+  id: string;
+  user_id: string;                       // Format: USR-001
+  name: string;
+  voornaam: string;
+  achternaam: string;
+  email: string;
+  role: 'Owner' | 'Admin' | 'Employee';
+  department: 'Management' | 'Administration';
+  specialisatie?: string[];              // Bijv. ["MKB", "BTW", "Jaarrekening"]
+  
+  is_active: boolean;
+  phone?: string;
+  mobile?: string;
+  
+  // Werk gerelateerd
+  hourly_rate?: number;                  // Uurtarief
+  max_clients?: number;                  // Max aantal klanten
+  current_client_count?: number;         // Huidig aantal
+  
+  // Toegang
+  can_access_bsn: boolean;               // Alleen Harm-Jan = true (wettelijk)
+  can_manage_users: boolean;             // Owner en Admin
+  can_delete_records: boolean;           // Owner alleen
+  
+  // UI preferences
+  language: 'nl' | 'en';
+  theme: 'light' | 'dark' | 'system';
+  
+  avatar_url?: string;
+  
+  created_at: string;
+  updated_at: string;
+  last_login?: string;
+}
+
+export type UserRole = User['role'];
+export type UserDepartment = User['department'];

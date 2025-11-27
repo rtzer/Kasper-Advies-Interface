@@ -51,6 +51,7 @@ export function AppSidebar() {
     projecten: false,
     opdrachten: false,
     taken: false,
+    settings: false,
   });
 
   const toggleGroup = (group: string) => {
@@ -347,14 +348,46 @@ export function AppSidebar() {
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink to="/settings" className={getNavCls(isActive('/settings'))}>
-                      <Settings className="h-4 w-4" />
-                      {!collapsed && <span>Instellingen</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                {/* Settings with submenu */}
+                <Collapsible
+                  open={openGroups.settings || isGroupActive(['/settings'])}
+                  onOpenChange={() => toggleGroup('settings')}
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton className={getNavCls(isGroupActive(['/settings']))}>
+                        <Settings className="h-4 w-4" />
+                        {!collapsed && (
+                          <>
+                            <span>Instellingen</span>
+                            <ChevronDown className="ml-auto h-4 w-4 transition-transform" />
+                          </>
+                        )}
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    {!collapsed && (
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          <SidebarMenuSubItem>
+                            <SidebarMenuSubButton asChild>
+                              <NavLink to="/settings" className={getNavCls(isActive('/settings'))}>
+                                Algemeen
+                              </NavLink>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                          <SidebarMenuSubItem>
+                            <SidebarMenuSubButton asChild>
+                              <NavLink to="/settings/team" className={getNavCls(isActive('/settings/team'))}>
+                                <Users className="h-3 w-3 mr-1" />
+                                Team
+                              </NavLink>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    )}
+                  </SidebarMenuItem>
+                </Collapsible>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
