@@ -79,6 +79,47 @@
       "wonThisMonth": "Won this month"
     }
   },
+  "inboxReview": {
+    "title": "Inbox Review",
+    "subtitle": "Review and match incoming messages",
+    "selectItem": "Select a message to view",
+    "messageContent": "Message content",
+    "subject": "Subject",
+    "senderInfo": "Sender information",
+    "suggestedMatch": "Suggested match",
+    "confidence": "confidence",
+    "confirm": "Confirm",
+    "confirmMatch": "Confirm match",
+    "searchClient": "Search client",
+    "searchClientPlaceholder": "Search by name, email or phone...",
+    "createClient": "New client",
+    "markSpam": "Spam",
+    "matched": "Message matched to client",
+    "clientCreated": "New client created",
+    "markedAsSpam": "Marked as spam",
+    "matchedTo": "Matched to",
+    "newClientCreated": "New client created from this message",
+    "markedAsSpamStatus": "Marked as spam",
+    "reviewedBy": "Reviewed by",
+    "on": "on",
+    "noClientsFound": "No clients found",
+    "noItems": "No messages in this category",
+    "channel": "Channel",
+    "allChannels": "All channels",
+    "phone": "Phone",
+    "email": "Email",
+    "tabs": {
+      "new": "New",
+      "inProgress": "In progress",
+      "processed": "Processed",
+      "spam": "Spam"
+    },
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "matchScore": "Highest match"
+    }
+  },
   "nav": {
     "title": "Multi-Channel Communication Platform"
   },

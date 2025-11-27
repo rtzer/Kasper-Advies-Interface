@@ -50,6 +50,7 @@ import FlowbiteSettings from "./pages/FlowbiteSettings";
 import FlowbiteAnalytics from "./pages/FlowbiteAnalytics";
 import FlowbiteNotFound from "./pages/FlowbiteNotFound";
 import ProspectsPage from "./pages/ProspectsPage";
+import InboxReviewPage from "./pages/InboxReviewPage";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +82,7 @@ const App = () => {
               
               {/* Protected routes - Inbox & Communication */}
               <Route path="/" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
+              <Route path="/inbox/review" element={<ProtectedRoute><AppLayout><InboxReviewPage /></AppLayout></ProtectedRoute>} />
               <Route path="/unified-inbox/conversation/:id" element={<ProtectedRoute><AppLayout><FlowbiteConversationDetail /></AppLayout></ProtectedRoute>} />
               <Route path="/customers/:id" element={<ProtectedRoute><AppLayout><FlowbiteCustomerDetail /></AppLayout></ProtectedRoute>} />
               
