@@ -1,12 +1,16 @@
 import { useTranslation } from 'react-i18next';
-import { Mail, Phone, MapPin, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Mail, Phone, MapPin, ExternalLink, Plus, Bell, ListTodo } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useKlant } from '@/lib/api';
 import { useInteractiesByKlant } from '@/lib/api';
 import { formatDate, formatRelativeTime } from '@/lib/utils/dateHelpers';
 import { useUserStore } from '@/store/userStore';
 import { getChannelIcon } from '@/lib/utils/channelHelpers';
+import { HealthScoreIndicator } from '@/components/clients/HealthScoreIndicator';
+import { toast } from 'sonner';
 
 interface ClientContextPanelProps {
   klantId: string;
@@ -39,13 +43,45 @@ export default function ClientContextPanel({ klantId }: ClientContextPanelProps)
               {klant.type_klant} • {klant.klant_type_details}
             </p>
           </div>
-          <Badge className={
-            klant.status === 'Actief' 
-              ? 'bg-ka-green hover:bg-ka-green text-white' 
-              : 'bg-ka-gray-500 hover:bg-ka-gray-500 text-white'
-          }>
-            {klant.status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            {/* Health Score */}
+            <HealthScoreIndicator score={klant.health_score} size="md" />
+            <Badge className={
+              klant.status === 'Actief' 
+                ? 'bg-ka-green hover:bg-ka-green text-white' 
+                : 'bg-ka-gray-500 hover:bg-ka-gray-500 text-white'
+            }>
+              {klant.status}
+            </Badge>
+          </div>
+        </div>
+        
+        {/* Quick Actions */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          <Link to={`/clients/${klantId}`}>
+            <Button variant="outline" size="sm" className="text-xs">
+              <ExternalLink className="w-3 h-3 mr-1" />
+              {t('common:viewClient', 'Bekijk klant')}
+            </Button>
+          </Link>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-xs"
+            onClick={() => toast.info('Taak aanmaken komt binnenkort')}
+          >
+            <ListTodo className="w-3 h-3 mr-1" />
+            {t('common:newTask', 'Nieuwe taak')}
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-xs"
+            onClick={() => toast.success('Gemarkeerd voor opvolging')}
+          >
+            <Bell className="w-3 h-3 mr-1" />
+            {t('common:markFollowUp', 'Opvolging')}
+          </Button>
         </div>
         
         {/* Tags */}
@@ -109,15 +145,15 @@ export default function ClientContextPanel({ klantId }: ClientContextPanelProps)
       
       <div className="grid grid-cols-2 gap-4 p-6 border-b border-ka-gray-200 dark:border-gray-700">
         <div>
-          <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Opdrachten</div>
+          <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Open taken</div>
           <div className="text-sm font-medium text-ka-navy dark:text-white">
-            {klant.aantal_opdrachten || 0}
+            {klant.open_tasks_count || 0}
           </div>
         </div>
         <div>
-          <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Omzet</div>
-          <div className="text-sm font-medium text-ka-green">
-            €{(klant.totale_omzet || 0).toLocaleString('nl-NL')}
+          <div className="text-xs text-ka-gray-500 dark:text-gray-400 mb-1">Opdrachten</div>
+          <div className="text-sm font-medium text-ka-navy dark:text-white">
+            {klant.aantal_opdrachten || 0}
           </div>
         </div>
       </div>
@@ -132,7 +168,7 @@ export default function ClientContextPanel({ klantId }: ClientContextPanelProps)
         <TabsContent value="activity" className="flex-1 overflow-y-auto p-6">
           <div className="space-y-4">
             {interacties && interacties.results.length > 0 ? (
-              interacties.results.slice(0, 10).map((int) => (
+              interacties.results.slice(0, 5).map((int) => (
                 <div key={int.id} className="flex items-start space-x-3 pb-4 border-b border-ka-gray-100 dark:border-gray-700 last:border-0">
                   <div className="w-8 h-8 rounded-full bg-ka-gray-100 dark:bg-gray-700 flex items-center justify-center text-sm flex-shrink-0">
                     {getChannelIcon(int.kanaal)}
@@ -143,9 +179,6 @@ export default function ClientContextPanel({ klantId }: ClientContextPanelProps)
                     </p>
                     <p className="text-xs text-ka-gray-500 dark:text-gray-400 mt-1">
                       {formatDate(int.datum, currentUser?.language || 'nl')} • {int.kanaal}
-                    </p>
-                    <p className="text-xs text-ka-gray-600 dark:text-gray-300 mt-1 line-clamp-2">
-                      {int.samenvatting}
                     </p>
                   </div>
                 </div>

@@ -5,23 +5,28 @@ import { FilterPopover } from "@/components/inbox/FilterPopover";
 import { CreateConversationDialog } from "@/components/inbox/CreateConversationDialog";
 import { FlowbiteConversationItem } from "@/components/inbox/FlowbiteConversationItem";
 import { FlowbiteChatView } from "@/components/inbox/FlowbiteChatView";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Inbox, HelpCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useConversations, useConversationMessages } from "@/lib/api/conversations";
+import { useInboxStats } from "@/lib/api/inboxItems";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { nl, enUS } from "date-fns/locale";
 import { normalizeChannelForIcon } from "@/lib/utils/channelHelpers";
 import { useDeviceChecks } from "@/hooks/useBreakpoint";
 import { responsiveHeading, responsiveBody } from "@/lib/utils/typography";
+import { useUserStore } from "@/store/userStore";
 
 export default function FlowbiteUnifiedInbox() {
   const { t, i18n } = useTranslation('common');
   const currentLocale = i18n.language === 'en' ? enUS : nl;
   const { isMobile, isTablet } = useDeviceChecks();
+  const { currentUser } = useUserStore();
   const { data: conversationsData, isLoading } = useConversations();
+  const { data: inboxStats } = useInboxStats();
   const conversations = conversationsData?.results || [];
   
   const [selectedConversationId, setSelectedConversationId] = useState<string>(conversations[0]?.id || "1");
@@ -32,10 +37,18 @@ export default function FlowbiteUnifiedInbox() {
     status: 'all',
     channel: 'all',
     priority: 'all',
+    assigned: 'all',
+    unreadOnly: false,
+    missedCallsOnly: false,
   });
   
   // Get messages for selected conversation
   const { data: messagesData } = useConversationMessages(selectedConversationId);
+
+  // Calculate unread count
+  const unreadCount = useMemo(() => {
+    return conversations.filter(c => c.is_unread).length;
+  }, [conversations]);
 
   const filteredConversations = useMemo(() => {
     if (!conversations.length) return [];
@@ -54,9 +67,21 @@ export default function FlowbiteUnifiedInbox() {
       // Priority filter
       const matchesPriority = filters.priority === 'all' || conv.priority === filters.priority;
       
-      return matchesSearch && matchesStatus && matchesChannel && matchesPriority;
+      // Assigned filter
+      const matchesAssigned = filters.assigned === 'all' || 
+        (filters.assigned === 'me' && conv.toegewezen_aan === currentUser?.naam) ||
+        (filters.assigned === 'unassigned' && !conv.toegewezen_aan);
+      
+      // Unread only filter
+      const matchesUnread = !filters.unreadOnly || conv.is_unread;
+      
+      // Missed calls filter (simulated based on channel and some condition)
+      const isMissedCall = conv.primary_channel === 'Telefoon' && conv.status === 'pending';
+      const matchesMissed = !filters.missedCallsOnly || isMissedCall;
+      
+      return matchesSearch && matchesStatus && matchesChannel && matchesPriority && matchesAssigned && matchesUnread && matchesMissed;
     });
-  }, [conversations, searchQuery, filters]);
+  }, [conversations, searchQuery, filters, currentUser]);
 
   const selectedConversation = conversations.find((c) => c.id === selectedConversationId);
   
@@ -81,14 +106,35 @@ export default function FlowbiteUnifiedInbox() {
         <div className="px-3 xs:px-4 py-3 xs:py-4 border-b border-border">
           <div className="flex items-center justify-between mb-2 xs:mb-3">
             <div className="flex-1 min-w-0">
-              <h2 className={`${responsiveHeading.h4} truncate`}>
-                {t('inbox.conversations')}
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className={`${responsiveHeading.h4} truncate`}>
+                  {t('inbox.conversations')}
+                </h2>
+                {unreadCount > 0 && (
+                  <Badge variant="default" className="bg-primary text-primary-foreground">
+                    {unreadCount}
+                  </Badge>
+                )}
+              </div>
               <p className={`${responsiveBody.tiny} mt-0.5 truncate`}>
                 {t('inbox.allConversations')}
               </p>
             </div>
             <div className="flex gap-1.5 xs:gap-2 flex-shrink-0">
+              {/* Link to Inbox Review */}
+              {inboxStats && inboxStats.nieuw > 0 && (
+                <Link to="/inbox/review">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="h-9 xs:h-10 text-xs gap-1.5 border-orange-300 text-orange-600 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-950"
+                  >
+                    <Inbox className="w-4 h-4" />
+                    <span className="hidden xs:inline">{inboxStats.nieuw} te reviewen</span>
+                    <span className="xs:hidden">{inboxStats.nieuw}</span>
+                  </Button>
+                </Link>
+              )}
               <FilterPopover
                 open={filterDialogOpen}
                 onOpenChange={setFilterDialogOpen}
@@ -103,6 +149,31 @@ export default function FlowbiteUnifiedInbox() {
               >
                 <Plus className="w-4 h-4" />
               </Button>
+              {/* Keyboard shortcuts help */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 xs:h-10 xs:w-10 hidden sm:flex">
+                    <HelpCircle className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-xs">
+                  <div className="text-xs space-y-1">
+                    <p className="font-semibold mb-2">{t('inbox.shortcuts.title', 'Sneltoetsen')}</p>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                      <span className="text-muted-foreground">Ctrl+K</span>
+                      <span>{t('inbox.shortcuts.search', 'Zoeken')}</span>
+                      <span className="text-muted-foreground">Ctrl+N</span>
+                      <span>{t('inbox.shortcuts.new', 'Nieuw gesprek')}</span>
+                      <span className="text-muted-foreground">Ctrl+Enter</span>
+                      <span>{t('inbox.shortcuts.send', 'Versturen')}</span>
+                      <span className="text-muted-foreground">↑/↓</span>
+                      <span>{t('inbox.shortcuts.navigate', 'Navigeren')}</span>
+                      <span className="text-muted-foreground">Esc</span>
+                      <span>{t('inbox.shortcuts.close', 'Sluiten')}</span>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
 
@@ -134,6 +205,9 @@ export default function FlowbiteUnifiedInbox() {
                 ? formatDistanceToNow(new Date(conversation.last_message_at), { addSuffix: true, locale: currentLocale })
                 : '';
               
+              // Check if this is a missed call
+              const isMissedCall = conversation.primary_channel === 'Telefoon' && conversation.status === 'pending';
+              
               return (
                 <Link key={conversation.id} to={`/unified-inbox/conversation/${conversation.id}`}>
                   <FlowbiteConversationItem
@@ -149,6 +223,7 @@ export default function FlowbiteUnifiedInbox() {
                     priority={conversation.priority}
                     assignedTo={conversation.toegewezen_aan}
                     tags={conversation.tags}
+                    isMissedCall={isMissedCall}
                   />
                 </Link>
               );

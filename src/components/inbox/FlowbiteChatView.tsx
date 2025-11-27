@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { FlowbiteMessageBubble } from "./FlowbiteMessageBubble";
-import { Send, Paperclip, MoreVertical, Phone, Video, Smile, Mic, ExternalLink } from "lucide-react";
+import { QuickReplyPicker } from "./QuickReplyPicker";
+import { Send, Paperclip, MoreVertical, Phone, Video, Smile, ExternalLink, AtSign } from "lucide-react";
 import { ChannelIcon } from "./ChannelIcon";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { toast } from "sonner";
 
 type ChannelType = "whatsapp" | "email" | "phone" | "video" | "facebook" | "instagram" | "linkedin" | "sms";
 
@@ -36,13 +40,39 @@ export const FlowbiteChatView = ({
   isOnline = false,
   clientId
 }: FlowbiteChatViewProps) => {
+  const { t } = useTranslation();
   const [messageText, setMessageText] = useState("");
 
+  // Character limits for different channels
+  const getCharacterLimit = () => {
+    if (channel === 'sms') return 160;
+    if (channel === 'whatsapp') return 1600;
+    return null;
+  };
+
+  const characterLimit = getCharacterLimit();
+  const characterCount = messageText.length;
+  const isOverLimit = characterLimit && characterCount > characterLimit;
+
   const handleSend = () => {
-    if (messageText.trim()) {
+    if (messageText.trim() && !isOverLimit) {
       // Handle send logic
+      toast.success(t('inbox.messageSent', 'Bericht verzonden'));
       setMessageText("");
     }
+  };
+
+  const handleQuickReply = (content: string) => {
+    setMessageText(content);
+  };
+
+  const handleAttachment = () => {
+    toast.info(t('inbox.attachmentComingSoon', 'Bijlage functionaliteit komt binnenkort'));
+  };
+
+  const handleInternalNote = () => {
+    setMessageText(prev => prev + '@');
+    toast.info(t('inbox.internalNoteHint', 'Typ @ gevolgd door een naam voor een interne notitie'));
   };
 
   return (
@@ -120,42 +150,73 @@ export const FlowbiteChatView = ({
 
       {/* Message Input */}
       <div className="px-4 py-3 bg-card border-t border-border">
+        {/* Character count indicator for SMS/WhatsApp */}
+        {characterLimit && (
+          <div className={`text-xs mb-2 text-right ${isOverLimit ? 'text-red-500' : 'text-muted-foreground'}`}>
+            {characterCount}/{characterLimit} {t('inbox.characters', 'tekens')}
+            {isOverLimit && <span className="ml-1">({t('inbox.tooLong', 'te lang')})</span>}
+          </div>
+        )}
+        
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon">
-            <Paperclip className="w-5 h-5" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" onClick={handleAttachment}>
+                <Paperclip className="w-5 h-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('inbox.attachment', 'Bijlage')}</TooltipContent>
+          </Tooltip>
 
           <div className="flex-1 relative">
             <Textarea
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
+                if (e.key === "Enter" && !e.shiftKey && (e.ctrlKey || e.metaKey)) {
                   e.preventDefault();
                   handleSend();
                 }
               }}
               rows={1}
-              className="resize-none min-h-[40px]"
-              placeholder="Typ een bericht..."
+              className={`resize-none min-h-[40px] ${isOverLimit ? 'border-red-500 focus:ring-red-500' : ''}`}
+              placeholder={t('inbox.typePlaceholder', 'Typ een bericht...')}
             />
           </div>
 
-          <Button variant="ghost" size="icon">
-            <Smile className="w-5 h-5" />
-          </Button>
+          {/* Quick Reply Picker */}
+          <QuickReplyPicker onSelect={handleQuickReply} />
 
-          <Button variant="ghost" size="icon">
-            <Mic className="w-5 h-5" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Smile className="w-5 h-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('inbox.emoji', 'Emoji')}</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" onClick={handleInternalNote}>
+                <AtSign className="w-5 h-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('inbox.internalNote', 'Interne notitie')}</TooltipContent>
+          </Tooltip>
 
           <Button 
             onClick={handleSend}
-            disabled={!messageText.trim()}
+            disabled={!messageText.trim() || isOverLimit}
             size="icon"
           >
             <Send className="w-5 h-5" />
           </Button>
+        </div>
+        
+        {/* Send hint */}
+        <div className="text-xs text-muted-foreground mt-2">
+          Ctrl+Enter {t('inbox.toSend', 'om te versturen')}
         </div>
       </div>
     </div>
