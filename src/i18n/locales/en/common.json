@@ -26,6 +26,17 @@
     "assign": "Assign",
     "unassign": "Unassign"
   },
+  "user": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "quickActions": {
+    "newConversation": "New conversation",
+    "newClient": "New client",
+    "newAssignment": "New assignment",
+    "newTask": "New task"
+  },
   "time": {
     "today": "Today",
     "yesterday": "Yesterday",

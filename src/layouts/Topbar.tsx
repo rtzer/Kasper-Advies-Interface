@@ -64,10 +64,10 @@ export default function Topbar({ onMenuClick, onSearchClick }: TopbarProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border-ka-gray-200 dark:border-gray-700 z-50">
-            <DropdownMenuItem className="cursor-pointer">Nieuwe conversatie</DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">Nieuwe klant</DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">Nieuwe opdracht</DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">Nieuwe taak</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">{t('common:quickActions.newConversation')}</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">{t('common:quickActions.newClient')}</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">{t('common:quickActions.newAssignment')}</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">{t('common:quickActions.newTask')}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         
@@ -136,15 +136,15 @@ export default function Topbar({ onMenuClick, onSearchClick }: TopbarProps) {
           <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 border-ka-gray-200 dark:border-gray-700 z-50">
             <DropdownMenuItem className="cursor-pointer">
               <UserIcon className="w-4 h-4 mr-2" />
-              Profiel
+              {t('common:user.profile')}
             </DropdownMenuItem>
             <DropdownMenuItem className="cursor-pointer">
               <Settings className="w-4 h-4 mr-2" />
-              Instellingen
+              {t('common:user.settings')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600 dark:text-red-400">
               <LogOut className="w-4 h-4 mr-2" />
-              Uitloggen
+              {t('common:user.logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

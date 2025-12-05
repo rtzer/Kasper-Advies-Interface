@@ -26,6 +26,17 @@
     "assign": "Toewijzen",
     "unassign": "Toewijzing opheffen"
   },
+  "user": {
+    "profile": "Profiel",
+    "settings": "Instellingen",
+    "logout": "Uitloggen"
+  },
+  "quickActions": {
+    "newConversation": "Nieuwe conversatie",
+    "newClient": "Nieuwe klant",
+    "newAssignment": "Nieuwe opdracht",
+    "newTask": "Nieuwe taak"
+  },
   "time": {
     "today": "Vandaag",
     "yesterday": "Gisteren",
