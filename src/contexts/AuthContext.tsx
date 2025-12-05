@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockAuth, User } from '@/lib/mockAuth';
+import { authService, AuthUser } from '@/lib/authService';
 
 interface AuthContextType {
-  user: User | null;
+  user: AuthUser | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -12,29 +12,25 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for existing session on mount
-    const currentUser = mockAuth.getCurrentUser();
+    // Check for existing valid session on mount
+    const currentUser = authService.getCurrentUser();
     setUser(currentUser);
     setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
-    try {
-      const user = await mockAuth.login(email, password);
-      setUser(user);
-      navigate('/inbox');
-    } catch (error) {
-      throw error;
-    }
+    const authenticatedUser = await authService.login(email, password);
+    setUser(authenticatedUser);
+    navigate('/inbox');
   };
 
   const logout = () => {
-    mockAuth.logout();
+    authService.logout();
     setUser(null);
     navigate('/login');
   };
@@ -53,3 +49,6 @@ export const useAuth = () => {
   }
   return context;
 };
+
+// Re-export AuthUser type for convenience
+export type { AuthUser };

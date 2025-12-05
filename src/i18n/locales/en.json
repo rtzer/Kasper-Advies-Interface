@@ -2,6 +2,11 @@
   "clients": {
     "title": "Clients",
     "subtitle": "Manage all your client relationships in one place",
+    "myClients": "My Clients",
+    "myClientsSubtitle": "Clients you are responsible for",
+    "noClientsAssigned": "You have no clients assigned yet",
+    "clientCount": "{{count}} client",
+    "clientCount_plural": "{{count}} clients",
     "new": "New Client",
     "newShort": "New",
     "searchPlaceholder": "Search by name, number, email...",
@@ -52,7 +57,12 @@
       "excellent": "Excellent"
     },
     "lastContact": {
-      "overdue": "No contact for {{months}} months"
+      "overdue": "No contact for {{months}} months",
+      "today": "Today",
+      "oneDay": "1 day",
+      "days": "{{count}} days",
+      "daysSince": "{{count}} days since last contact",
+      "tooLong": "No contact for too long"
     },
     "table": {
       "client": "Client",

@@ -22,7 +22,10 @@ export function useKeyboardShortcuts() {
       
       // Only allow single-key shortcuts when not typing
       if (isTyping) return;
-      
+
+      // Ignore if any modifier key is pressed (for copy/paste/etc.)
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
       // I: Navigate to inbox
       if (e.key === 'i') {
         navigate('/unified-inbox');

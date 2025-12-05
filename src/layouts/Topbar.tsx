@@ -27,8 +27,8 @@ export default function Topbar({ onMenuClick, onSearchClick }: TopbarProps) {
   };
   
   return (
-    <header className="h-16 bg-white dark:bg-gray-800 border-b border-ka-gray-200 dark:border-gray-700 flex items-center px-6 justify-between">
-      <div className="flex items-center space-x-4 flex-1">
+    <>
+      <div className="flex items-center space-x-4">
         {/* Mobile menu button */}
         <Button
           variant="ghost"
@@ -149,6 +149,6 @@ export default function Topbar({ onMenuClick, onSearchClick }: TopbarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </header>
+    </>
   );
 }

@@ -28,13 +28,28 @@ export function useUser(id: string | undefined) {
 }
 
 export function useCurrentUser() {
-  // In a real app, this would get the logged-in user
-  // For mock purposes, we return Harm-Jan as the current user (Owner)
+  // Gets the logged-in user from auth context, matched with full user data
   return useQuery({
     queryKey: ['current-user'],
     queryFn: async () => {
       await delay(100);
-      return mockUsers[0]; // Harm-Jan Kaspers
+      // Get authenticated user email from localStorage session
+      const sessionData = localStorage.getItem('ka_auth_session');
+      if (!sessionData) {
+        return null;
+      }
+
+      try {
+        const session = JSON.parse(sessionData);
+        const email = session?.user?.email;
+        if (!email) return null;
+
+        // Match with full user data from mockUsers (will be Baserow later)
+        const user = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+        return user || null;
+      } catch {
+        return null;
+      }
     },
   });
 }

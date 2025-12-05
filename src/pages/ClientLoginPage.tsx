@@ -51,15 +51,6 @@ export default function ClientLoginPage() {
         <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
           <h2 className="text-xl font-semibold text-ka-navy dark:text-white mb-6">Welkom terug</h2>
 
-          {/* Demo credentials notice */}
-          <Alert className="mb-6 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-            <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-            <AlertDescription className="text-sm text-blue-800 dark:text-blue-200">
-              <strong>Demo klant account:</strong><br />
-              klant@voorbeeld.nl / demo123
-            </AlertDescription>
-          </Alert>
-
           {error && (
             <Alert className="mb-6 bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800">
               <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />

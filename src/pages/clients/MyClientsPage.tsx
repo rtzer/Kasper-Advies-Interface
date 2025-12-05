@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useKlanten } from '@/lib/api/klanten';
-import { useUserStore } from '@/store/userStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -10,24 +11,28 @@ import { Search, Users, Building2, User, Mail, Phone, MapPin } from 'lucide-reac
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MyClientsPage() {
+  const { t } = useTranslation('translation');
   const [searchQuery, setSearchQuery] = useState('');
-  const { currentUser } = useUserStore();
-  
+  const { user } = useAuth();
+
   const { data, isLoading } = useKlanten();
   const klanten = data?.results || [];
 
-  // Filter only clients assigned to current user
+  // Filter only clients assigned to current user via link_to_user
   const myKlanten = useMemo(() => {
+    if (!user?.id) return [];
+
     return klanten.filter((klant) => {
-      const isMyClient = klant.accountmanager === currentUser?.naam;
-      const matchesSearch = 
+      // Check if current user is in the assigned_user_ids array
+      const isMyClient = klant.assigned_user_ids?.includes(user.id);
+      const matchesSearch =
         klant.naam?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         klant.klant_nummer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         klant.email?.toLowerCase().includes(searchQuery.toLowerCase());
 
       return isMyClient && matchesSearch;
     });
-  }, [klanten, searchQuery, currentUser]);
+  }, [klanten, searchQuery, user]);
 
   return (
     <div className="p-6 space-y-6">
@@ -35,10 +40,10 @@ export default function MyClientsPage() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Users className="w-8 h-8 text-ka-green" />
-            Mijn Klanten
+            {t('clients.myClients')}
           </h1>
           <p className="text-muted-foreground mt-1">
-            Klanten waar jij verantwoordelijk voor bent
+            {t('clients.myClientsSubtitle')}
           </p>
         </div>
       </div>
@@ -47,7 +52,7 @@ export default function MyClientsPage() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
-            placeholder="Zoek op naam, nummer, email..."
+            placeholder={t('clients.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -68,10 +73,10 @@ export default function MyClientsPage() {
           <Card className="p-8 text-center">
             <Users className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
             <h3 className="text-lg font-semibold mb-1">
-              Geen klanten gevonden
+              {t('clients.noResults')}
             </h3>
             <p className="text-muted-foreground">
-              Je hebt nog geen klanten toegewezen
+              {t('clients.noClientsAssigned')}
             </p>
           </Card>
         ) : (
@@ -145,7 +150,7 @@ export default function MyClientsPage() {
 
       {!isLoading && myKlanten.length > 0 && (
         <div className="text-center text-sm text-muted-foreground">
-          {myKlanten.length} {myKlanten.length === 1 ? 'klant' : 'klanten'}
+          {t('clients.clientCount', { count: myKlanten.length })}
         </div>
       )}
     </div>

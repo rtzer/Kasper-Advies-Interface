@@ -11,8 +11,11 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const { t } = useTranslation(['navigation', 'common']);
+  const { t, i18n } = useTranslation(['navigation', 'common']);
   const location = useLocation();
+
+  // Force re-render when language changes
+  const currentLanguage = i18n.language;
   
   // Collapsible states
   const [isInboxOpen, setIsInboxOpen] = useState(true);

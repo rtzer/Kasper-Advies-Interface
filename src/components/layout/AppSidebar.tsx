@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Users,
@@ -43,6 +44,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { useRole } from '@/hooks/useRole';
 
 export function AppSidebar() {
+  const { t } = useTranslation(['navigation', 'common']);
   const { state } = useSidebar();
   const location = useLocation();
   const { isAdmin } = useRole();
@@ -79,7 +81,7 @@ export function AppSidebar() {
       <SidebarContent>
         {/* Hoofdmenu */}
         <SidebarGroup>
-          <SidebarGroupLabel>Navigatie</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('common:common.navigation', 'Navigation')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {/* Home */}
@@ -87,7 +89,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <NavLink to="/" end className={getNavCls(isActive('/'))}>
                     <Home className="h-4 w-4" />
-                    {!collapsed && <span>Inbox</span>}
+                    {!collapsed && <span>{t('navigation:menu.inbox')}</span>}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -98,7 +100,7 @@ export function AppSidebar() {
                   <NavLink to="/inbox/review" className={`${getNavCls(isActive('/inbox/review'))} flex items-center justify-between`}>
                     <div className="flex items-center gap-2">
                       <Inbox className="h-4 w-4" />
-                      {!collapsed && <span>Inbox Review</span>}
+                      {!collapsed && <span>{t('navigation:menu.inboxReview')}</span>}
                     </div>
                     {!collapsed && nieuwInbox > 0 && (
                       <Badge variant="destructive" className={`h-5 px-1.5 text-xs ${nieuwInbox > 5 ? 'animate-pulse' : ''}`}>
@@ -120,7 +122,7 @@ export function AppSidebar() {
                       <Users className="h-4 w-4" />
                       {!collapsed && (
                         <>
-                          <span>Klanten</span>
+                          <span>{t('navigation:menu.clients')}</span>
                           <ChevronDown className="ml-auto h-4 w-4 transition-transform" />
                         </>
                       )}
@@ -132,7 +134,7 @@ export function AppSidebar() {
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/clients" className={getNavCls(isActive('/clients'))}>
-                              Alle klanten
+                              {t('common:clients.allClients')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -140,7 +142,7 @@ export function AppSidebar() {
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/clients/my" className={getNavCls(isActive('/clients/my'))}>
                               <UserCircle className="h-3 w-3 mr-1" />
-                              Mijn klanten
+                              {t('common:clients.myClients')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -156,7 +158,7 @@ export function AppSidebar() {
                   <NavLink to="/prospects" className={`${getNavCls(isActive('/prospects'))} flex items-center justify-between`}>
                     <div className="flex items-center gap-2">
                       <UserPlus className="h-4 w-4" />
-                      {!collapsed && <span>Prospects</span>}
+                      {!collapsed && <span>{t('navigation:menu.prospects')}</span>}
                     </div>
                     {!collapsed && nieuwProspects > 0 && (
                       <Badge variant="secondary" className="h-5 px-1.5 text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
@@ -178,7 +180,7 @@ export function AppSidebar() {
                       <FolderKanban className="h-4 w-4" />
                       {!collapsed && (
                         <>
-                          <span>Projecten</span>
+                          <span>{t('navigation:menu.projects')}</span>
                           <ChevronDown className="ml-auto h-4 w-4 transition-transform" />
                         </>
                       )}
@@ -190,7 +192,7 @@ export function AppSidebar() {
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/projects" className={getNavCls(isActive('/projects'))}>
-                              Alle projecten
+                              {t('common:projects.allProjects')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -198,7 +200,7 @@ export function AppSidebar() {
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/projects/my" className={getNavCls(isActive('/projects/my'))}>
                               <UserCircle className="h-3 w-3 mr-1" />
-                              Mijn projecten
+                              {t('common:projects.myProjects')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -206,14 +208,14 @@ export function AppSidebar() {
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/projects/calendar" className={getNavCls(isActive('/projects/calendar'))}>
                               <Calendar className="h-3 w-3 mr-1" />
-                              Kalender
+                              {t('common:time.calendar', 'Calendar')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/projects/bulk" className={getNavCls(isActive('/projects/bulk'))}>
-                              Bulk projecten
+                              {t('common:projects.bulkProjects', 'Bulk projects')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -221,7 +223,7 @@ export function AppSidebar() {
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/projects/workload" className={getNavCls(isActive('/projects/workload'))}>
                               <Clock className="h-3 w-3 mr-1" />
-                              Team workload
+                              {t('common:projects.teamWorkload', 'Team workload')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -242,7 +244,7 @@ export function AppSidebar() {
                       <FileText className="h-4 w-4" />
                       {!collapsed && (
                         <>
-                          <span>Opdrachten</span>
+                          <span>{t('navigation:menu.assignments')}</span>
                           <ChevronDown className="ml-auto h-4 w-4 transition-transform" />
                         </>
                       )}
@@ -254,7 +256,7 @@ export function AppSidebar() {
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/assignments" className={getNavCls(isActive('/assignments'))}>
-                              Alle opdrachten
+                              {t('common:assignments.allAssignments')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -262,19 +264,19 @@ export function AppSidebar() {
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/assignments/my" className={getNavCls(isActive('/assignments/my'))}>
                               <UserCircle className="h-3 w-3 mr-1" />
-                              Mijn opdrachten
+                              {t('common:assignments.myAssignments')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                         {isAdmin && (
                           <SidebarMenuSubItem>
                             <SidebarMenuSubButton asChild>
-                              <NavLink 
-                                to="/assignments/pending" 
+                              <NavLink
+                                to="/assignments/pending"
                                 className={getNavCls(isActive('/assignments/pending'))}
                               >
                                 <CheckCircle className="h-3 w-3 mr-1" />
-                                Wacht op goedkeuring
+                                {t('common:assignments.awaitingApproval')}
                               </NavLink>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -282,7 +284,7 @@ export function AppSidebar() {
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/assignments/by-type" className={getNavCls(isActive('/assignments/by-type'))}>
-                              Per type
+                              {t('common:assignments.byType', 'By type')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -303,7 +305,7 @@ export function AppSidebar() {
                       <CheckSquare className="h-4 w-4" />
                       {!collapsed && (
                         <>
-                          <span>Taken</span>
+                          <span>{t('navigation:menu.tasks')}</span>
                           <ChevronDown className="ml-auto h-4 w-4 transition-transform" />
                         </>
                       )}
@@ -316,7 +318,7 @@ export function AppSidebar() {
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/tasks" className={getNavCls(isActive('/tasks'))}>
                               <UserCircle className="h-3 w-3 mr-1" />
-                              Mijn taken
+                              {t('common:tasks.myTasks')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -324,19 +326,19 @@ export function AppSidebar() {
                           <SidebarMenuSubButton asChild>
                             <NavLink to="/tasks/team" className={getNavCls(isActive('/tasks/team'))}>
                               <Users className="h-3 w-3 mr-1" />
-                              Team taken
+                              {t('common:tasks.teamTasks')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                         {isAdmin && (
                           <SidebarMenuSubItem>
                             <SidebarMenuSubButton asChild>
-                              <NavLink 
-                                to="/tasks/review" 
+                              <NavLink
+                                to="/tasks/review"
                                 className={getNavCls(isActive('/tasks/review'))}
                               >
                                 <CheckCircle className="h-3 w-3 mr-1" />
-                                Te beoordelen
+                                {t('common:tasks.needsApproval')}
                               </NavLink>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -353,14 +355,14 @@ export function AppSidebar() {
         {/* Management (alleen Harm-Jan) */}
         {isAdmin && (
           <SidebarGroup>
-            <SidebarGroupLabel>Management</SidebarGroupLabel>
+            <SidebarGroupLabel>{t('common:common.management', 'Management')}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <NavLink to="/analytics" className={getNavCls(isActive('/analytics'))}>
                       <BarChart3 className="h-4 w-4" />
-                      {!collapsed && <span>Rapportages</span>}
+                      {!collapsed && <span>{t('navigation:menu.statistics')}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -368,7 +370,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink to="/clients/late-payers" className={getNavCls(isActive('/clients/late-payers'))}>
                       <DollarSign className="h-4 w-4" />
-                      {!collapsed && <span>Late betalers</span>}
+                      {!collapsed && <span>{t('common:clients.latePayers', 'Late payers')}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -383,7 +385,7 @@ export function AppSidebar() {
                         <Settings className="h-4 w-4" />
                         {!collapsed && (
                           <>
-                            <span>Instellingen</span>
+                            <span>{t('navigation:menu.settings')}</span>
                             <ChevronDown className="ml-auto h-4 w-4 transition-transform" />
                           </>
                         )}
@@ -395,7 +397,7 @@ export function AppSidebar() {
                           <SidebarMenuSubItem>
                             <SidebarMenuSubButton asChild>
                               <NavLink to="/settings" className={getNavCls(isActive('/settings'))}>
-                                Algemeen
+                                {t('common:common.general', 'General')}
                               </NavLink>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -403,7 +405,7 @@ export function AppSidebar() {
                             <SidebarMenuSubButton asChild>
                               <NavLink to="/settings/team" className={getNavCls(isActive('/settings/team'))}>
                                 <Users className="h-3 w-3 mr-1" />
-                                Team
+                                {t('navigation:menu.team')}
                               </NavLink>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>

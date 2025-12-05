@@ -7,9 +7,12 @@ import nlNavigation from './locales/nl/navigation.json';
 import enCommon from './locales/en/common.json';
 import enNavigation from './locales/en/navigation.json';
 
+const savedLanguage = localStorage.getItem('language');
+
 i18n
   .use(initReactI18next)
   .init({
+    lng: savedLanguage || 'nl',
     fallbackLng: 'nl',
     supportedLngs: ['nl', 'en'],
     defaultNS: 'common',

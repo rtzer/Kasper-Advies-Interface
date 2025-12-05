@@ -2,6 +2,11 @@
   "clients": {
     "title": "Klanten",
     "subtitle": "Beheer al uw klantrelaties op één plek",
+    "myClients": "Mijn Klanten",
+    "myClientsSubtitle": "Klanten waar jij verantwoordelijk voor bent",
+    "noClientsAssigned": "Je hebt nog geen klanten toegewezen",
+    "clientCount": "{{count}} klant",
+    "clientCount_plural": "{{count}} klanten",
     "new": "Nieuwe Klant",
     "newShort": "Nieuw",
     "searchPlaceholder": "Zoek op naam, nummer, email...",
@@ -52,7 +57,12 @@
       "excellent": "Uitstekend"
     },
     "lastContact": {
-      "overdue": "Geen contact voor {{months}} maanden"
+      "overdue": "Geen contact voor {{months}} maanden",
+      "today": "Vandaag",
+      "oneDay": "1 dag",
+      "days": "{{count}} dagen",
+      "daysSince": "{{count}} dagen sinds laatste contact",
+      "tooLong": "Te lang geen contact gehad"
     },
     "table": {
       "client": "Klant",

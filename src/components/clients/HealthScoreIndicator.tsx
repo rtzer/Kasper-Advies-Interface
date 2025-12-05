@@ -43,7 +43,7 @@ function getScoreLabel(score: number, t: (key: string) => string): string {
 }
 
 export function HealthScoreIndicator({ score, showLabel = false, size = 'md' }: HealthScoreIndicatorProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const colors = getScoreColor(score);
   const label = getScoreLabel(score, t);
   

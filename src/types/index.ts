@@ -376,11 +376,15 @@ export interface Klant {
   aantal_interacties?: number;
   aantal_openstaande_opvolgingen?: number;
   totale_omzet?: number;
+  openstaand_bedrag?: number;
   aantal_opdrachten?: number;
   aantal_actieve_opdrachten?: number;
   aantal_openstaande_taken?: number;
   jaren_als_klant?: number;
   engagement_score?: number;
+
+  // Assigned users (from Baserow link_to_user)
+  assigned_user_ids?: string[];
 }
 
 export type LifecycleStage = Klant['lifecycle_stage'];

@@ -31,7 +31,7 @@ import { toast } from 'sonner';
 type QuickTab = 'all' | 'focus' | 'at-risk' | 'new';
 
 export default function ClientsPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('translation');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
@@ -383,14 +383,13 @@ export default function ClientsPage() {
                       <HealthScoreIndicator score={klant.health_score} size="sm" />
                     </TableCell>
                     <TableCell className="hidden xl:table-cell">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="w-6 h-6">
-                          <AvatarFallback className="text-[10px]">
-                            {klant.accountmanager?.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-xs truncate max-w-24">{klant.accountmanager}</span>
-                      </div>
+                      {klant.accountmanager ? (
+                        <Badge variant="outline" className="text-xs font-normal">
+                          {klant.accountmanager}
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">-</span>
+                      )}
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
                       <LastContactIndicator 

@@ -9,8 +9,8 @@ interface LifecycleBadgeProps {
   className?: string;
 }
 
-const stageConfig: Record<LifecycleStage, { 
-  colorClass: string; 
+const stageConfig: Record<LifecycleStage, {
+  colorClass: string;
   bgClass: string;
   icon: typeof Rocket;
   labelKey: string;
@@ -48,13 +48,13 @@ const stageConfig: Record<LifecycleStage, {
 };
 
 export function LifecycleBadge({ stage, showIcon = true, className = '' }: LifecycleBadgeProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('translation');
   const config = stageConfig[stage];
   const Icon = config.icon;
 
   return (
-    <Badge 
-      variant="outline" 
+    <Badge
+      variant="outline"
       className={`${config.bgClass} ${config.colorClass} text-[10px] xs:text-xs px-1.5 py-0.5 ${className}`}
     >
       {showIcon && <Icon className="w-3 h-3 mr-1" />}

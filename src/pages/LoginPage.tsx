@@ -53,16 +53,6 @@ export default function LoginPage() {
         <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
           <h2 className="text-xl font-semibold text-ka-navy dark:text-white mb-6">Inloggen</h2>
 
-          {/* Demo credentials notice */}
-          <Alert className="mb-6 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-            <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-            <AlertDescription className="text-sm text-blue-800 dark:text-blue-200">
-              <strong>Demo accounts:</strong><br />
-              harm-jan@kaspersadvies.nl / demo123<br />
-              jan@kaspersadvies.nl / demo123<br />
-              linda@kaspersadvies.nl / demo123
-            </AlertDescription>
-          </Alert>
 
           {error && (
             <Alert className="mb-6 bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800">
@@ -143,7 +133,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center space-y-4">
+        <div className="mt-8 text-center">
           <p className="text-sm text-ka-gray-600 dark:text-gray-400">
             Bent u een klant?{' '}
             <button
@@ -152,10 +142,6 @@ export default function LoginPage() {
             >
               Klik hier om in te loggen
             </button>
-          </p>
-          <p className="text-sm text-ka-gray-500 dark:text-gray-400">
-            <strong>Development Modus</strong><br />
-            Mock authenticatie - wordt vervangen door Baserow
           </p>
         </div>
       </div>

@@ -13,7 +13,7 @@ interface FocusClientStarProps {
 }
 
 export function FocusClientStar({ isFocus, onToggle, size = 'md', className = '' }: FocusClientStarProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   
   const sizeMap = {
     sm: 'w-4 h-4',

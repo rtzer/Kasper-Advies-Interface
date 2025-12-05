@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { CreditCard, Building, Lock, Landmark, Calendar } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,15 +25,20 @@ const maskBSN = (bsn: string) => {
 };
 
 export default function FinancialDetailsSection({ klant }: FinancialDetailsSectionProps) {
+  const { t } = useTranslation('common');
   const hasBusiness = klant.type_klant === 'MKB' || klant.type_klant === 'ZZP';
   const hasPersonal = klant.type_klant === 'Particulier';
-  
-  const hasFinancialInfo = 
-    klant.kvk_nummer || 
-    klant.btw_nummer || 
-    klant.bsn || 
-    klant.iban || 
-    klant.betalingstermijn;
+
+  const hasFinancialInfo =
+    klant.kvk_nummer ||
+    klant.btw_nummer ||
+    klant.bsn ||
+    klant.iban ||
+    klant.bic ||
+    klant.bank_naam ||
+    klant.alternatief_iban ||
+    klant.betalingstermijn ||
+    klant.facturatie_frequentie;
 
   if (!hasFinancialInfo) {
     return null;
@@ -42,7 +48,7 @@ export default function FinancialDetailsSection({ klant }: FinancialDetailsSecti
     <div className="space-y-4">
       <h3 className="text-lg font-semibold text-ka-navy dark:text-white flex items-center">
         <CreditCard className="w-5 h-5 mr-2" />
-        Financiële gegevens
+        {t('clients.financialSection.title')}
       </h3>
 
       <Card className="p-5">
@@ -55,7 +61,7 @@ export default function FinancialDetailsSection({ klant }: FinancialDetailsSecti
                   <div className="flex items-center space-x-2 mb-1">
                     <Building className="w-4 h-4 text-ka-gray-500" />
                     <p className="text-xs text-ka-gray-500 dark:text-gray-400">
-                      KvK nummer
+                      {t('clients.financialSection.kvkNumber')}
                     </p>
                   </div>
                   <p className="font-mono text-sm font-medium text-ka-navy dark:text-white">
@@ -69,7 +75,7 @@ export default function FinancialDetailsSection({ klant }: FinancialDetailsSecti
                   <div className="flex items-center space-x-2 mb-1">
                     <Building className="w-4 h-4 text-ka-gray-500" />
                     <p className="text-xs text-ka-gray-500 dark:text-gray-400">
-                      BTW nummer
+                      {t('clients.financialSection.vatNumber')}
                     </p>
                   </div>
                   <p className="font-mono text-sm font-medium text-ka-navy dark:text-white">
@@ -81,15 +87,15 @@ export default function FinancialDetailsSection({ klant }: FinancialDetailsSecti
           )}
 
           {/* BSN (alleen particulier) */}
-          {hasPersonal && klant.bsn && (
+          {hasPersonal && klant.bsn && klant.bsn !== 'None' && (
             <div>
               <div className="flex items-center space-x-2 mb-1">
                 <Lock className="w-4 h-4 text-red-500" />
                 <p className="text-xs text-ka-gray-500 dark:text-gray-400">
-                  BSN
+                  {t('clients.financialSection.bsn')}
                 </p>
                 <Badge variant="destructive" className="text-xs">
-                  Gevoelig
+                  {t('clients.financialSection.sensitive')}
                 </Badge>
               </div>
               <p className="font-mono text-sm font-medium text-ka-navy dark:text-white">
@@ -104,17 +110,26 @@ export default function FinancialDetailsSection({ klant }: FinancialDetailsSecti
               <div className="flex items-center space-x-2 mb-1">
                 <Landmark className="w-4 h-4 text-ka-gray-500" />
                 <p className="text-xs text-ka-gray-500 dark:text-gray-400">
-                  IBAN
+                  {t('clients.financialSection.iban')}
                 </p>
               </div>
               <p className="font-mono text-sm font-medium text-ka-navy dark:text-white">
                 {maskIBAN(klant.iban)}
               </p>
-              {klant.bank_naam && (
-                <p className="text-xs text-ka-gray-600 dark:text-gray-400 mt-1">
-                  {klant.bank_naam}
+            </div>
+          )}
+
+          {klant.bank_naam && (
+            <div>
+              <div className="flex items-center space-x-2 mb-1">
+                <Landmark className="w-4 h-4 text-ka-gray-500" />
+                <p className="text-xs text-ka-gray-500 dark:text-gray-400">
+                  {t('clients.financialSection.bankName')}
                 </p>
-              )}
+              </div>
+              <p className="text-sm font-medium text-ka-navy dark:text-white">
+                {klant.bank_naam}
+              </p>
             </div>
           )}
 
@@ -123,11 +138,25 @@ export default function FinancialDetailsSection({ klant }: FinancialDetailsSecti
               <div className="flex items-center space-x-2 mb-1">
                 <Landmark className="w-4 h-4 text-ka-gray-500" />
                 <p className="text-xs text-ka-gray-500 dark:text-gray-400">
-                  BIC
+                  {t('clients.financialSection.bic')}
                 </p>
               </div>
               <p className="font-mono text-sm font-medium text-ka-navy dark:text-white">
                 {klant.bic}
+              </p>
+            </div>
+          )}
+
+          {klant.alternatief_iban && (
+            <div>
+              <div className="flex items-center space-x-2 mb-1">
+                <Landmark className="w-4 h-4 text-ka-gray-500" />
+                <p className="text-xs text-ka-gray-500 dark:text-gray-400">
+                  {t('clients.financialSection.secondaryIban')}
+                </p>
+              </div>
+              <p className="font-mono text-sm font-medium text-ka-navy dark:text-white">
+                {maskIBAN(klant.alternatief_iban)}
               </p>
             </div>
           )}
@@ -137,11 +166,11 @@ export default function FinancialDetailsSection({ klant }: FinancialDetailsSecti
               <div className="flex items-center space-x-2 mb-1">
                 <Calendar className="w-4 h-4 text-ka-gray-500" />
                 <p className="text-xs text-ka-gray-500 dark:text-gray-400">
-                  Betalingstermijn
+                  {t('clients.financialSection.paymentTerm')}
                 </p>
               </div>
               <p className="text-sm font-medium text-ka-navy dark:text-white">
-                {klant.betalingstermijn} dagen
+                {klant.betalingstermijn} {t('clients.days')}
               </p>
             </div>
           )}
@@ -151,7 +180,7 @@ export default function FinancialDetailsSection({ klant }: FinancialDetailsSecti
               <div className="flex items-center space-x-2 mb-1">
                 <Calendar className="w-4 h-4 text-ka-gray-500" />
                 <p className="text-xs text-ka-gray-500 dark:text-gray-400">
-                  Facturatiefrequentie
+                  {t('clients.financialSection.invoiceFrequency')}
                 </p>
               </div>
               <p className="text-sm font-medium text-ka-navy dark:text-white">
