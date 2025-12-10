@@ -256,6 +256,13 @@
       "primaryContact": "Primair contactpersoon",
       "primary": "Primair",
       "save": "Opslaan"
+    },
+    "externalAccountantSection": {
+      "title": "Externe accountant",
+      "collaboration": "Samenwerking",
+      "accountingFirm": "Accountantskantoor",
+      "contactPerson": "Contactpersoon",
+      "collaborationSince": "Samenwerking sinds"
     }
   },
   "projects": {
@@ -338,6 +345,103 @@
     "no": "Nee",
     "all": "Alle",
     "none": "Geen",
-    "other": "Anders"
+    "other": "Anders",
+    "cancel": "Annuleren"
+  },
+  "createClient": {
+    "title": "Nieuwe klant aanmaken",
+    "tabs": {
+      "basic": "Basis",
+      "address": "Adres",
+      "business": "Bedrijf",
+      "financial": "Financieel",
+      "relations": "Relaties"
+    },
+    "sections": {
+      "contactInfo": "Contactgegevens",
+      "notes": "Notities",
+      "primaryAddress": "Hoofdadres",
+      "invoiceAddress": "Factuuradres",
+      "personalInfo": "Persoonlijke gegevens",
+      "businessRegistration": "Bedrijfsregistratie",
+      "growthInfo": "Groei-informatie",
+      "bankDetails": "Bankgegevens",
+      "paymentTerms": "Betalingsvoorwaarden",
+      "contactPersons": "Contactpersonen",
+      "externalAccountant": "Externe accountant"
+    },
+    "fields": {
+      "name": "Naam",
+      "clientType": "Type klant",
+      "status": "Status",
+      "preferredChannel": "Voorkeurskanaal",
+      "email": "E-mail",
+      "phone": "Telefoon",
+      "mobile": "Mobiel",
+      "website": "Website",
+      "address": "Adres",
+      "postalCode": "Postcode",
+      "city": "Plaats",
+      "country": "Land",
+      "differentInvoiceAddress": "Afwijkend factuuradres gebruiken",
+      "dateOfBirth": "Geboortedatum",
+      "bsn": "BSN",
+      "kvkNumber": "KvK-nummer",
+      "vatNumber": "BTW-nummer",
+      "industry": "Branche",
+      "yearsActive": "Jaren actief als ondernemer",
+      "growthPhase": "Groeifase",
+      "revenueCategory": "Omzetcategorie",
+      "bankName": "Bank",
+      "secondaryIban": "Alternatief IBAN",
+      "paymentTerm": "Betalingstermijn",
+      "billingFrequency": "Facturatiefrequentie",
+      "days": "dagen",
+      "selectExisting": "Bestaande selecteren",
+      "primaryContact": "Primair contactpersoon",
+      "accountManager": "Accountmanager"
+    },
+    "placeholders": {
+      "name": "Bedrijfsnaam of naam",
+      "selectChannel": "Selecteer kanaal",
+      "notes": "Eventuele notities over deze klant...",
+      "selectIndustry": "Selecteer branche",
+      "selectPhase": "Selecteer groeifase",
+      "selectCategory": "Selecteer categorie",
+      "selectFrequency": "Selecteer frequentie",
+      "selectContactPerson": "Selecteer contactpersoon",
+      "selectAccountant": "Selecteer externe accountant",
+      "selectAccountManager": "Selecteer accountmanager",
+      "searchContact": "Zoek contactpersoon op naam, e-mail of bedrijf...",
+      "searchAccountant": "Zoek externe accountant op naam of bedrijf...",
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "email": "E-mailadres",
+      "phone": "Telefoonnummer",
+      "jobTitle": "Functie",
+      "businessName": "Bedrijfsnaam accountantskantoor",
+      "contactFirstName": "Voornaam contactpersoon",
+      "contactLastName": "Achternaam contactpersoon"
+    },
+    "labels": {
+      "newContactPerson": "Nieuwe contactpersoon",
+      "newAccountant": "Nieuwe externe accountant",
+      "noContactsFound": "Geen contactpersonen gevonden",
+      "noAccountantsFound": "Geen externe accountants gevonden"
+    },
+    "buttons": {
+      "addNew": "Nieuw toevoegen",
+      "searchExisting": "Zoek bestaande",
+      "create": "Klant aanmaken",
+      "creating": "Aanmaken..."
+    },
+    "success": {
+      "title": "Klant aangemaakt",
+      "description": "{{name}} is succesvol toegevoegd."
+    },
+    "error": {
+      "title": "Fout",
+      "description": "Er is een fout opgetreden bij het aanmaken van de klant."
+    }
   }
 }

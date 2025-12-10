@@ -256,6 +256,13 @@
       "primaryContact": "Primary contact",
       "primary": "Primary",
       "save": "Save"
+    },
+    "externalAccountantSection": {
+      "title": "External accountant",
+      "collaboration": "Collaboration",
+      "accountingFirm": "Accounting firm",
+      "contactPerson": "Contact person",
+      "collaborationSince": "Collaboration since"
     }
   },
   "projects": {
@@ -338,6 +345,103 @@
     "no": "No",
     "all": "All",
     "none": "None",
-    "other": "Other"
+    "other": "Other",
+    "cancel": "Cancel"
+  },
+  "createClient": {
+    "title": "Create new client",
+    "tabs": {
+      "basic": "Basic",
+      "address": "Address",
+      "business": "Business",
+      "financial": "Financial",
+      "relations": "Relations"
+    },
+    "sections": {
+      "contactInfo": "Contact information",
+      "notes": "Notes",
+      "primaryAddress": "Primary address",
+      "invoiceAddress": "Invoice address",
+      "personalInfo": "Personal information",
+      "businessRegistration": "Business registration",
+      "growthInfo": "Growth information",
+      "bankDetails": "Bank details",
+      "paymentTerms": "Payment terms",
+      "contactPersons": "Contact persons",
+      "externalAccountant": "External accountant"
+    },
+    "fields": {
+      "name": "Name",
+      "clientType": "Client type",
+      "status": "Status",
+      "preferredChannel": "Preferred channel",
+      "email": "Email",
+      "phone": "Phone",
+      "mobile": "Mobile",
+      "website": "Website",
+      "address": "Address",
+      "postalCode": "Postal code",
+      "city": "City",
+      "country": "Country",
+      "differentInvoiceAddress": "Use different invoice address",
+      "dateOfBirth": "Date of birth",
+      "bsn": "BSN",
+      "kvkNumber": "Chamber of Commerce number",
+      "vatNumber": "VAT number",
+      "industry": "Industry",
+      "yearsActive": "Years active as entrepreneur",
+      "growthPhase": "Growth phase",
+      "revenueCategory": "Revenue category",
+      "bankName": "Bank",
+      "secondaryIban": "Secondary IBAN",
+      "paymentTerm": "Payment term",
+      "billingFrequency": "Billing frequency",
+      "days": "days",
+      "selectExisting": "Select existing",
+      "primaryContact": "Primary contact",
+      "accountManager": "Account manager"
+    },
+    "placeholders": {
+      "name": "Company name or name",
+      "selectChannel": "Select channel",
+      "notes": "Any notes about this client...",
+      "selectIndustry": "Select industry",
+      "selectPhase": "Select growth phase",
+      "selectCategory": "Select category",
+      "selectFrequency": "Select frequency",
+      "selectContactPerson": "Select contact person",
+      "selectAccountant": "Select external accountant",
+      "selectAccountManager": "Select account manager",
+      "searchContact": "Search contact by name, email or company...",
+      "searchAccountant": "Search external accountant by name or company...",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email address",
+      "phone": "Phone number",
+      "jobTitle": "Job title",
+      "businessName": "Accounting firm name",
+      "contactFirstName": "Contact first name",
+      "contactLastName": "Contact last name"
+    },
+    "labels": {
+      "newContactPerson": "New contact person",
+      "newAccountant": "New external accountant",
+      "noContactsFound": "No contact persons found",
+      "noAccountantsFound": "No external accountants found"
+    },
+    "buttons": {
+      "addNew": "Add new",
+      "searchExisting": "Search existing",
+      "create": "Create client",
+      "creating": "Creating..."
+    },
+    "success": {
+      "title": "Client created",
+      "description": "{{name}} has been successfully added."
+    },
+    "error": {
+      "title": "Error",
+      "description": "An error occurred while creating the client."
+    }
   }
 }

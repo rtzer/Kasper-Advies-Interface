@@ -80,6 +80,14 @@ export interface BaserowCustomer {
 
   // Assignments link
   link_to_assignments: BaserowLinkRow[];
+
+  // External accountant
+  link_to_external_accountant: BaserowLinkRow[];
+  lookup_business_name: BaserowLinkRow[];
+  lookup_contact_first_name: BaserowLinkRow[];
+  lookup_contact_last_name: BaserowLinkRow[];
+  lookup_email: BaserowLinkRow[];
+  lookup_contact_phone_number: BaserowLinkRow[];
 }
 
 class BaserowClient {

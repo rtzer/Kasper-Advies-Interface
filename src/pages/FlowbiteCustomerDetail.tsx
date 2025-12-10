@@ -1,12 +1,14 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Mail, Phone, MapPin, Building2, Calendar, MessageSquare, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Mail, Phone, MapPin, Building2, Calendar, MessageSquare, Edit, Trash2, Handshake } from "lucide-react";
 import { useKlant } from "@/lib/api/klanten";
 import { useInteractiesByKlant } from "@/lib/api/interacties";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { nl } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 
 export default function FlowbiteCustomerDetail() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const { data: klant, isLoading } = useKlant(id || "1");
   const { data: interactiesData } = useInteractiesByKlant(id || "1");
@@ -202,6 +204,63 @@ export default function FlowbiteCustomerDetail() {
                 )}
               </div>
             </div>
+
+            {/* External Accountant Section */}
+            {klant.accountant_kantoor && (
+              <div className="bg-blue-50 dark:bg-gray-800 border border-blue-100 dark:border-gray-700 rounded-lg p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Building2 className="h-5 w-5 text-blue-900 dark:text-blue-400" />
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{t('clients.externalAccountantSection.title')}</h3>
+                  <span className="px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                    {t('clients.externalAccountantSection.collaboration')}
+                  </span>
+                </div>
+
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-blue-900 dark:bg-blue-800 flex items-center justify-center flex-shrink-0">
+                    <Building2 className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('clients.externalAccountantSection.accountingFirm')}</p>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{klant.accountant_kantoor}</p>
+                    {klant.externe_accountant && (
+                      <>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{t('clients.externalAccountantSection.contactPerson')}</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">{klant.externe_accountant}</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {klant.accountant_email && (
+                    <a
+                      href={`mailto:${klant.accountant_email}`}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                      <Mail className="h-4 w-4" />
+                      {klant.accountant_email}
+                    </a>
+                  )}
+                  {klant.accountant_telefoonnummer && (
+                    <a
+                      href={`tel:${klant.accountant_telefoonnummer}`}
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                      <Phone className="h-4 w-4" />
+                      {klant.accountant_telefoonnummer}
+                    </a>
+                  )}
+                </div>
+
+                {klant.samenwerking_sinds && (
+                  <p className="mt-4 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {t('clients.externalAccountantSection.collaborationSince')} {klant.samenwerking_sinds}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

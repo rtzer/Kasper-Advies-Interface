@@ -126,19 +126,24 @@ export function useContactPersonen() {
   return useQuery({
     queryKey: ['contactpersonen'],
     queryFn: async () => {
-      const response = await baserowClient.getTableRows<BaserowContact>(
-        CONTACTS_TABLE_ID,
-        { size: 200 }
-      );
+      try {
+        const response = await baserowClient.getTableRows<BaserowContact>(
+          CONTACTS_TABLE_ID,
+          { size: 200 }
+        );
 
-      const results = response.results
-        .filter(c => !c.is_deleted)
-        .map(mapBaserowToContactPersoon);
+        const results = (response.results || [])
+          .filter(c => !c.is_deleted)
+          .map(mapBaserowToContactPersoon);
 
-      return {
-        results,
-        count: results.length,
-      };
+        return {
+          results,
+          count: results.length,
+        };
+      } catch (error) {
+        console.error('Failed to fetch contact persons:', error);
+        return { results: [], count: 0 };
+      }
     },
   });
 }

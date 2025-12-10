@@ -26,7 +26,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     const authenticatedUser = await authService.login(email, password);
     setUser(authenticatedUser);
-    navigate('/inbox');
   };
 
   const logout = () => {

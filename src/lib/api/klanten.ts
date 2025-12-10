@@ -4,8 +4,8 @@ import { baserowClient, BaserowCustomer } from './baserowClient';
 
 const CUSTOMERS_TABLE_ID = import.meta.env.VITE_BASEROW_TABLE_CUSTOMERS;
 
-// Extract account manager name from lookup field (can be array of objects or strings)
-function getAccountManagerName(lookup: any): string {
+// Extract value from lookup field (can be array of objects or strings)
+function getLookupValue(lookup: any): string {
   if (!lookup || !Array.isArray(lookup) || lookup.length === 0) return '';
   const first = lookup[0];
   // If it's an object with a 'value' property (BaserowLinkRow format)
@@ -13,6 +13,11 @@ function getAccountManagerName(lookup: any): string {
   // If it's a string
   if (typeof first === 'string') return first;
   return '';
+}
+
+// Alias for backwards compatibility
+function getAccountManagerName(lookup: any): string {
+  return getLookupValue(lookup);
 }
 
 // Map Baserow customer to our Klant type
@@ -87,6 +92,14 @@ function mapBaserowToKlant(customer: BaserowCustomer): Klant {
 
     // Notes
     notities: customer.notes || '',
+
+    // External accountant (from linked record and lookups)
+    externe_accountant: customer.link_to_external_accountant?.length > 0
+      ? `${getLookupValue(customer.lookup_contact_first_name)} ${getLookupValue(customer.lookup_contact_last_name)}`.trim()
+      : undefined,
+    accountant_kantoor: getLookupValue(customer.lookup_business_name) || undefined,
+    accountant_email: getLookupValue(customer.lookup_email) || undefined,
+    accountant_telefoonnummer: getLookupValue(customer.lookup_contact_phone_number) || undefined,
 
     // Audit
     created_at: customer.created_at,
