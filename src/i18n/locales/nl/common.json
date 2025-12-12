@@ -199,17 +199,22 @@
     },
     "dialogs": {
       "archiveTitle": "Klant archiveren?",
-      "archiveDescription": "Weet je zeker dat je <strong>{{name}}</strong> wilt archiveren? De klant blijft zichtbaar in historische weergave maar wordt niet meer actief getoond.",
-      "archiveCancel": "Annuleren",
-      "archiveConfirm": "Archiveren"
+      "archiveDescription": "Weet je zeker dat je {{name}} wilt archiveren? De klant blijft zichtbaar in historische weergave maar wordt niet meer actief getoond.",
+      "archiveConfirm": "Archiveren",
+      "deleteTitle": "Klant verwijderen?",
+      "deleteDescription": "Weet je zeker dat je {{name}} permanent wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt en alle bijbehorende gegevens worden verwijderd.",
+      "deleteConfirm": "Verwijderen",
+      "cancel": "Annuleren"
     },
     "messages": {
       "archived": "{{name}} is gearchiveerd",
+      "deleted": "{{name}} is verwijderd",
+      "archiveAdminOnly": "Alleen beheerders kunnen klanten archiveren",
+      "deleteAdminOnly": "Alleen beheerders kunnen klanten verwijderen",
       "videoCallComingSoon": "Video call functionaliteit komt binnenkort",
       "taskComingSoon": "Taak aanmaken komt binnenkort",
       "assignmentComingSoon": "Opdracht aanmaken komt binnenkort",
-      "exportComingSoon": "Export functionaliteit komt binnenkort",
-      "deleteAdminOnly": "Verwijderen is alleen beschikbaar voor beheerders"
+      "exportComingSoon": "Export functionaliteit komt binnenkort"
     },
     "businessSection": {
       "title": "Zakelijke details",
@@ -324,6 +329,90 @@
     "pending": "In behandeling",
     "startedBy": "Gestart door"
   },
+  "prospects": {
+    "title": "Prospects",
+    "subtitle": "Beheer je leads en potentiële klanten",
+    "new": "Nieuwe prospect",
+    "searchPlaceholder": "Zoek prospects...",
+    "status": "Status",
+    "type": "Type",
+    "allStatuses": "Alle statussen",
+    "allTypes": "Alle types",
+    "resetFilters": "Filters wissen",
+    "prospect": "Prospect",
+    "source": "Bron",
+    "interests": "Interesses",
+    "assignedTo": "Toegewezen aan",
+    "nextAction": "Volgende actie",
+    "nextActionDate": "Datum volgende actie",
+    "stats": {
+      "total": "Totaal prospects",
+      "newThisWeek": "Nieuw deze week",
+      "inPipeline": "In pipeline",
+      "wonThisMonth": "Gewonnen deze maand"
+    },
+    "tabs": {
+      "details": "Details",
+      "activity": "Activiteit",
+      "notes": "Notities"
+    },
+    "contactInfo": "Contactgegevens",
+    "planning": "Planning",
+    "expectedAnnual": "verwachte jaaromzet",
+    "expectedStartDate": "Verwachte startdatum",
+    "editAction": "Bewerk actie",
+    "firstContact": "Eerste contact",
+    "lastContact": "Laatste contact",
+    "activityPlaceholder": "Activiteitengeschiedenis komt binnenkort beschikbaar.",
+    "notesPlaceholder": "Voeg notities toe over deze prospect...",
+    "convertToClient": "Omzetten naar klant",
+    "markAsLost": "Markeer als verloren",
+    "cannotDragToClosedStatus": "Je kunt prospects niet naar een gesloten status slepen",
+    "cannotChangeClosedProspect": "Je kunt een gesloten prospect niet meer wijzigen",
+    "statusUpdated": "Status bijgewerkt",
+    "createTitle": "Nieuwe prospect aanmaken",
+    "createDescription": "Voeg een nieuwe lead toe aan je pipeline",
+    "convertTitle": "Omzetten naar klant",
+    "convertDescription": "Deze prospect wordt omgezet naar een klant",
+    "selectAccountManager": "Selecteer accountmanager",
+    "converting": "Omzetten...",
+    "convert": "Omzetten",
+    "convertSuccess": "Prospect omgezet naar klant",
+    "lostTitle": "Prospect verloren markeren",
+    "lostDescription": "Geef aan waarom deze prospect verloren is",
+    "lostReason": "Reden",
+    "lostReasonPlaceholder": "Waarom is deze prospect verloren?",
+    "markLost": "Markeer als verloren",
+    "marking": "Markeren...",
+    "lostSuccess": "Prospect gemarkeerd als verloren",
+    "fields": {
+      "companyName": "Bedrijfsnaam",
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "email": "E-mail",
+      "phone": "Telefoon",
+      "city": "Plaats",
+      "type": "Type prospect",
+      "source": "Bron",
+      "interests": "Interesses",
+      "expectedValue": "Verwachte waarde",
+      "nextAction": "Volgende actie",
+      "nextActionDate": "Datum",
+      "notes": "Notities"
+    },
+    "placeholders": {
+      "companyName": "Bedrijfsnaam (optioneel voor particulieren)",
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "email": "email@voorbeeld.nl",
+      "phone": "+31 6 12345678",
+      "city": "Plaats",
+      "nextAction": "Bijv. Bellen voor afspraak",
+      "notes": "Extra informatie over de prospect..."
+    },
+    "create": "Prospect aanmaken",
+    "creating": "Aanmaken..."
+  },
   "common": {
     "navigation": "Navigatie",
     "management": "Management",
@@ -346,7 +435,10 @@
     "all": "Alle",
     "none": "Geen",
     "other": "Anders",
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "saving": "Opslaan...",
+    "saved": "Opgeslagen"
   },
   "createClient": {
     "title": "Nieuwe klant aanmaken",
@@ -399,7 +491,8 @@
       "days": "dagen",
       "selectExisting": "Bestaande selecteren",
       "primaryContact": "Primair contactpersoon",
-      "accountManager": "Accountmanager"
+      "accountManager": "Accountmanager",
+      "decisionMaker": "Beslisser"
     },
     "placeholders": {
       "name": "Bedrijfsnaam of naam",
@@ -419,6 +512,9 @@
       "email": "E-mailadres",
       "phone": "Telefoonnummer",
       "jobTitle": "Functie",
+      "selectDepartment": "Selecteer afdeling",
+      "selectContactChannel": "Voorkeur kanaal",
+      "contactNotes": "Notities over contactpersoon...",
       "businessName": "Bedrijfsnaam accountantskantoor",
       "contactFirstName": "Voornaam contactpersoon",
       "contactLastName": "Achternaam contactpersoon"
@@ -442,6 +538,85 @@
     "error": {
       "title": "Fout",
       "description": "Er is een fout opgetreden bij het aanmaken van de klant."
+    }
+  },
+  "editClient": {
+    "title": "Bewerk klantgegevens",
+    "subtitle": "Wijzig de gegevens van {{name}}",
+    "sections": {
+      "basicInfo": "Basisinformatie",
+      "contactInfo": "Contactgegevens",
+      "primaryAddress": "Adresgegevens (primair)",
+      "invoiceAddress": "Factuuradres (optioneel)",
+      "invoiceAddressHint": "Indien afwijkend van primair adres",
+      "businessInfo": "Bedrijfsgegevens",
+      "financialInfo": "Financiële gegevens",
+      "sensitiveData": "Privacygevoelige gegevens",
+      "sensitiveDataWarning": "Deze gegevens zijn vertrouwelijk en worden beveiligd opgeslagen",
+      "notes": "Notities"
+    },
+    "fields": {
+      "name": "Naam",
+      "status": "Status",
+      "birthDate": "Geboortedatum",
+      "email": "E-mail",
+      "phone": "Telefoon",
+      "mobile": "Mobiel",
+      "preferredChannel": "Voorkeur communicatie",
+      "linkedinProfile": "LinkedIn profiel",
+      "website": "Website",
+      "address": "Adres",
+      "postalCode": "Postcode",
+      "city": "Plaats",
+      "country": "Land",
+      "invoiceAddress": "Factuuradres",
+      "kvkNumber": "KVK nummer",
+      "vatNumber": "BTW nummer",
+      "iban": "IBAN",
+      "bic": "BIC/SWIFT",
+      "bankName": "Bank naam",
+      "paymentTerms": "Betalingstermijn (dagen)",
+      "alternativeIban": "Alternatief IBAN (optioneel)",
+      "bsn": "BSN (Burger Service Nummer)",
+      "bsnHint": "Alleen zichtbaar voor gemachtigden",
+      "generalNotes": "Algemene notities",
+      "internalNotes": "Interne notities"
+    },
+    "channels": {
+      "email": "E-mail",
+      "phone": "Telefoon"
+    },
+    "placeholders": {
+      "phone": "+31...",
+      "postalCode": "1234 AB",
+      "selectChannel": "Selecteer kanaal",
+      "invoiceAddress": "Bijv. Postbus 1234",
+      "kvkNumber": "12345678",
+      "vatNumber": "NL123456789B01",
+      "iban": "NL91ABNA0417164300",
+      "bic": "ABNANL2A",
+      "bankName": "ABN AMRO",
+      "alternativeIban": "Voor tweede rekening",
+      "bsn": "9 cijfers",
+      "generalNotes": "Algemene opmerkingen over deze klant...",
+      "internalNotes": "Alleen zichtbaar voor het team..."
+    },
+    "buttons": {
+      "cancel": "Annuleren",
+      "save": "Opslaan",
+      "saving": "Opslaan..."
+    },
+    "validation": {
+      "invalidIban": "Ongeldig IBAN formaat",
+      "invalidBsn": "BSN moet 9 cijfers bevatten"
+    },
+    "success": {
+      "title": "Klant bijgewerkt",
+      "description": "{{name}} is succesvol bijgewerkt."
+    },
+    "error": {
+      "title": "Fout",
+      "description": "Er is een fout opgetreden bij het bijwerken van de klant."
     }
   }
 }

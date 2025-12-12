@@ -20,6 +20,35 @@ export interface BaserowLinkRow {
   value: string;
 }
 
+// Raw prospect data from Baserow table 765
+export interface BaserowProspect {
+  id: number;
+  order: string;
+  prospect_id: string;
+  name: string;
+  prospect_type: BaserowSelectOption | null;
+  status: BaserowSelectOption | null;
+  source: BaserowSelectOption | null;
+  email: string;
+  phone: string;
+  website: string;
+  address: string;
+  postal_code: string;
+  city: string;
+  industry: BaserowSelectOption | null;
+  interested_services: BaserowSelectOption[];
+  estimated_revenue: BaserowSelectOption | null;
+  notes: string;
+  first_contact_date: string | null;
+  last_contact_date: string | null;
+  recontact_date: string | null;
+  lost_reason: BaserowSelectOption | null;
+  created_at: string;
+  is_deleted: boolean;
+  version: string;
+  link_to_interactions: BaserowLinkRow[];
+}
+
 // Raw customer data from Baserow table 764
 export interface BaserowCustomer {
   id: number;
@@ -48,6 +77,7 @@ export interface BaserowCustomer {
   reactivated_date: string | null;
   created_at: string;
   is_deleted: boolean;
+  is_archived: boolean;
   version: number;
   link_to_contacts: BaserowLinkRow[];
   Assignments: BaserowLinkRow[];

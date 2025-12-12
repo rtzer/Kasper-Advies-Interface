@@ -225,11 +225,15 @@ export default function ProspectsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <Calendar className="w-3 h-3" />
-                        {format(new Date(prospect.volgende_actie_datum), 'dd MMM', { locale })}
-                      </div>
-                      <div className="truncate max-w-32">{prospect.volgende_actie}</div>
+                      {prospect.volgende_actie_datum ? (
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Calendar className="w-3 h-3" />
+                          {format(new Date(prospect.volgende_actie_datum), 'dd MMM', { locale })}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                      <div className="truncate max-w-32">{prospect.volgende_actie || '-'}</div>
                     </div>
                   </TableCell>
                 </TableRow>

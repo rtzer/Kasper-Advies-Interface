@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,13 +13,17 @@ import { Plus, Loader2, X, Search, UserPlus } from 'lucide-react';
 import { useAccountManagers } from '@/lib/api/accountManagers';
 import { useContactPersonen } from '@/lib/api/contactpersonen';
 import { useExternalAccountants } from '@/lib/api/externalAccountants';
+import { Klant } from '@/types';
 
 interface CreateClientDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  klant?: Klant | null;
+  onSuccess?: () => void;
 }
 
-const WEBHOOK_URL = 'https://n8n.kaspersadvies.nl/webhook-test/5f328575-4b56-48f8-9fbd-30abbb5c81d6-5f328575-4b56-48f8-9fbd-30abbb5c81d6';
+const CREATE_WEBHOOK_URL = import.meta.env.VITE_N8N_CREATE_CLIENT_WEBHOOK_URL || '';
+const UPDATE_WEBHOOK_URL = import.meta.env.VITE_N8N_UPDATE_CLIENT_WEBHOOK_URL || '';
 const N8N_AUTH_USERNAME = import.meta.env.VITE_N8N_AUTH_USERNAME || '';
 const N8N_AUTH_PASSWORD = import.meta.env.VITE_N8N_AUTH_PASSWORD || '';
 
@@ -33,6 +38,10 @@ interface NewContactPerson {
   phone: string;
   jobTitle: string;
   isPrimary: boolean;
+  isDecisionMaker: boolean;
+  department: string;
+  preferredChannel: string;
+  notes: string;
 }
 
 interface NewExternalAccountant {
@@ -97,7 +106,7 @@ const initialFormData = {
   new_external_accountant: null as NewExternalAccountant | null,
 };
 
-export function CreateClientDialog({ open, onOpenChange }: CreateClientDialogProps) {
+export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: CreateClientDialogProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -107,9 +116,69 @@ export function CreateClientDialog({ open, onOpenChange }: CreateClientDialogPro
   const [showContactSearch, setShowContactSearch] = useState(false);
   const [showAccountantSearch, setShowAccountantSearch] = useState(false);
 
+  const isEditMode = !!klant;
+
   const { data: accountManagers = [] } = useAccountManagers();
   const { data: contactPersonenData } = useContactPersonen();
   const { data: externalAccountantsData } = useExternalAccountants();
+
+  // Pre-fill form when editing an existing client
+  useEffect(() => {
+    if (klant && open) {
+      const hasDifferentInvoiceAddress = !!(
+        klant.factuur_adres &&
+        klant.factuur_adres !== klant.adres
+      );
+
+      // Find matching account manager ID
+      const matchingManager = accountManagers.find(
+        (am) => am.full_name === klant.accountmanager || am.email === klant.accountmanager
+      );
+
+      setFormData({
+        naam: klant.naam || '',
+        type_klant: klant.type_klant || 'ZZP',
+        status: klant.status || 'Prospect',
+        email: klant.email || '',
+        telefoonnummer: klant.telefoonnummer || '',
+        mobiel: klant.mobiel || '',
+        website: klant.website || '',
+        linkedin_url: '',
+        voorkeur_kanaal: klant.voorkeur_kanaal || '',
+        adres: klant.adres || '',
+        postcode: klant.postcode || '',
+        plaats: klant.plaats || '',
+        land: klant.land || 'Nederland',
+        factuur_adres: klant.factuur_adres || '',
+        factuur_postcode: klant.factuur_postcode || '',
+        factuur_plaats: klant.factuur_plaats || '',
+        factuur_land: klant.factuur_land || '',
+        use_different_invoice_address: hasDifferentInvoiceAddress,
+        kvk_nummer: klant.kvk_nummer || '',
+        btw_nummer: klant.btw_nummer || '',
+        branche: klant.branche || '',
+        groei_fase: '',
+        omzet_categorie: '',
+        jaren_actief_als_ondernemer: '',
+        geboortedatum: '',
+        bsn: klant.bsn || '',
+        iban: klant.iban || '',
+        bic: klant.bic || '',
+        bank_naam: klant.bank_naam || '',
+        alternatief_iban: klant.alternatief_iban || '',
+        betalingstermijn: klant.betalingstermijn?.toString() || '30',
+        facturatie_frequentie: klant.facturatie_frequentie || '',
+        notities: klant.notities || '',
+        accountmanager_id: matchingManager ? String(matchingManager.id) : '',
+        selected_contact_persons: [],
+        new_contact_persons: [],
+        selected_external_accountant: null,
+        new_external_accountant: null,
+      });
+    } else if (!open) {
+      setFormData(initialFormData);
+    }
+  }, [klant, open, accountManagers]);
 
   const contactPersonen = contactPersonenData?.results || [];
   const externalAccountants = externalAccountantsData?.results || [];
@@ -171,7 +240,18 @@ export function CreateClientDialog({ open, onOpenChange }: CreateClientDialogPro
   const addNewContactPerson = () => {
     setFormData(prev => ({
       ...prev,
-      new_contact_persons: [...prev.new_contact_persons, { firstName: '', lastName: '', email: '', phone: '', jobTitle: '', isPrimary: false }],
+      new_contact_persons: [...prev.new_contact_persons, {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        jobTitle: '',
+        isPrimary: false,
+        isDecisionMaker: false,
+        department: '',
+        preferredChannel: '',
+        notes: '',
+      }],
     }));
     setShowContactSearch(false);
   };
@@ -219,39 +299,65 @@ export function CreateClientDialog({ open, onOpenChange }: CreateClientDialogPro
     setIsSubmitting(true);
 
     try {
+      // Build client object, only including non-empty values
+      const clientData: Record<string, unknown> = {
+        name: formData.naam,
+        client_type: formData.type_klant,
+        status: formData.status,
+      };
+
+      // Only add fields if they have values
+      if (formData.email) clientData.email = formData.email;
+      if (formData.telefoonnummer) clientData.phone = formData.telefoonnummer;
+      if (formData.website) clientData.website = formData.website;
+      if (formData.voorkeur_kanaal) clientData.preferred_channel = formData.voorkeur_kanaal;
+      if (formData.adres) clientData.address = formData.adres;
+      if (formData.postcode) clientData.postal_code = formData.postcode;
+      if (formData.plaats) clientData.city = formData.plaats;
+      if (formData.land) clientData.country = formData.land;
+
+      // Invoice address
+      if (formData.use_different_invoice_address) {
+        if (formData.factuur_adres) clientData.invoice_address = formData.factuur_adres;
+        if (formData.factuur_postcode) clientData.invoice_postal_code = formData.factuur_postcode;
+        if (formData.factuur_plaats) clientData.invoice_city = formData.factuur_plaats;
+        if (formData.factuur_land) clientData.invoice_country = formData.factuur_land;
+      } else {
+        if (formData.adres) clientData.invoice_address = formData.adres;
+        if (formData.postcode) clientData.invoice_postal_code = formData.postcode;
+        if (formData.plaats) clientData.invoice_city = formData.plaats;
+        if (formData.land) clientData.invoice_country = formData.land;
+      }
+
+      // Business info
+      if (formData.kvk_nummer) clientData.kvk_number = formData.kvk_nummer;
+      if (formData.btw_nummer) clientData.vat_number = formData.btw_nummer;
+      if (formData.branche) clientData.industry = formData.branche;
+      if (formData.groei_fase) clientData.growth_phase = formData.groei_fase;
+      if (formData.omzet_categorie) clientData.revenue_category = formData.omzet_categorie;
+
+      // Personal info
+      if (formData.geboortedatum) clientData.date_of_birth = formData.geboortedatum;
+      if (formData.bsn) clientData.bsn = formData.bsn;
+
+      // Financial info
+      if (formData.iban) clientData.iban = formData.iban;
+      if (formData.bic) clientData.bic = formData.bic;
+      if (formData.bank_naam) clientData.bank_name = formData.bank_naam;
+      if (formData.alternatief_iban) clientData.iban_secondary = formData.alternatief_iban;
+      if (formData.betalingstermijn) clientData.payment_term_days = parseInt(formData.betalingstermijn);
+      if (formData.facturatie_frequentie) clientData.billing_frequency = formData.facturatie_frequentie;
+
+      // Notes
+      if (formData.notities) clientData.notes = formData.notities;
+
+      // Account manager
+      if (formData.accountmanager_id) clientData.accountmanager_id = parseInt(formData.accountmanager_id);
+
       const payload = {
-        client: {
-          name: formData.naam,
-          client_type: formData.type_klant,
-          status: formData.status,
-          email: formData.email || null,
-          phone: formData.telefoonnummer || null,
-          website: formData.website || null,
-          preferred_channel: formData.voorkeur_kanaal || null,
-          address: formData.adres || null,
-          postal_code: formData.postcode || null,
-          city: formData.plaats || null,
-          country: formData.land || null,
-          invoice_address: formData.use_different_invoice_address ? (formData.factuur_adres || null) : (formData.adres || null),
-          invoice_postal_code: formData.use_different_invoice_address ? (formData.factuur_postcode || null) : (formData.postcode || null),
-          invoice_city: formData.use_different_invoice_address ? (formData.factuur_plaats || null) : (formData.plaats || null),
-          invoice_country: formData.use_different_invoice_address ? (formData.factuur_land || null) : (formData.land || null),
-          kvk_number: formData.kvk_nummer || null,
-          vat_number: formData.btw_nummer || null,
-          industry: formData.branche || null,
-          growth_phase: formData.groei_fase || null,
-          revenue_category: formData.omzet_categorie || null,
-          date_of_birth: formData.geboortedatum || null,
-          bsn: formData.bsn || null,
-          iban: formData.iban || null,
-          bic: formData.bic || null,
-          bank_name: formData.bank_naam || null,
-          iban_secondary: formData.alternatief_iban || null,
-          payment_term_days: formData.betalingstermijn ? parseInt(formData.betalingstermijn) : 30,
-          billing_frequency: formData.facturatie_frequentie || null,
-          notes: formData.notities || null,
-          accountmanager_id: formData.accountmanager_id ? parseInt(formData.accountmanager_id) : null,
-        },
+        action: isEditMode ? 'update' : 'create',
+        ...(isEditMode && { client_id: parseInt(klant!.id) }),
+        client: clientData,
         contact_persons: {
           existing_ids: formData.selected_contact_persons.map(c => ({
             id: parseInt(c.id),
@@ -264,6 +370,10 @@ export function CreateClientDialog({ open, onOpenChange }: CreateClientDialogPro
             phone: cp.phone,
             job_title: cp.jobTitle,
             is_primary: cp.isPrimary,
+            is_decision_maker: cp.isDecisionMaker,
+            department: cp.department || '',
+            preferred_channel: cp.preferredChannel || '',
+            notes: cp.notes || '',
           })),
         },
         external_accountant: {
@@ -286,19 +396,34 @@ export function CreateClientDialog({ open, onOpenChange }: CreateClientDialogPro
         },
       };
 
-      const response = await fetch(WEBHOOK_URL, {
+      const webhookUrl = isEditMode ? UPDATE_WEBHOOK_URL : CREATE_WEBHOOK_URL;
+      const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': createBasicAuthHeader() },
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error('Failed to create client');
+      if (!response.ok) throw new Error(isEditMode ? 'Failed to update client' : 'Failed to create client');
 
-      toast({ title: t('createClient.success.title'), description: t('createClient.success.description', { name: formData.naam }) });
+      toast({
+        title: isEditMode ? t('editClient.success.title') : t('createClient.success.title'),
+        description: isEditMode
+          ? t('editClient.success.description', { name: formData.naam })
+          : t('createClient.success.description', { name: formData.naam }),
+      });
+
+      // Wait 2 seconds for n8n to process the request before closing and refreshing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
       onOpenChange(false);
       setFormData(initialFormData);
+      onSuccess?.();
     } catch {
-      toast({ title: t('createClient.error.title'), description: t('createClient.error.description'), variant: 'destructive' });
+      toast({
+        title: isEditMode ? t('editClient.error.title') : t('createClient.error.title'),
+        description: isEditMode ? t('editClient.error.description') : t('createClient.error.description'),
+        variant: 'destructive',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -315,12 +440,15 @@ export function CreateClientDialog({ open, onOpenChange }: CreateClientDialogPro
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-xl">{t('createClient.title')}</DialogTitle>
+      <DialogContent className="sm:max-w-[800px] h-[85vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
+          <DialogTitle className="text-xl">
+            {isEditMode ? t('editClient.title') : t('createClient.title')}
+          </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <ScrollArea className="flex-1 pr-4 -mr-4">
+          <form id="create-client-form" onSubmit={handleSubmit} className="space-y-6">
           {/* Basis */}
           <section>
             <h3 className="font-semibold text-sm text-muted-foreground mb-3">{t('createClient.tabs.basic')}</h3>
@@ -666,9 +794,38 @@ export function CreateClientDialog({ open, onOpenChange }: CreateClientDialogPro
                   <Input placeholder={t('createClient.placeholders.jobTitle')} value={cp.jobTitle} onChange={(e) => updateNewContactPerson(i, 'jobTitle', e.target.value)} />
                   <Input placeholder={t('createClient.placeholders.email')} value={cp.email} onChange={(e) => updateNewContactPerson(i, 'email', e.target.value)} />
                   <Input placeholder={t('createClient.placeholders.phone')} value={cp.phone} onChange={(e) => updateNewContactPerson(i, 'phone', e.target.value)} />
+                  <Select value={cp.department || 'none'} onValueChange={(v) => updateNewContactPerson(i, 'department', v === 'none' ? '' : v)}>
+                    <SelectTrigger><SelectValue placeholder={t('createClient.placeholders.selectDepartment')} /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">-</SelectItem>
+                      <SelectItem value="Directie">Directie</SelectItem>
+                      <SelectItem value="Financiën">Financiën</SelectItem>
+                      <SelectItem value="Administratie">Administratie</SelectItem>
+                      <SelectItem value="Operations">Operations</SelectItem>
+                      <SelectItem value="Sales">Sales</SelectItem>
+                      <SelectItem value="HR">HR</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={cp.preferredChannel || 'none'} onValueChange={(v) => updateNewContactPerson(i, 'preferredChannel', v === 'none' ? '' : v)}>
+                    <SelectTrigger><SelectValue placeholder={t('createClient.placeholders.selectContactChannel')} /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">-</SelectItem>
+                      <SelectItem value="WhatsApp">WhatsApp</SelectItem>
+                      <SelectItem value="E-mail">E-mail</SelectItem>
+                      <SelectItem value="Telefoon">Telefoon</SelectItem>
+                      <SelectItem value="Zoom">Zoom</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <div className="flex items-center space-x-2">
                     <Checkbox id={`primary-${i}`} checked={cp.isPrimary} onCheckedChange={(c) => updateNewContactPerson(i, 'isPrimary', !!c)} />
                     <Label htmlFor={`primary-${i}`} className="text-sm">{t('createClient.fields.primaryContact')}</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id={`decision-maker-${i}`} checked={cp.isDecisionMaker} onCheckedChange={(c) => updateNewContactPerson(i, 'isDecisionMaker', !!c)} />
+                    <Label htmlFor={`decision-maker-${i}`} className="text-sm">{t('createClient.fields.decisionMaker')}</Label>
+                  </div>
+                  <div className="md:col-span-3">
+                    <Input placeholder={t('createClient.placeholders.contactNotes')} value={cp.notes} onChange={(e) => updateNewContactPerson(i, 'notes', e.target.value)} />
                   </div>
                 </div>
               </div>
@@ -770,18 +927,22 @@ export function CreateClientDialog({ open, onOpenChange }: CreateClientDialogPro
             <h3 className="font-semibold text-sm text-muted-foreground mb-3">{t('createClient.sections.notes')}</h3>
             <Textarea value={formData.notities} onChange={(e) => updateField('notities', e.target.value)} placeholder={t('createClient.placeholders.notes')} rows={3} />
           </section>
+          </form>
+        </ScrollArea>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleClose}>{t('common.cancel')}</Button>
-            <Button type="submit" disabled={isSubmitting || !formData.naam}>
-              {isSubmitting ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t('createClient.buttons.creating')}</>
-              ) : (
-                t('createClient.buttons.create')
-              )}
-            </Button>
-          </DialogFooter>
-        </form>
+        <DialogFooter className="flex-shrink-0 pt-4 border-t">
+          <Button type="button" variant="outline" onClick={handleClose}>{t('common.cancel')}</Button>
+          <Button type="submit" form="create-client-form" disabled={isSubmitting || !formData.naam}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                {isEditMode ? t('editClient.buttons.saving') : t('createClient.buttons.creating')}
+              </>
+            ) : (
+              isEditMode ? t('editClient.buttons.save') : t('createClient.buttons.create')
+            )}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

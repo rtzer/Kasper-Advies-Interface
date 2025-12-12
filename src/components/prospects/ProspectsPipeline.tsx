@@ -152,10 +152,14 @@ export function ProspectsPipeline({ prospects, onSelectProspect }: ProspectsPipe
                               )}
 
                               <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                  <Calendar className="w-3 h-3" />
-                                  {format(new Date(prospect.volgende_actie_datum), 'dd MMM', { locale })}
-                                </div>
+                                {prospect.volgende_actie_datum ? (
+                                  <div className="flex items-center gap-1">
+                                    <Calendar className="w-3 h-3" />
+                                    {format(new Date(prospect.volgende_actie_datum), 'dd MMM', { locale })}
+                                  </div>
+                                ) : (
+                                  <span>-</span>
+                                )}
                                 {prospect.verwachte_waarde && (
                                   <div className="flex items-center gap-1">
                                     <Euro className="w-3 h-3" />

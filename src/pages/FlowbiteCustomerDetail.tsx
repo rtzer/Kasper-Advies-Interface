@@ -1,17 +1,26 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Mail, Phone, MapPin, Building2, Calendar, MessageSquare, Edit, Trash2, Handshake } from "lucide-react";
+import { ArrowLeft, Mail, Phone, MapPin, Building2, Calendar, MessageSquare, Edit, Trash2 } from "lucide-react";
 import { useKlant } from "@/lib/api/klanten";
 import { useInteractiesByKlant } from "@/lib/api/interacties";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { nl } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
+import { CreateClientDialog } from "@/components/clients/CreateClientDialog";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function FlowbiteCustomerDetail() {
   const { t } = useTranslation();
   const { id } = useParams();
+  const queryClient = useQueryClient();
   const { data: klant, isLoading } = useKlant(id || "1");
   const { data: interactiesData } = useInteractiesByKlant(id || "1");
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  const handleEditSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ['klanten', id] });
+  };
   
   const recentActivity = (interactiesData?.results || []).slice(0, 5).map((int) => ({
     id: int.id,
@@ -58,7 +67,10 @@ export default function FlowbiteCustomerDetail() {
           </div>
           
           <div className="flex gap-2">
-            <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2">
+            <button
+              onClick={() => setIsEditDialogOpen(true)}
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
+            >
               <Edit className="h-4 w-4" />
               Bewerken
             </button>
@@ -264,6 +276,14 @@ export default function FlowbiteCustomerDetail() {
           </div>
         </div>
       </div>
+
+      {/* Edit Client Dialog */}
+      <CreateClientDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        klant={klant}
+        onSuccess={handleEditSuccess}
+      />
     </div>
   );
 }

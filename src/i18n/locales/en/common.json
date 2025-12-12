@@ -199,17 +199,22 @@
     },
     "dialogs": {
       "archiveTitle": "Archive client?",
-      "archiveDescription": "Are you sure you want to archive <strong>{{name}}</strong>? The client will remain visible in historical view but will no longer be shown actively.",
-      "archiveCancel": "Cancel",
-      "archiveConfirm": "Archive"
+      "archiveDescription": "Are you sure you want to archive {{name}}? The client will remain visible in historical view but will no longer be shown actively.",
+      "archiveConfirm": "Archive",
+      "deleteTitle": "Delete client?",
+      "deleteDescription": "Are you sure you want to permanently delete {{name}}? This action cannot be undone and all associated data will be removed.",
+      "deleteConfirm": "Delete",
+      "cancel": "Cancel"
     },
     "messages": {
       "archived": "{{name}} has been archived",
+      "deleted": "{{name}} has been deleted",
+      "archiveAdminOnly": "Only administrators can archive clients",
+      "deleteAdminOnly": "Only administrators can delete clients",
       "videoCallComingSoon": "Video call functionality coming soon",
       "taskComingSoon": "Task creation coming soon",
       "assignmentComingSoon": "Assignment creation coming soon",
-      "exportComingSoon": "Export functionality coming soon",
-      "deleteAdminOnly": "Delete is only available for administrators"
+      "exportComingSoon": "Export functionality coming soon"
     },
     "businessSection": {
       "title": "Business details",
@@ -324,6 +329,90 @@
     "pending": "Pending",
     "startedBy": "Started by"
   },
+  "prospects": {
+    "title": "Prospects",
+    "subtitle": "Manage your leads and potential clients",
+    "new": "New prospect",
+    "searchPlaceholder": "Search prospects...",
+    "status": "Status",
+    "type": "Type",
+    "allStatuses": "All statuses",
+    "allTypes": "All types",
+    "resetFilters": "Clear filters",
+    "prospect": "Prospect",
+    "source": "Source",
+    "interests": "Interests",
+    "assignedTo": "Assigned to",
+    "nextAction": "Next action",
+    "nextActionDate": "Next action date",
+    "stats": {
+      "total": "Total prospects",
+      "newThisWeek": "New this week",
+      "inPipeline": "In pipeline",
+      "wonThisMonth": "Won this month"
+    },
+    "tabs": {
+      "details": "Details",
+      "activity": "Activity",
+      "notes": "Notes"
+    },
+    "contactInfo": "Contact information",
+    "planning": "Planning",
+    "expectedAnnual": "expected annual revenue",
+    "expectedStartDate": "Expected start date",
+    "editAction": "Edit action",
+    "firstContact": "First contact",
+    "lastContact": "Last contact",
+    "activityPlaceholder": "Activity history coming soon.",
+    "notesPlaceholder": "Add notes about this prospect...",
+    "convertToClient": "Convert to client",
+    "markAsLost": "Mark as lost",
+    "cannotDragToClosedStatus": "You cannot drag prospects to a closed status",
+    "cannotChangeClosedProspect": "You cannot change a closed prospect",
+    "statusUpdated": "Status updated",
+    "createTitle": "Create new prospect",
+    "createDescription": "Add a new lead to your pipeline",
+    "convertTitle": "Convert to client",
+    "convertDescription": "This prospect will be converted to a client",
+    "selectAccountManager": "Select account manager",
+    "converting": "Converting...",
+    "convert": "Convert",
+    "convertSuccess": "Prospect converted to client",
+    "lostTitle": "Mark prospect as lost",
+    "lostDescription": "Indicate why this prospect was lost",
+    "lostReason": "Reason",
+    "lostReasonPlaceholder": "Why was this prospect lost?",
+    "markLost": "Mark as lost",
+    "marking": "Marking...",
+    "lostSuccess": "Prospect marked as lost",
+    "fields": {
+      "companyName": "Company name",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "city": "City",
+      "type": "Prospect type",
+      "source": "Source",
+      "interests": "Interests",
+      "expectedValue": "Expected value",
+      "nextAction": "Next action",
+      "nextActionDate": "Date",
+      "notes": "Notes"
+    },
+    "placeholders": {
+      "companyName": "Company name (optional for individuals)",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "email@example.com",
+      "phone": "+31 6 12345678",
+      "city": "City",
+      "nextAction": "E.g. Call for appointment",
+      "notes": "Additional information about the prospect..."
+    },
+    "create": "Create prospect",
+    "creating": "Creating..."
+  },
   "common": {
     "navigation": "Navigation",
     "management": "Management",
@@ -346,7 +435,10 @@
     "all": "All",
     "none": "None",
     "other": "Other",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "saved": "Saved"
   },
   "createClient": {
     "title": "Create new client",
@@ -399,7 +491,8 @@
       "days": "days",
       "selectExisting": "Select existing",
       "primaryContact": "Primary contact",
-      "accountManager": "Account manager"
+      "accountManager": "Account manager",
+      "decisionMaker": "Decision maker"
     },
     "placeholders": {
       "name": "Company name or name",
@@ -419,6 +512,9 @@
       "email": "Email address",
       "phone": "Phone number",
       "jobTitle": "Job title",
+      "selectDepartment": "Select department",
+      "selectContactChannel": "Preferred channel",
+      "contactNotes": "Notes about contact person...",
       "businessName": "Accounting firm name",
       "contactFirstName": "Contact first name",
       "contactLastName": "Contact last name"
@@ -442,6 +538,85 @@
     "error": {
       "title": "Error",
       "description": "An error occurred while creating the client."
+    }
+  },
+  "editClient": {
+    "title": "Edit client details",
+    "subtitle": "Modify the details of {{name}}",
+    "sections": {
+      "basicInfo": "Basic information",
+      "contactInfo": "Contact details",
+      "primaryAddress": "Address (primary)",
+      "invoiceAddress": "Invoice address (optional)",
+      "invoiceAddressHint": "If different from primary address",
+      "businessInfo": "Business details",
+      "financialInfo": "Financial details",
+      "sensitiveData": "Sensitive information",
+      "sensitiveDataWarning": "This data is confidential and stored securely",
+      "notes": "Notes"
+    },
+    "fields": {
+      "name": "Name",
+      "status": "Status",
+      "birthDate": "Date of birth",
+      "email": "Email",
+      "phone": "Phone",
+      "mobile": "Mobile",
+      "preferredChannel": "Preferred communication",
+      "linkedinProfile": "LinkedIn profile",
+      "website": "Website",
+      "address": "Address",
+      "postalCode": "Postal code",
+      "city": "City",
+      "country": "Country",
+      "invoiceAddress": "Invoice address",
+      "kvkNumber": "Chamber of Commerce number",
+      "vatNumber": "VAT number",
+      "iban": "IBAN",
+      "bic": "BIC/SWIFT",
+      "bankName": "Bank name",
+      "paymentTerms": "Payment term (days)",
+      "alternativeIban": "Secondary IBAN (optional)",
+      "bsn": "BSN (Citizen Service Number)",
+      "bsnHint": "Only visible to authorized users",
+      "generalNotes": "General notes",
+      "internalNotes": "Internal notes"
+    },
+    "channels": {
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "placeholders": {
+      "phone": "+31...",
+      "postalCode": "1234 AB",
+      "selectChannel": "Select channel",
+      "invoiceAddress": "E.g. PO Box 1234",
+      "kvkNumber": "12345678",
+      "vatNumber": "NL123456789B01",
+      "iban": "NL91ABNA0417164300",
+      "bic": "ABNANL2A",
+      "bankName": "ABN AMRO",
+      "alternativeIban": "For second account",
+      "bsn": "9 digits",
+      "generalNotes": "General remarks about this client...",
+      "internalNotes": "Only visible to the team..."
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "validation": {
+      "invalidIban": "Invalid IBAN format",
+      "invalidBsn": "BSN must contain 9 digits"
+    },
+    "success": {
+      "title": "Client updated",
+      "description": "{{name}} has been successfully updated."
+    },
+    "error": {
+      "title": "Error",
+      "description": "An error occurred while updating the client."
     }
   }
 }

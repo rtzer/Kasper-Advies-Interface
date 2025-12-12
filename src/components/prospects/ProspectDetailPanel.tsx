@@ -211,12 +211,14 @@ export function ProspectDetailPanel({
               
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="w-4 h-4 text-muted-foreground" />
-                <span>{t('prospects.nextAction')}: {currentData.volgende_actie}</span>
+                <span>{t('prospects.nextAction')}: {currentData.volgende_actie || '-'}</span>
               </div>
-              
-              <div className="text-sm text-muted-foreground pl-6">
-                {format(new Date(currentData.volgende_actie_datum), 'PP', { locale })}
-              </div>
+
+              {currentData.volgende_actie_datum && (
+                <div className="text-sm text-muted-foreground pl-6">
+                  {format(new Date(currentData.volgende_actie_datum), 'PP', { locale })}
+                </div>
+              )}
             </div>
 
             {/* Editable fields */}
@@ -249,14 +251,14 @@ export function ProspectDetailPanel({
               <div className="flex items-center gap-2 text-sm">
                 <History className="w-4 h-4 text-muted-foreground" />
                 <span className="text-muted-foreground">{t('prospects.firstContact')}:</span>
-                <span>{format(new Date(prospect.eerste_contact_datum), 'PP', { locale })}</span>
+                <span>{prospect.eerste_contact_datum ? format(new Date(prospect.eerste_contact_datum), 'PP', { locale }) : '-'}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <History className="w-4 h-4 text-muted-foreground" />
                 <span className="text-muted-foreground">{t('prospects.lastContact')}:</span>
-                <span>{format(new Date(prospect.laatste_contact_datum), 'PP', { locale })}</span>
+                <span>{prospect.laatste_contact_datum ? format(new Date(prospect.laatste_contact_datum), 'PP', { locale }) : '-'}</span>
               </div>
-              
+
               <p className="text-sm text-muted-foreground italic mt-4">
                 {t('prospects.activityPlaceholder')}
               </p>

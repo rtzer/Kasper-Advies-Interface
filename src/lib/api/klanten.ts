@@ -169,7 +169,7 @@ export function useKlanten(filters?: Record<string, any>) {
       );
 
       let results = response.results
-        .filter(c => !c.is_deleted)
+        .filter(c => !c.is_deleted && !c.is_archived)
         .map(mapBaserowToKlant);
 
       // Apply filters
@@ -195,7 +195,7 @@ export function useActieveKlanten() {
       );
 
       const results = response.results
-        .filter(c => !c.is_deleted)
+        .filter(c => !c.is_deleted && !c.is_archived)
         .map(mapBaserowToKlant)
         .filter(k => k.status === 'Actief');
 

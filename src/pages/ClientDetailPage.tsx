@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Video, Linkedin, Globe, Calendar, ShieldAlert, CreditCard, MessageCircle, ChevronDown, Plus, ClipboardList, ListTodo, User, Building, Landmark, Clock, Receipt, Briefcase, DollarSign, Euro, AlertCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit, Archive, MoreVertical, TrendingUp, FileText, Video, Linkedin, Globe, Calendar, ShieldAlert, CreditCard, MessageCircle, ChevronDown, Plus, ClipboardList, ListTodo, User, Building, Landmark, Clock, Receipt, Briefcase, DollarSign, Euro, AlertCircle, Trash2 } from 'lucide-react';
 import { responsiveHeading, responsiveBody } from '@/lib/utils/typography';
 import { spacing } from '@/lib/utils/spacing';
 import { useDeviceChecks } from '@/hooks/useBreakpoint';
@@ -13,12 +13,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useKlant, useKlanten, useUpdateKlant } from '@/lib/api/klanten';
+import { useQueryClient } from '@tanstack/react-query';
 import { useInteractiesByKlant } from '@/lib/api/interacties';
 import ClientInteractionsTimeline from '@/components/clients/ClientInteractionsTimeline';
 import ClientAssignments from '@/components/clients/ClientAssignments';
 import ClientTasks from '@/components/clients/ClientTasks';
 import ClientContactPersons, { useContactPersonsCount } from '@/components/clients/ClientContactPersons';
-import EditClientDialog from '@/components/clients/EditClientDialog';
+import { CreateClientDialog } from '@/components/clients/CreateClientDialog';
 import RelatedClientsSection from '@/components/clients/RelatedClientsSection';
 import PartnerSection from '@/components/clients/PartnerSection';
 import ExternalAccountantCard from '@/components/clients/ExternalAccountantCard';
@@ -30,6 +31,38 @@ import CreateInteractionDialog from '@/components/clients/CreateInteractionDialo
 import { formatDate } from '@/lib/utils/dateHelpers';
 import { useUserStore } from '@/store/userStore';
 import { toast } from 'sonner';
+
+// Webhook URL for client actions
+const CLIENT_ACTION_WEBHOOK_URL = import.meta.env.VITE_N8N_CLIENT_ACTION_WEBHOOK_URL || '';
+const WEBHOOK_USERNAME = import.meta.env.VITE_N8N_AUTH_USERNAME || '';
+const WEBHOOK_PASSWORD = import.meta.env.VITE_N8N_AUTH_PASSWORD || '';
+
+// Helper function to send client action webhooks
+async function sendClientActionWebhook(action: 'focus' | 'archive' | 'delete', clientId: number, value: boolean) {
+  if (!CLIENT_ACTION_WEBHOOK_URL) {
+    console.warn('Client action webhook URL not configured');
+    return;
+  }
+
+  try {
+    const payload = {
+      action,
+      client_id: clientId,
+      value,
+    };
+
+    await fetch(CLIENT_ACTION_WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${btoa(`${WEBHOOK_USERNAME}:${WEBHOOK_PASSWORD}`)}`,
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    console.error('Failed to send client action webhook:', error);
+  }
+}
 
 const getGroeiFaseColor = (fase?: string) => {
   switch (fase) {
@@ -56,6 +89,8 @@ export default function ClientDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation('common');
   const { currentUser } = useUserStore();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { data: klant, isLoading } = useKlant(id!);
   const { data: interacties } = useInteractiesByKlant(id!);
   const { data: allKlantenData } = useKlanten();
@@ -77,7 +112,11 @@ export default function ClientDetailPage() {
     : undefined;
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isCreateInteractionOpen, setIsCreateInteractionOpen] = useState(false);
+
+  // Check if current user has admin role (can archive/delete)
+  const isAdmin = currentUser?.role === 'admin';
   
   // Collapsible states
   const [isBusinessOpen, setIsBusinessOpen] = useState(false);
@@ -87,15 +126,56 @@ export default function ClientDetailPage() {
   
   // Update klant mutation for focus toggle
   const updateKlant = useUpdateKlant();
-  
-  const handleToggleFocus = () => {
+
+  const handleToggleFocus = useCallback(() => {
     if (klant) {
+      const newValue = !klant.focus_client;
       updateKlant.mutate({
         id: klant.id,
-        data: { focus_client: !klant.focus_client }
+        data: { focus_client: newValue }
       });
+      // Send webhook for focus action
+      sendClientActionWebhook('focus', klant.id, newValue);
     }
-  };
+  }, [klant, updateKlant]);
+
+  const handleArchiveClick = useCallback(() => {
+    if (!isAdmin) {
+      toast.error(t('clients.messages.archiveAdminOnly'));
+      return;
+    }
+    setIsArchiveDialogOpen(true);
+  }, [isAdmin, t]);
+
+  const handleArchiveConfirm = useCallback(() => {
+    if (!klant) return;
+
+    // Send webhook for archive action
+    sendClientActionWebhook('archive', klant.id, true);
+    toast.success(t('clients.messages.archived', { name: klant.naam }));
+    setIsArchiveDialogOpen(false);
+    // Redirect to clients list
+    navigate('/clients');
+  }, [klant, t, navigate]);
+
+  const handleDeleteClick = useCallback(() => {
+    if (!isAdmin) {
+      toast.error(t('clients.messages.deleteAdminOnly'));
+      return;
+    }
+    setIsDeleteDialogOpen(true);
+  }, [isAdmin, t]);
+
+  const handleDeleteConfirm = useCallback(() => {
+    if (!klant) return;
+
+    // Send webhook for delete action
+    sendClientActionWebhook('delete', klant.id, true);
+    toast.success(t('clients.messages.deleted', { name: klant.naam }));
+    setIsDeleteDialogOpen(false);
+    // Redirect to clients list
+    navigate('/clients');
+  }, [klant, t, navigate]);
   
   if (isLoading) {
     return (
@@ -274,7 +354,7 @@ export default function ClientDetailPage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setIsArchiveDialogOpen(true)}
+                  onClick={handleArchiveClick}
                   title={t('clients.actions.archive')}
                   className="flex-shrink-0 h-10 w-10 xs:h-11 xs:w-11"
                 >
@@ -299,9 +379,9 @@ export default function ClientDetailPage() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="text-red-600 dark:text-red-400"
-                      onClick={() => toast.error(t('clients.messages.deleteAdminOnly'))}
+                      onClick={handleDeleteClick}
                     >
-                      <Archive className="w-4 h-4 mr-2" />
+                      <Trash2 className="w-4 h-4 mr-2" />
                       {t('clients.actions.delete')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -903,10 +983,14 @@ export default function ClientDetailPage() {
 
       {/* Edit Dialog */}
       {klant && (
-        <EditClientDialog
+        <CreateClientDialog
           klant={klant}
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
+          onSuccess={() => {
+            queryClient.invalidateQueries({ queryKey: ['klanten', id] });
+            queryClient.invalidateQueries({ queryKey: ['klanten'] });
+          }}
         />
       )}
       
@@ -930,15 +1014,33 @@ export default function ClientDetailPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t('clients.dialogs.archiveCancel')}</AlertDialogCancel>
+            <AlertDialogCancel>{t('clients.dialogs.cancel')}</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => {
-                toast.success(t('clients.messages.archived', { name: klant?.naam }));
-                setIsArchiveDialogOpen(false);
-              }}
-              className="bg-ka-warning hover:bg-ka-warning/90"
+              onClick={handleArchiveConfirm}
+              className="bg-orange-500 hover:bg-orange-600 text-white"
             >
               {t('clients.dialogs.archiveConfirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('clients.dialogs.deleteTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('clients.dialogs.deleteDescription', { name: klant?.naam })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('clients.dialogs.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {t('clients.dialogs.deleteConfirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
