@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCreateProspect } from '@/lib/api/prospects';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -20,35 +21,83 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ProspectBron, ProspectType } from '@/types';
+import { Loader2 } from 'lucide-react';
 
 interface CreateProspectDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+// N8N webhook configuration
+const CREATE_PROSPECT_WEBHOOK_URL = import.meta.env.VITE_N8N_CREATE_PROSPECT_WEBHOOK_URL || '';
+const N8N_AUTH_USERNAME = import.meta.env.VITE_N8N_AUTH_USERNAME || '';
+const N8N_AUTH_PASSWORD = import.meta.env.VITE_N8N_AUTH_PASSWORD || '';
+
+function createBasicAuthHeader(): string {
+  return `Basic ${btoa(`${N8N_AUTH_USERNAME}:${N8N_AUTH_PASSWORD}`)}`;
+}
+
+// Baserow exact values
 const interesseOpties = [
-  'BTW-aangifte',
+  'IB-aangifte',
   'Jaarrekening',
-  'IB (Inkomstenbelasting)',
-  'Vennootschapsbelasting',
+  'BTW-aangifte',
+  'VPB-aangifte',
   'Loonadministratie',
   'Groeibegeleiding',
-  'Startersbegeleiding',
   'Procesoptimalisatie',
-  'Financieel advies',
-  'Toeslag aanvragen',
-  'Schenking/Erfenis',
+  'Toeslagen',
 ];
 
-const bronOpties: ProspectBron[] = ['Website', 'Referral', 'LinkedIn', 'Telefoon', 'Event', 'Netwerk', 'Anders'];
-const typeOpties: ProspectType[] = ['MKB', 'ZZP', 'Particulier'];
+const bronOpties = [
+  'Website',
+  'Verwijzing',
+  'LinkedIn',
+  'Google',
+  'Evenement',
+  'Bestaande klant',
+  'Anders',
+];
+
+const typeOpties = ['MKB', 'ZZP', 'Particulier'];
+
+const estimatedRevenueOpties = [
+  '< €50k',
+  '€50k - €100k',
+  '€100k - €250k',
+  '€250k - €500k',
+];
+
+const industryOpties = [
+  'Bouw',
+  'Retail',
+  'Horeca',
+  'ICT',
+  'Zorg',
+  'Dienstverlening',
+  'Transport',
+  'Productie',
+  'Overig',
+];
+
+const countryOpties = [
+  'Nederland',
+  'België',
+  'Duitsland',
+  'Frankrijk',
+  'Luxemburg',
+  'Spanje',
+  'Italië',
+  'Verenigd Koninkrijk',
+  'Anders',
+];
 
 export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialogProps) {
   const { t } = useTranslation();
-  const createProspect = useCreateProspect();
+  const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
-  
+
   const [formData, setFormData] = useState({
     voornaam: '',
     achternaam: '',
@@ -56,11 +105,13 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
     email: '',
     telefoon: '',
     mobiel: '',
-    type_prospect: 'ZZP' as ProspectType,
+    type_prospect: 'ZZP',
+    industry: '',
     adres: '',
     postcode: '',
     plaats: '',
-    bron: 'Website' as ProspectBron,
+    land: 'Nederland',
+    bron: 'Website',
     bron_details: '',
     interesse: [] as string[],
     notities: '',
@@ -72,42 +123,72 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
   });
 
   const handleSubmit = async () => {
-    if (!formData.email || formData.interesse.length === 0) {
-      toast.error(t('prospects.validation.required'));
+    if (!formData.email) {
+      toast.error(t('prospects.validation.emailRequired'));
       return;
     }
 
+    if (formData.interesse.length === 0) {
+      toast.error(t('prospects.validation.interestsRequired'));
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
-      await createProspect.mutateAsync({
-        voornaam: formData.voornaam,
-        achternaam: formData.achternaam,
-        bedrijfsnaam: formData.bedrijfsnaam || undefined,
-        email: formData.email,
-        telefoon: formData.telefoon || undefined,
-        mobiel: formData.mobiel || undefined,
-        type_prospect: formData.type_prospect,
-        adres: formData.adres || undefined,
-        postcode: formData.postcode || undefined,
-        plaats: formData.plaats || undefined,
-        bron: formData.bron,
-        bron_details: formData.bron_details || undefined,
-        interesse: formData.interesse,
-        notities: formData.notities || undefined,
-        verwachte_waarde: formData.verwachte_waarde ? Number(formData.verwachte_waarde) : undefined,
-        verwachte_start: formData.verwachte_start || undefined,
-        volgende_actie: formData.volgende_actie || 'Eerste contact opnemen',
-        volgende_actie_datum: formData.volgende_actie_datum || new Date().toISOString().split('T')[0],
-        toegewezen_aan: formData.toegewezen_aan,
-        status: 'Nieuw',
-        eerste_contact_datum: new Date().toISOString().split('T')[0],
-        laatste_contact_datum: new Date().toISOString().split('T')[0],
+      const payload = {
+        action: 'create',
+        entity: 'prospect',
+        data: {
+          name: formData.bedrijfsnaam || `${formData.voornaam} ${formData.achternaam}`.trim(),
+          email: formData.email,
+          phone: formData.telefoon || formData.mobiel || '',
+          address: formData.adres || null,
+          postal_code: formData.postcode || null,
+          city: formData.plaats || null,
+          country: formData.land || null,
+          prospect_type: formData.type_prospect,
+          industry: formData.industry || null,
+          source: formData.bron,
+          interested_services: formData.interesse,
+          estimated_revenue: formData.verwachte_waarde || null,
+          notes: formData.notities || null,
+          recontact_date: formData.volgende_actie_datum || null,
+          status: 'Nieuw',
+        },
+      };
+
+      const response = await fetch(CREATE_PROSPECT_WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': createBasicAuthHeader(),
+        },
+        body: JSON.stringify(payload),
       });
 
-      toast.success(t('prospects.created'));
-      onOpenChange(false);
-      resetForm();
+      if (response.status === 200) {
+        // Success - prospect created in Baserow
+        const displayName = formData.bedrijfsnaam || `${formData.voornaam} ${formData.achternaam}`.trim();
+        toast.success(t('prospects.created'), {
+          description: t('prospects.createdDescription', { name: displayName }),
+        });
+
+        // Refresh prospects list immediately
+        queryClient.invalidateQueries({ queryKey: ['prospects'] });
+        queryClient.invalidateQueries({ queryKey: ['prospect-stats'] });
+
+        onOpenChange(false);
+        resetForm();
+      } else {
+        // Error from n8n (400 or other)
+        throw new Error('Failed to create prospect');
+      }
     } catch (error) {
+      console.error('Error creating prospect:', error);
       toast.error(t('common.error'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -121,9 +202,11 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
       telefoon: '',
       mobiel: '',
       type_prospect: 'ZZP',
+      industry: '',
       adres: '',
       postcode: '',
       plaats: '',
+      land: 'Nederland',
       bron: 'Website',
       bron_details: '',
       interesse: [],
@@ -145,20 +228,34 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
     }));
   };
 
+  const handleClose = (isOpen: boolean) => {
+    if (!isOpen) {
+      resetForm();
+    }
+    onOpenChange(isOpen);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) resetForm(); onOpenChange(o); }}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>{t('prospects.new')}</DialogTitle>
+          <DialogTitle>{t('prospects.createTitle')}</DialogTitle>
+          <DialogDescription>{t('prospects.createDescription')}</DialogDescription>
         </DialogHeader>
 
         {/* Step indicators */}
         <div className="flex gap-2 mb-4">
           {[1, 2, 3].map(s => (
-            <div
-              key={s}
-              className={`flex-1 h-1 rounded ${s <= step ? 'bg-ka-green' : 'bg-muted'}`}
-            />
+            <div key={s} className="flex-1 flex flex-col items-center gap-1">
+              <div
+                className={`w-full h-1 rounded ${s <= step ? 'bg-ka-green' : 'bg-muted'}`}
+              />
+              <span className={`text-xs ${s <= step ? 'text-ka-green' : 'text-muted-foreground'}`}>
+                {s === 1 && t('prospects.steps.basicInfo')}
+                {s === 2 && t('prospects.steps.interestsSource')}
+                {s === 3 && t('prospects.steps.planning')}
+              </span>
+            </div>
           ))}
         </div>
 
@@ -171,7 +268,7 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
                 <Input
                   value={formData.voornaam}
                   onChange={e => setFormData(prev => ({ ...prev, voornaam: e.target.value }))}
-                  placeholder="Jan"
+                  placeholder={t('prospects.placeholders.firstName')}
                 />
               </div>
               <div>
@@ -179,7 +276,7 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
                 <Input
                   value={formData.achternaam}
                   onChange={e => setFormData(prev => ({ ...prev, achternaam: e.target.value }))}
-                  placeholder="Jansen"
+                  placeholder={t('prospects.placeholders.lastName')}
                 />
               </div>
             </div>
@@ -193,21 +290,39 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
               />
             </div>
 
-            <div>
-              <Label>{t('prospects.type')}</Label>
-              <Select
-                value={formData.type_prospect}
-                onValueChange={(v: ProspectType) => setFormData(prev => ({ ...prev, type_prospect: v }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {typeOpties.map(t => (
-                    <SelectItem key={t} value={t}>{t}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>{t('prospects.type')}</Label>
+                <Select
+                  value={formData.type_prospect}
+                  onValueChange={v => setFormData(prev => ({ ...prev, type_prospect: v }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {typeOpties.map(type => (
+                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>{t('prospects.industry')}</Label>
+                <Select
+                  value={formData.industry}
+                  onValueChange={v => setFormData(prev => ({ ...prev, industry: v }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t('prospects.selectIndustry')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {industryOpties.map(ind => (
+                      <SelectItem key={ind} value={ind}>{ind}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div>
@@ -216,7 +331,7 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
                 type="email"
                 value={formData.email}
                 onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                placeholder="jan@voorbeeld.nl"
+                placeholder={t('prospects.placeholders.email')}
               />
             </div>
 
@@ -234,8 +349,35 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
                 <Input
                   value={formData.mobiel}
                   onChange={e => setFormData(prev => ({ ...prev, mobiel: e.target.value }))}
-                  placeholder="06-12345678"
+                  placeholder={t('prospects.placeholders.phone')}
                 />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>{t('prospects.fields.city')}</Label>
+                <Input
+                  value={formData.plaats}
+                  onChange={e => setFormData(prev => ({ ...prev, plaats: e.target.value }))}
+                  placeholder={t('prospects.placeholders.city')}
+                />
+              </div>
+              <div>
+                <Label>{t('prospects.country')}</Label>
+                <Select
+                  value={formData.land}
+                  onValueChange={v => setFormData(prev => ({ ...prev, land: v }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countryOpties.map(c => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
@@ -248,7 +390,7 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
               <Label>{t('prospects.source')}</Label>
               <Select
                 value={formData.bron}
-                onValueChange={(v: ProspectBron) => setFormData(prev => ({ ...prev, bron: v }))}
+                onValueChange={v => setFormData(prev => ({ ...prev, bron: v }))}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -261,13 +403,13 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
               </Select>
             </div>
 
-            {(formData.bron === 'Referral' || formData.bron === 'Event' || formData.bron === 'Netwerk') && (
+            {(formData.bron === 'Verwijzing' || formData.bron === 'Evenement' || formData.bron === 'Bestaande klant' || formData.bron === 'Anders') && (
               <div>
                 <Label>{t('prospects.sourceDetails')}</Label>
                 <Input
                   value={formData.bron_details}
                   onChange={e => setFormData(prev => ({ ...prev, bron_details: e.target.value }))}
-                  placeholder={formData.bron === 'Referral' ? 'Via klant...' : 'Details...'}
+                  placeholder={formData.bron === 'Verwijzing' ? 'Via klant...' : 'Details...'}
                 />
               </div>
             )}
@@ -291,7 +433,7 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
             </div>
 
             <div>
-              <Label>{t('prospects.notes')}</Label>
+              <Label>{t('prospects.fields.notes')}</Label>
               <Textarea
                 value={formData.notities}
                 onChange={e => setFormData(prev => ({ ...prev, notities: e.target.value }))}
@@ -324,30 +466,19 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
 
             <div>
               <Label>{t('prospects.expectedValue')}</Label>
-              <Input
-                type="number"
+              <Select
                 value={formData.verwachte_waarde}
-                onChange={e => setFormData(prev => ({ ...prev, verwachte_waarde: e.target.value }))}
-                placeholder="5000"
-              />
-            </div>
-
-            <div>
-              <Label>{t('prospects.expectedStart')}</Label>
-              <Input
-                type="date"
-                value={formData.verwachte_start}
-                onChange={e => setFormData(prev => ({ ...prev, verwachte_start: e.target.value }))}
-              />
-            </div>
-
-            <div>
-              <Label>{t('prospects.nextAction')}</Label>
-              <Input
-                value={formData.volgende_actie}
-                onChange={e => setFormData(prev => ({ ...prev, volgende_actie: e.target.value }))}
-                placeholder={t('prospects.nextActionPlaceholder')}
-              />
+                onValueChange={v => setFormData(prev => ({ ...prev, verwachte_waarde: v }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t('prospects.selectRevenue')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {estimatedRevenueOpties.map(rev => (
+                    <SelectItem key={rev} value={rev}>{rev}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
@@ -364,24 +495,31 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
         {/* Navigation buttons */}
         <div className="flex justify-between mt-6">
           {step > 1 ? (
-            <Button variant="outline" onClick={() => setStep(s => s - 1)}>
+            <Button variant="outline" onClick={() => setStep(s => s - 1)} disabled={isSubmitting}>
               {t('common.back')}
             </Button>
           ) : (
             <div />
           )}
-          
+
           {step < 3 ? (
             <Button onClick={() => setStep(s => s + 1)}>
               {t('common.next')}
             </Button>
           ) : (
-            <Button 
-              onClick={handleSubmit} 
-              disabled={createProspect.isPending}
+            <Button
+              onClick={handleSubmit}
+              disabled={isSubmitting}
               className="bg-ka-green hover:bg-ka-green/90"
             >
-              {createProspect.isPending ? t('common.saving') : t('common.save')}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {t('prospects.creating')}
+                </>
+              ) : (
+                t('prospects.create')
+              )}
             </Button>
           )}
         </div>

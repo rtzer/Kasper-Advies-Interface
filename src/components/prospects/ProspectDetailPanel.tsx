@@ -22,9 +22,8 @@ import { Badge } from '@/components/ui/badge';
 import { ProspectStatusBadge } from './ProspectStatusBadge';
 import { ProspectTypeBadge } from './ProspectTypeBadge';
 import { ProspectSourceIcon } from './ProspectSourceIcon';
-import { 
-  Mail, Phone, MapPin, Calendar, Euro, Clock, 
-  Building2, User, MessageSquare, History 
+import {
+  Mail, Phone, MapPin, Calendar, Euro, History
 } from 'lucide-react';
 
 interface ProspectDetailPanelProps {
@@ -51,7 +50,7 @@ export function ProspectDetailPanel({
 
   if (!prospect) return null;
 
-  const displayName = prospect.bedrijfsnaam || `${prospect.voornaam} ${prospect.achternaam}`;
+  const displayName = prospect.bedrijfsnaam || [prospect.voornaam, prospect.achternaam].filter(Boolean).join(' ') || '-';
 
   const handleFieldChange = (field: keyof Prospect, value: any) => {
     setEditedProspect(prev => ({ ...prev, [field]: value }));
@@ -80,12 +79,12 @@ export function ProspectDetailPanel({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-[500px] overflow-y-auto">
         <SheetHeader className="space-y-4">
-          <div className="flex items-start justify-between">
-            <div>
-              <SheetTitle className="text-xl">{displayName}</SheetTitle>
+          <div>
+            <SheetTitle className="text-xl">{displayName}</SheetTitle>
+            <div className="flex items-center gap-2 mt-1">
               <p className="text-sm text-muted-foreground">{prospect.prospect_nummer}</p>
+              <ProspectTypeBadge type={currentData.type_prospect} />
             </div>
-            <ProspectTypeBadge type={currentData.type_prospect} />
           </div>
           
           {/* Status selector */}
@@ -123,19 +122,16 @@ export function ProspectDetailPanel({
             {/* Contact info */}
             <div className="space-y-3">
               <h4 className="font-medium text-sm text-muted-foreground">{t('prospects.contactInfo')}</h4>
-              
-              <div className="flex items-center gap-2 text-sm">
-                <User className="w-4 h-4 text-muted-foreground" />
-                <span>{currentData.voornaam} {currentData.achternaam}</span>
-              </div>
-              
-              <div className="flex items-center gap-2 text-sm">
-                <Mail className="w-4 h-4 text-muted-foreground" />
-                <a href={`mailto:${currentData.email}`} className="text-primary hover:underline">
-                  {currentData.email}
-                </a>
-              </div>
-              
+
+              {currentData.email && (
+                <div className="flex items-center gap-2 text-sm">
+                  <Mail className="w-4 h-4 text-muted-foreground" />
+                  <a href={`mailto:${currentData.email}`} className="text-primary hover:underline">
+                    {currentData.email}
+                  </a>
+                </div>
+              )}
+
               {currentData.telefoon && (
                 <div className="flex items-center gap-2 text-sm">
                   <Phone className="w-4 h-4 text-muted-foreground" />
@@ -144,101 +140,80 @@ export function ProspectDetailPanel({
                   </a>
                 </div>
               )}
-              
-              {currentData.mobiel && (
-                <div className="flex items-center gap-2 text-sm">
-                  <MessageSquare className="w-4 h-4 text-channel-whatsapp" />
-                  <a href={`https://wa.me/${currentData.mobiel.replace(/[^0-9]/g, '')}`} className="hover:underline">
-                    {currentData.mobiel}
-                  </a>
-                </div>
-              )}
-              
-              {currentData.plaats && (
+
+              {(currentData.adres || currentData.postcode || currentData.plaats || currentData.land) && (
                 <div className="flex items-center gap-2 text-sm">
                   <MapPin className="w-4 h-4 text-muted-foreground" />
                   <span>
-                    {currentData.adres && `${currentData.adres}, `}
-                    {currentData.postcode && `${currentData.postcode} `}
-                    {currentData.plaats}
+                    {[
+                      currentData.adres,
+                      [currentData.postcode, currentData.plaats].filter(Boolean).join(' '),
+                      currentData.land
+                    ].filter(Boolean).join(', ')}
                   </span>
                 </div>
               )}
             </div>
 
             {/* Source */}
-            <div className="space-y-2 pt-2 border-t">
-              <h4 className="font-medium text-sm text-muted-foreground">{t('prospects.source')}</h4>
-              <div className="flex items-center gap-2">
-                <ProspectSourceIcon bron={currentData.bron} showLabel />
-                {currentData.bron_details && (
-                  <span className="text-sm text-muted-foreground">
-                    - {currentData.bron_details}
-                  </span>
-                )}
+            {currentData.bron && (
+              <div className="space-y-2 pt-2 border-t">
+                <h4 className="font-medium text-sm text-muted-foreground">{t('prospects.source')}</h4>
+                <div className="flex items-center gap-2">
+                  <ProspectSourceIcon bron={currentData.bron} showLabel />
+                  {currentData.bron_details && (
+                    <span className="text-sm text-muted-foreground">
+                      - {currentData.bron_details}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Interests */}
-            <div className="space-y-2 pt-2 border-t">
-              <h4 className="font-medium text-sm text-muted-foreground">{t('prospects.interests')}</h4>
-              <div className="flex flex-wrap gap-1">
-                {currentData.interesse.map(i => (
-                  <Badge key={i} variant="secondary" className="text-xs">
-                    {i}
-                  </Badge>
-                ))}
+            {currentData.interesse && currentData.interesse.length > 0 && (
+              <div className="space-y-2 pt-2 border-t">
+                <h4 className="font-medium text-sm text-muted-foreground">{t('prospects.interests')}</h4>
+                <div className="flex flex-wrap gap-1">
+                  {currentData.interesse.map(i => (
+                    <Badge key={i} variant="secondary" className="text-xs">
+                      {i}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Planning */}
-            <div className="space-y-3 pt-2 border-t">
-              <h4 className="font-medium text-sm text-muted-foreground">{t('prospects.planning')}</h4>
-              
-              {currentData.verwachte_waarde && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Euro className="w-4 h-4 text-muted-foreground" />
-                  <span>€{currentData.verwachte_waarde.toLocaleString()} {t('prospects.expectedAnnual')}</span>
-                </div>
-              )}
-              
-              {currentData.verwachte_start && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <span>{t('prospects.expectedStartDate')}: {format(new Date(currentData.verwachte_start), 'PP', { locale })}</span>
-                </div>
-              )}
-              
-              <div className="flex items-center gap-2 text-sm">
-                <Clock className="w-4 h-4 text-muted-foreground" />
-                <span>{t('prospects.nextAction')}: {currentData.volgende_actie || '-'}</span>
-              </div>
+            {(currentData.verwachte_waarde || currentData.volgende_actie_datum) && (
+              <div className="space-y-3 pt-2 border-t">
+                <h4 className="font-medium text-sm text-muted-foreground">{t('prospects.planning')}</h4>
 
-              {currentData.volgende_actie_datum && (
-                <div className="text-sm text-muted-foreground pl-6">
-                  {format(new Date(currentData.volgende_actie_datum), 'PP', { locale })}
-                </div>
-              )}
-            </div>
+                {currentData.verwachte_waarde && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Euro className="w-4 h-4 text-muted-foreground" />
+                    <span>€{currentData.verwachte_waarde.toLocaleString()} {t('prospects.expectedAnnual')}</span>
+                  </div>
+                )}
+
+                {currentData.volgende_actie_datum && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Calendar className="w-4 h-4 text-muted-foreground" />
+                    <span>{t('prospects.recontactDate')}: {format(new Date(currentData.volgende_actie_datum), 'PP', { locale })}</span>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Editable fields */}
             <div className="space-y-3 pt-2 border-t">
               <h4 className="font-medium text-sm text-muted-foreground">{t('prospects.editAction')}</h4>
-              
+
               <div>
-                <Label className="text-xs">{t('prospects.nextAction')}</Label>
-                <Input
-                  value={currentData.volgende_actie}
-                  onChange={e => handleFieldChange('volgende_actie', e.target.value)}
-                  className="mt-1"
-                />
-              </div>
-              
-              <div>
-                <Label className="text-xs">{t('prospects.nextActionDate')}</Label>
+                <Label className="text-xs">{t('prospects.recontactDate')}</Label>
                 <Input
                   type="date"
-                  value={currentData.volgende_actie_datum}
+                  value={currentData.volgende_actie_datum || ''}
                   onChange={e => handleFieldChange('volgende_actie_datum', e.target.value)}
                   className="mt-1"
                 />

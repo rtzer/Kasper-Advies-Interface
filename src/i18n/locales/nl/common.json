@@ -360,6 +360,7 @@
     "planning": "Planning",
     "expectedAnnual": "verwachte jaaromzet",
     "expectedStartDate": "Verwachte startdatum",
+    "recontactDate": "Hercontact datum",
     "editAction": "Bewerk actie",
     "firstContact": "Eerste contact",
     "lastContact": "Laatste contact",
@@ -411,7 +412,34 @@
       "notes": "Extra informatie over de prospect..."
     },
     "create": "Prospect aanmaken",
-    "creating": "Aanmaken..."
+    "creating": "Aanmaken...",
+    "created": "Prospect aangemaakt",
+    "createdDescription": "{{name}} is succesvol toegevoegd aan je pipeline.",
+    "validation": {
+      "required": "Vul alle verplichte velden in",
+      "emailRequired": "E-mail is verplicht",
+      "interestsRequired": "Selecteer minimaal één interesse"
+    },
+    "steps": {
+      "basicInfo": "Basisgegevens",
+      "interestsSource": "Interesse & Bron",
+      "planning": "Planning"
+    },
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "company": "Bedrijfsnaam",
+    "companyOptional": "Bedrijfsnaam (optioneel voor particulieren)",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "mobile": "Mobiel (WhatsApp)",
+    "sourceDetails": "Bron details",
+    "expectedValue": "Verwachte jaaromzet",
+    "expectedStart": "Verwachte startdatum",
+    "nextActionPlaceholder": "Bijv. Bellen voor afspraak",
+    "industry": "Branche",
+    "selectIndustry": "Selecteer branche",
+    "selectRevenue": "Selecteer omzet",
+    "country": "Land"
   },
   "common": {
     "navigation": "Navigatie",
@@ -438,7 +466,9 @@
     "cancel": "Annuleren",
     "save": "Opslaan",
     "saving": "Opslaan...",
-    "saved": "Opgeslagen"
+    "saved": "Opgeslagen",
+    "back": "Terug",
+    "next": "Volgende"
   },
   "createClient": {
     "title": "Nieuwe klant aanmaken",

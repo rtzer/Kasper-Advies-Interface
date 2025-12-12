@@ -9,7 +9,6 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ProspectStatusBadge } from '@/components/prospects/ProspectStatusBadge';
 import { ProspectTypeBadge } from '@/components/prospects/ProspectTypeBadge';
@@ -187,8 +186,7 @@ export default function ProspectsPage() {
                 <TableHead>{t('prospects.status')}</TableHead>
                 <TableHead>{t('prospects.source')}</TableHead>
                 <TableHead>{t('prospects.interests')}</TableHead>
-                <TableHead>{t('prospects.assignedTo')}</TableHead>
-                <TableHead>{t('prospects.nextAction')}</TableHead>
+                <TableHead>{t('prospects.recontactDate')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -216,25 +214,14 @@ export default function ProspectsPage() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-6 h-6">
-                        <AvatarFallback className="text-xs">{prospect.toegewezen_aan.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm">{prospect.toegewezen_aan}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      {prospect.volgende_actie_datum ? (
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Calendar className="w-3 h-3" />
-                          {format(new Date(prospect.volgende_actie_datum), 'dd MMM', { locale })}
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground">-</span>
-                      )}
-                      <div className="truncate max-w-32">{prospect.volgende_actie || '-'}</div>
-                    </div>
+                    {prospect.volgende_actie_datum ? (
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <Calendar className="w-3 h-3" />
+                        {format(new Date(prospect.volgende_actie_datum), 'dd MMM', { locale })}
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground">-</span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

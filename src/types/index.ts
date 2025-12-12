@@ -56,6 +56,7 @@ export interface Prospect {
   adres?: string;
   postcode?: string;
   plaats?: string;
+  land?: string;                             // Country
   type_prospect: 'MKB' | 'ZZP' | 'Particulier';
   bron: 'Website' | 'Referral' | 'LinkedIn' | 'Telefoon' | 'Event' | 'Netwerk' | 'Anders';
   bron_details?: string;                   // Bijv. "Via klant De Vries BV"

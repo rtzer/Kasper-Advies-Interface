@@ -360,6 +360,7 @@
     "planning": "Planning",
     "expectedAnnual": "expected annual revenue",
     "expectedStartDate": "Expected start date",
+    "recontactDate": "Recontact date",
     "editAction": "Edit action",
     "firstContact": "First contact",
     "lastContact": "Last contact",
@@ -411,7 +412,34 @@
       "notes": "Additional information about the prospect..."
     },
     "create": "Create prospect",
-    "creating": "Creating..."
+    "creating": "Creating...",
+    "created": "Prospect created",
+    "createdDescription": "{{name}} has been successfully added to your pipeline.",
+    "validation": {
+      "required": "Please fill in all required fields",
+      "emailRequired": "Email is required",
+      "interestsRequired": "Select at least one interest"
+    },
+    "steps": {
+      "basicInfo": "Basic information",
+      "interestsSource": "Interests & Source",
+      "planning": "Planning"
+    },
+    "firstName": "First name",
+    "lastName": "Last name",
+    "company": "Company name",
+    "companyOptional": "Company name (optional for individuals)",
+    "email": "Email",
+    "phone": "Phone",
+    "mobile": "Mobile (WhatsApp)",
+    "sourceDetails": "Source details",
+    "expectedValue": "Expected annual revenue",
+    "expectedStart": "Expected start date",
+    "nextActionPlaceholder": "E.g. Call for appointment",
+    "industry": "Industry",
+    "selectIndustry": "Select industry",
+    "selectRevenue": "Select revenue",
+    "country": "Country"
   },
   "common": {
     "navigation": "Navigation",
@@ -438,7 +466,9 @@
     "cancel": "Cancel",
     "save": "Save",
     "saving": "Saving...",
-    "saved": "Saved"
+    "saved": "Saved",
+    "back": "Back",
+    "next": "Next"
   },
   "createClient": {
     "title": "Create new client",

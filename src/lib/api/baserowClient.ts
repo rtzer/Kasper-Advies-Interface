@@ -35,6 +35,7 @@ export interface BaserowProspect {
   address: string;
   postal_code: string;
   city: string;
+  country: BaserowSelectOption | null;
   industry: BaserowSelectOption | null;
   interested_services: BaserowSelectOption[];
   estimated_revenue: BaserowSelectOption | null;

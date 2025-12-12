@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import { CreateClientDialog } from '@/components/clients/CreateClientDialog';
 import { useKlanten } from '@/lib/api/klanten';
 import { useUsers } from '@/lib/api/users';
@@ -46,9 +47,14 @@ export default function ClientsPage() {
   const [selectedKlantForInteraction, setSelectedKlantForInteraction] = useState<string | null>(null);
   
   const { isMobile } = useDeviceChecks();
+  const queryClient = useQueryClient();
   const { data, isLoading } = useKlanten();
   const { data: users = [] } = useUsers();
   const klanten = data?.results || [];
+
+  const handleClientCreated = () => {
+    queryClient.invalidateQueries({ queryKey: ['klanten'] });
+  };
 
   // Calculate stats
   const stats = useMemo(() => {
@@ -147,7 +153,7 @@ export default function ClientsPage() {
         </Button>
       </div>
 
-      <CreateClientDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} />
+      <CreateClientDialog open={createDialogOpen} onOpenChange={setCreateDialogOpen} onSuccess={handleClientCreated} />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 xs:gap-3 sm:gap-4">
