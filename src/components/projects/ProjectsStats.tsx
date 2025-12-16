@@ -1,50 +1,16 @@
-import { useProjectStats } from '@/lib/api/projects';
+import { useBaserowProjects } from '@/lib/api/projects';
 import { Folder, Calendar, AlertTriangle, User, CheckCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTranslation } from 'react-i18next';
 import { useUserStore } from '@/store/userStore';
-import { mockProjects } from '@/lib/mockData';
 import { differenceInDays, startOfMonth, endOfMonth, isWithinInterval, parseISO, startOfQuarter, endOfQuarter } from 'date-fns';
 
 export default function ProjectsStats() {
   const { t } = useTranslation();
-  const { data: stats, isLoading } = useProjectStats();
+  const { data: projects, isLoading } = useBaserowProjects();
   const { currentUser } = useUserStore();
 
-  // Calculate additional stats
-  const activeProjects = mockProjects.filter(p => 
-    p.status !== 'afgerond' && p.status !== 'niet-gestart'
-  ).length;
-
-  const deadlineThisMonth = mockProjects.filter(p => {
-    const deadline = parseISO(p.deadline);
-    const now = new Date();
-    return isWithinInterval(deadline, {
-      start: startOfMonth(now),
-      end: endOfMonth(now),
-    }) && p.status !== 'afgerond';
-  }).length;
-
-  const overdueProjects = mockProjects.filter(p => {
-    const deadline = parseISO(p.deadline);
-    return differenceInDays(deadline, new Date()) < 0 && p.status !== 'afgerond';
-  }).length;
-
-  const myProjects = mockProjects.filter(p => 
-    p.responsible_team_member === currentUser?.naam && p.status !== 'afgerond'
-  ).length;
-
-  const completedThisQuarter = mockProjects.filter(p => {
-    if (p.status !== 'afgerond') return false;
-    const deadline = parseISO(p.deadline);
-    const now = new Date();
-    return isWithinInterval(deadline, {
-      start: startOfQuarter(now),
-      end: endOfQuarter(now),
-    });
-  }).length;
-
-  if (isLoading) {
+  if (isLoading || !projects) {
     return (
       <div className="grid grid-cols-2 xs:grid-cols-3 lg:grid-cols-5 gap-2 xs:gap-3 sm:gap-4 mb-4 xs:mb-5 sm:mb-6">
         {[1, 2, 3, 4, 5].map((i) => (
@@ -54,37 +20,73 @@ export default function ProjectsStats() {
     );
   }
 
+  // Calculate stats from Baserow data
+  const activeProjects = projects.filter(p =>
+    p.status?.value === 'Actief'
+  ).length;
+
+  const deadlineThisMonth = projects.filter(p => {
+    if (!p.planned_end_date || p.status?.value === 'Afgerond') return false;
+    const deadline = parseISO(p.planned_end_date);
+    const now = new Date();
+    return isWithinInterval(deadline, {
+      start: startOfMonth(now),
+      end: endOfMonth(now),
+    });
+  }).length;
+
+  const overdueProjects = projects.filter(p => {
+    if (!p.planned_end_date || p.status?.value === 'Afgerond') return false;
+    const deadline = parseISO(p.planned_end_date);
+    return differenceInDays(deadline, new Date()) < 0;
+  }).length;
+
+  const myProjects = projects.filter(p => {
+    const projectLead = p.link_to_user_project_lead?.[0]?.value;
+    return projectLead && projectLead.includes(currentUser?.user_id || '') && p.status?.value !== 'Afgerond';
+  }).length;
+
+  const completedThisQuarter = projects.filter(p => {
+    if (p.status?.value !== 'Afgerond' || !p.actual_end_date) return false;
+    const completedDate = parseISO(p.actual_end_date);
+    const now = new Date();
+    return isWithinInterval(completedDate, {
+      start: startOfQuarter(now),
+      end: endOfQuarter(now),
+    });
+  }).length;
+
   const statItems = [
     {
-      label: t('projects.stats.active', 'Actieve projecten'),
+      label: t('projects.stats.active'),
       value: activeProjects,
       icon: Folder,
       iconBg: 'bg-ka-navy/10',
       iconColor: 'text-ka-navy',
     },
     {
-      label: t('projects.stats.deadlineMonth', 'Deadline deze maand'),
+      label: t('projects.stats.deadlineMonth'),
       value: deadlineThisMonth,
       icon: Calendar,
       iconBg: 'bg-orange-100',
       iconColor: 'text-orange-600',
     },
     {
-      label: t('projects.stats.overdue', 'Achterstallig'),
+      label: t('projects.stats.overdue'),
       value: overdueProjects,
       icon: AlertTriangle,
       iconBg: 'bg-red-100',
       iconColor: 'text-red-600',
     },
     {
-      label: t('projects.stats.myProjects', 'Mijn projecten'),
+      label: t('projects.stats.myProjects'),
       value: myProjects,
       icon: User,
       iconBg: 'bg-blue-100',
       iconColor: 'text-blue-600',
     },
     {
-      label: t('projects.stats.completedQuarter', 'Afgerond (kwartaal)'),
+      label: t('projects.stats.completedQuarter'),
       value: completedThisQuarter,
       icon: CheckCircle,
       iconBg: 'bg-ka-green/10',

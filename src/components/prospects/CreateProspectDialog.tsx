@@ -28,14 +28,7 @@ interface CreateProspectDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-// N8N webhook configuration
-const CREATE_PROSPECT_WEBHOOK_URL = import.meta.env.VITE_N8N_CREATE_PROSPECT_WEBHOOK_URL || '';
-const N8N_AUTH_USERNAME = import.meta.env.VITE_N8N_AUTH_USERNAME || '';
-const N8N_AUTH_PASSWORD = import.meta.env.VITE_N8N_AUTH_PASSWORD || '';
-
-function createBasicAuthHeader(): string {
-  return `Basic ${btoa(`${N8N_AUTH_USERNAME}:${N8N_AUTH_PASSWORD}`)}`;
-}
+// Webhook calls are now routed through the secure proxy at /api/n8n/webhook
 
 // Baserow exact values
 const interesseOpties = [
@@ -99,12 +92,9 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
   const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
-    voornaam: '',
-    achternaam: '',
-    bedrijfsnaam: '',
+    name: '',
     email: '',
     telefoon: '',
-    mobiel: '',
     type_prospect: 'ZZP',
     industry: '',
     adres: '',
@@ -112,17 +102,18 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
     plaats: '',
     land: 'Nederland',
     bron: 'Website',
-    bron_details: '',
     interesse: [] as string[],
     notities: '',
     verwachte_waarde: '',
-    verwachte_start: '',
-    volgende_actie: '',
     volgende_actie_datum: '',
-    toegewezen_aan: 'Linda Prins',
   });
 
   const handleSubmit = async () => {
+    if (!formData.name) {
+      toast.error(t('prospects.validation.nameRequired'));
+      return;
+    }
+
     if (!formData.email) {
       toast.error(t('prospects.validation.emailRequired'));
       return;
@@ -140,9 +131,9 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
         action: 'create',
         entity: 'prospect',
         data: {
-          name: formData.bedrijfsnaam || `${formData.voornaam} ${formData.achternaam}`.trim(),
+          name: formData.name,
           email: formData.email,
-          phone: formData.telefoon || formData.mobiel || '',
+          phone: formData.telefoon || '',
           address: formData.adres || null,
           postal_code: formData.postcode || null,
           city: formData.plaats || null,
@@ -158,20 +149,19 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
         },
       };
 
-      const response = await fetch(CREATE_PROSPECT_WEBHOOK_URL, {
+      // Use the secure proxy - no secrets exposed client-side
+      const response = await fetch('/api/n8n/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': createBasicAuthHeader(),
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ webhookType: 'create-prospect', ...payload }),
       });
 
       if (response.status === 200) {
         // Success - prospect created in Baserow
-        const displayName = formData.bedrijfsnaam || `${formData.voornaam} ${formData.achternaam}`.trim();
         toast.success(t('prospects.created'), {
-          description: t('prospects.createdDescription', { name: displayName }),
+          description: t('prospects.createdDescription', { name: formData.name }),
         });
 
         // Refresh prospects list immediately
@@ -195,12 +185,9 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
   const resetForm = () => {
     setStep(1);
     setFormData({
-      voornaam: '',
-      achternaam: '',
-      bedrijfsnaam: '',
+      name: '',
       email: '',
       telefoon: '',
-      mobiel: '',
       type_prospect: 'ZZP',
       industry: '',
       adres: '',
@@ -208,14 +195,10 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
       plaats: '',
       land: 'Nederland',
       bron: 'Website',
-      bron_details: '',
       interesse: [],
       notities: '',
       verwachte_waarde: '',
-      verwachte_start: '',
-      volgende_actie: '',
       volgende_actie_datum: '',
-      toegewezen_aan: 'Linda Prins',
     });
   };
 
@@ -262,31 +245,12 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
         {/* Step 1: Basisgegevens */}
         {step === 1 && (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>{t('prospects.firstName')}</Label>
-                <Input
-                  value={formData.voornaam}
-                  onChange={e => setFormData(prev => ({ ...prev, voornaam: e.target.value }))}
-                  placeholder={t('prospects.placeholders.firstName')}
-                />
-              </div>
-              <div>
-                <Label>{t('prospects.lastName')}</Label>
-                <Input
-                  value={formData.achternaam}
-                  onChange={e => setFormData(prev => ({ ...prev, achternaam: e.target.value }))}
-                  placeholder={t('prospects.placeholders.lastName')}
-                />
-              </div>
-            </div>
-
             <div>
-              <Label>{t('prospects.company')}</Label>
+              <Label>{t('prospects.name')} *</Label>
               <Input
-                value={formData.bedrijfsnaam}
-                onChange={e => setFormData(prev => ({ ...prev, bedrijfsnaam: e.target.value }))}
-                placeholder={t('prospects.companyOptional')}
+                value={formData.name}
+                onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                placeholder={t('prospects.placeholders.name')}
               />
             </div>
 
@@ -325,31 +289,22 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
               </div>
             </div>
 
-            <div>
-              <Label>{t('prospects.email')} *</Label>
-              <Input
-                type="email"
-                value={formData.email}
-                onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                placeholder={t('prospects.placeholders.email')}
-              />
-            </div>
-
             <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>{t('prospects.email')} *</Label>
+                <Input
+                  type="email"
+                  value={formData.email}
+                  onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder={t('prospects.placeholders.email')}
+                />
+              </div>
               <div>
                 <Label>{t('prospects.phone')}</Label>
                 <Input
                   value={formData.telefoon}
                   onChange={e => setFormData(prev => ({ ...prev, telefoon: e.target.value }))}
-                  placeholder="0599-123456"
-                />
-              </div>
-              <div>
-                <Label>{t('prospects.mobile')}</Label>
-                <Input
-                  value={formData.mobiel}
-                  onChange={e => setFormData(prev => ({ ...prev, mobiel: e.target.value }))}
-                  placeholder={t('prospects.placeholders.phone')}
+                  placeholder="+31 6 12345678"
                 />
               </div>
             </div>
@@ -403,17 +358,6 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
               </Select>
             </div>
 
-            {(formData.bron === 'Verwijzing' || formData.bron === 'Evenement' || formData.bron === 'Bestaande klant' || formData.bron === 'Anders') && (
-              <div>
-                <Label>{t('prospects.sourceDetails')}</Label>
-                <Input
-                  value={formData.bron_details}
-                  onChange={e => setFormData(prev => ({ ...prev, bron_details: e.target.value }))}
-                  placeholder={formData.bron === 'Verwijzing' ? 'Via klant...' : 'Details...'}
-                />
-              </div>
-            )}
-
             <div>
               <Label>{t('prospects.interests')} *</Label>
               <div className="grid grid-cols-2 gap-2 mt-2 max-h-48 overflow-y-auto">
@@ -444,26 +388,9 @@ export function CreateProspectDialog({ open, onOpenChange }: CreateProspectDialo
           </div>
         )}
 
-        {/* Step 3: Toewijzing en planning */}
+        {/* Step 3: Planning */}
         {step === 3 && (
           <div className="space-y-4">
-            <div>
-              <Label>{t('prospects.assignedTo')}</Label>
-              <Select
-                value={formData.toegewezen_aan}
-                onValueChange={v => setFormData(prev => ({ ...prev, toegewezen_aan: v }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Linda Prins">Linda Prins</SelectItem>
-                  <SelectItem value="Harm-Jan Kaspers">Harm-Jan Kaspers</SelectItem>
-                  <SelectItem value="Jan Jansen">Jan Jansen</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
             <div>
               <Label>{t('prospects.expectedValue')}</Label>
               <Select

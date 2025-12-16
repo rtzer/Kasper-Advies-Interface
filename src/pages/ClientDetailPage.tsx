@@ -32,32 +32,20 @@ import { formatDate } from '@/lib/utils/dateHelpers';
 import { useUserStore } from '@/store/userStore';
 import { toast } from 'sonner';
 
-// Webhook URL for client actions
-const CLIENT_ACTION_WEBHOOK_URL = import.meta.env.VITE_N8N_CLIENT_ACTION_WEBHOOK_URL || '';
-const WEBHOOK_USERNAME = import.meta.env.VITE_N8N_AUTH_USERNAME || '';
-const WEBHOOK_PASSWORD = import.meta.env.VITE_N8N_AUTH_PASSWORD || '';
-
-// Helper function to send client action webhooks
+// Helper function to send client action webhooks via secure proxy
 async function sendClientActionWebhook(action: 'focus' | 'archive' | 'delete', clientId: number, value: boolean) {
-  if (!CLIENT_ACTION_WEBHOOK_URL) {
-    console.warn('Client action webhook URL not configured');
-    return;
-  }
-
   try {
-    const payload = {
-      action,
-      client_id: clientId,
-      value,
-    };
-
-    await fetch(CLIENT_ACTION_WEBHOOK_URL, {
+    await fetch('/api/n8n/webhook', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Basic ${btoa(`${WEBHOOK_USERNAME}:${WEBHOOK_PASSWORD}`)}`,
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        webhookType: 'client-action',
+        action,
+        client_id: clientId,
+        value,
+      }),
     });
   } catch (error) {
     console.error('Failed to send client action webhook:', error);

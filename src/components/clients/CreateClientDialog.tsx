@@ -13,23 +13,17 @@ import { Plus, Loader2, X, Search, UserPlus } from 'lucide-react';
 import { useAccountManagers } from '@/lib/api/accountManagers';
 import { useContactPersonen } from '@/lib/api/contactpersonen';
 import { useExternalAccountants } from '@/lib/api/externalAccountants';
-import { Klant } from '@/types';
+import { Klant, Prospect } from '@/types';
 
 interface CreateClientDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   klant?: Klant | null;
+  prospect?: Prospect | null;
   onSuccess?: () => void;
 }
 
-const CREATE_WEBHOOK_URL = import.meta.env.VITE_N8N_CREATE_CLIENT_WEBHOOK_URL || '';
-const UPDATE_WEBHOOK_URL = import.meta.env.VITE_N8N_UPDATE_CLIENT_WEBHOOK_URL || '';
-const N8N_AUTH_USERNAME = import.meta.env.VITE_N8N_AUTH_USERNAME || '';
-const N8N_AUTH_PASSWORD = import.meta.env.VITE_N8N_AUTH_PASSWORD || '';
-
-function createBasicAuthHeader(): string {
-  return `Basic ${btoa(`${N8N_AUTH_USERNAME}:${N8N_AUTH_PASSWORD}`)}`;
-}
+// Webhook calls are now routed through the secure proxy at /api/n8n/webhook
 
 interface NewContactPerson {
   firstName: string;
@@ -71,9 +65,7 @@ const initialFormData = {
   status: 'Prospect',
   email: '',
   telefoonnummer: '',
-  mobiel: '',
   website: '',
-  linkedin_url: '',
   voorkeur_kanaal: '',
   adres: '',
   postcode: '',
@@ -87,10 +79,6 @@ const initialFormData = {
   kvk_nummer: '',
   btw_nummer: '',
   branche: '',
-  groei_fase: '',
-  omzet_categorie: '',
-  jaren_actief_als_ondernemer: '',
-  geboortedatum: '',
   bsn: '',
   iban: '',
   bic: '',
@@ -106,7 +94,7 @@ const initialFormData = {
   new_external_accountant: null as NewExternalAccountant | null,
 };
 
-export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: CreateClientDialogProps) {
+export function CreateClientDialog({ open, onOpenChange, klant, prospect, onSuccess }: CreateClientDialogProps) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -117,14 +105,44 @@ export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: Cre
   const [showAccountantSearch, setShowAccountantSearch] = useState(false);
 
   const isEditMode = !!klant;
+  const isConvertMode = !!prospect;
 
   const { data: accountManagers = [] } = useAccountManagers();
   const { data: contactPersonenData } = useContactPersonen();
   const { data: externalAccountantsData } = useExternalAccountants();
 
+  // Pre-fill form from prospect data (convert mode)
+  useEffect(() => {
+    if (prospect && open && !klant) {
+      // Map prospect type to client type
+      const mapProspectTypeToClientType = (type: string) => {
+        switch (type) {
+          case 'ZZP': return 'ZZP';
+          case 'MKB': return 'MKB';
+          case 'Particulier': return 'Particulier';
+          default: return 'ZZP';
+        }
+      };
+
+      setFormData({
+        ...initialFormData,
+        naam: prospect.bedrijfsnaam || [prospect.voornaam, prospect.achternaam].filter(Boolean).join(' ') || '',
+        type_klant: mapProspectTypeToClientType(prospect.type_prospect),
+        status: 'Actief',
+        email: prospect.email || '',
+        telefoonnummer: prospect.telefoon || '',
+        adres: prospect.adres || '',
+        postcode: prospect.postcode || '',
+        plaats: prospect.plaats || '',
+        land: prospect.land || 'Nederland',
+        notities: prospect.notities || '',
+      });
+    }
+  }, [prospect, open, klant]);
+
   // Pre-fill form when editing an existing client
   useEffect(() => {
-    if (klant && open) {
+    if (klant && open && !prospect) {
       const hasDifferentInvoiceAddress = !!(
         klant.factuur_adres &&
         klant.factuur_adres !== klant.adres
@@ -141,9 +159,7 @@ export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: Cre
         status: klant.status || 'Prospect',
         email: klant.email || '',
         telefoonnummer: klant.telefoonnummer || '',
-        mobiel: klant.mobiel || '',
         website: klant.website || '',
-        linkedin_url: '',
         voorkeur_kanaal: klant.voorkeur_kanaal || '',
         adres: klant.adres || '',
         postcode: klant.postcode || '',
@@ -157,10 +173,6 @@ export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: Cre
         kvk_nummer: klant.kvk_nummer || '',
         btw_nummer: klant.btw_nummer || '',
         branche: klant.branche || '',
-        groei_fase: '',
-        omzet_categorie: '',
-        jaren_actief_als_ondernemer: '',
-        geboortedatum: '',
         bsn: klant.bsn || '',
         iban: klant.iban || '',
         bic: klant.bic || '',
@@ -333,11 +345,8 @@ export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: Cre
       if (formData.kvk_nummer) clientData.kvk_number = formData.kvk_nummer;
       if (formData.btw_nummer) clientData.vat_number = formData.btw_nummer;
       if (formData.branche) clientData.industry = formData.branche;
-      if (formData.groei_fase) clientData.growth_phase = formData.groei_fase;
-      if (formData.omzet_categorie) clientData.revenue_category = formData.omzet_categorie;
 
       // Personal info
-      if (formData.geboortedatum) clientData.date_of_birth = formData.geboortedatum;
       if (formData.bsn) clientData.bsn = formData.bsn;
 
       // Financial info
@@ -396,11 +405,12 @@ export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: Cre
         },
       };
 
-      const webhookUrl = isEditMode ? UPDATE_WEBHOOK_URL : CREATE_WEBHOOK_URL;
-      const response = await fetch(webhookUrl, {
+      // Use the secure proxy - no secrets exposed client-side
+      const webhookType = isEditMode ? 'update-client' : 'create-client';
+      const response = await fetch('/api/n8n/webhook', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': createBasicAuthHeader() },
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ webhookType, ...payload }),
       });
 
       if (!response.ok) throw new Error(isEditMode ? 'Failed to update client' : 'Failed to create client');
@@ -443,7 +453,7 @@ export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: Cre
       <DialogContent className="sm:max-w-[800px] h-[85vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle className="text-xl">
-            {isEditMode ? t('editClient.title') : t('createClient.title')}
+            {isEditMode ? t('editClient.title') : isConvertMode ? t('prospects.convertToClient') : t('createClient.title')}
           </DialogTitle>
         </DialogHeader>
 
@@ -508,16 +518,8 @@ export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: Cre
                 <Input value={formData.telefoonnummer} onChange={(e) => updateField('telefoonnummer', e.target.value)} placeholder="+31 6 12345678" />
               </div>
               <div className="space-y-1.5">
-                <Label>{t('createClient.fields.mobile')}</Label>
-                <Input value={formData.mobiel} onChange={(e) => updateField('mobiel', e.target.value)} placeholder="+31 6 12345678" />
-              </div>
-              <div className="space-y-1.5">
                 <Label>{t('createClient.fields.website')}</Label>
                 <Input value={formData.website} onChange={(e) => updateField('website', e.target.value)} placeholder="www.voorbeeld.nl" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>LinkedIn</Label>
-                <Input value={formData.linkedin_url} onChange={(e) => updateField('linkedin_url', e.target.value)} placeholder="https://linkedin.com/in/..." />
               </div>
               <div className="space-y-1.5">
                 <Label>{t('createClient.fields.preferredChannel')}</Label>
@@ -587,10 +589,6 @@ export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: Cre
               <h3 className="font-semibold text-sm text-muted-foreground mb-3">{t('createClient.sections.personalInfo')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label>{t('createClient.fields.dateOfBirth')}</Label>
-                  <Input type="date" value={formData.geboortedatum} onChange={(e) => updateField('geboortedatum', e.target.value)} />
-                </div>
-                <div className="space-y-1.5">
                   <Label>{t('createClient.fields.bsn')}</Label>
                   <Input value={formData.bsn} onChange={(e) => updateField('bsn', e.target.value)} placeholder="123456789" />
                 </div>
@@ -623,39 +621,6 @@ export function CreateClientDialog({ open, onOpenChange, klant, onSuccess }: Cre
                       <SelectItem value="Transport">Transport</SelectItem>
                       <SelectItem value="Productie">Productie</SelectItem>
                       <SelectItem value="Overig">Overig</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label>{t('createClient.fields.yearsActive')}</Label>
-                  <Input type="number" value={formData.jaren_actief_als_ondernemer} onChange={(e) => updateField('jaren_actief_als_ondernemer', e.target.value)} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>{t('createClient.fields.growthPhase')}</Label>
-                  <Select value={formData.groei_fase || 'none'} onValueChange={(v) => updateField('groei_fase', v === 'none' ? '' : v)}>
-                    <SelectTrigger><SelectValue placeholder={t('createClient.placeholders.selectPhase')} /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">-</SelectItem>
-                      <SelectItem value="Starter">Starter</SelectItem>
-                      <SelectItem value="Groei">Groei</SelectItem>
-                      <SelectItem value="Schaal-op">Schaal-op</SelectItem>
-                      <SelectItem value="Professionalisering">Professionalisering</SelectItem>
-                      <SelectItem value="Digitalisering">Digitalisering</SelectItem>
-                      <SelectItem value="Stabiel">Stabiel</SelectItem>
-                      <SelectItem value="Exit">Exit</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label>{t('createClient.fields.revenueCategory')}</Label>
-                  <Select value={formData.omzet_categorie || 'none'} onValueChange={(v) => updateField('omzet_categorie', v === 'none' ? '' : v)}>
-                    <SelectTrigger><SelectValue placeholder={t('createClient.placeholders.selectCategory')} /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">-</SelectItem>
-                      <SelectItem value="< 50k">&lt; 50k</SelectItem>
-                      <SelectItem value="50k-250k">50k - 250k</SelectItem>
-                      <SelectItem value="250k-1M">250k - 1M</SelectItem>
-                      <SelectItem value="> 1M">&gt; 1M</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

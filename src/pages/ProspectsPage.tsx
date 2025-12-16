@@ -16,7 +16,7 @@ import { ProspectSourceIcon } from '@/components/prospects/ProspectSourceIcon';
 import { ProspectsPipeline } from '@/components/prospects/ProspectsPipeline';
 import { ProspectDetailPanel } from '@/components/prospects/ProspectDetailPanel';
 import { CreateProspectDialog } from '@/components/prospects/CreateProspectDialog';
-import { ConvertToClientDialog } from '@/components/prospects/ConvertToClientDialog';
+import { CreateClientDialog } from '@/components/clients/CreateClientDialog';
 import { MarkAsLostDialog } from '@/components/prospects/MarkAsLostDialog';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
@@ -241,7 +241,7 @@ export default function ProspectsPage() {
         onConvert={() => { setDetailOpen(false); setConvertOpen(true); }}
         onMarkAsLost={() => { setDetailOpen(false); setLostOpen(true); }}
       />
-      <ConvertToClientDialog open={convertOpen} onOpenChange={setConvertOpen} prospect={selectedProspect} />
+      <CreateClientDialog open={convertOpen} onOpenChange={setConvertOpen} prospect={selectedProspect} />
       <MarkAsLostDialog open={lostOpen} onOpenChange={setLostOpen} prospect={selectedProspect} />
     </div>
   );

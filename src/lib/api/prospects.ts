@@ -201,35 +201,41 @@ export function useCreateProspect() {
   });
 }
 
-// Update prospect (via n8n webhook - placeholder for now)
+// Update prospect via n8n webhook through secure proxy
 export function useUpdateProspect() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<Prospect> }) => {
-      // TODO: Implement n8n webhook for update
-      // For now, update directly in Baserow
-      const baserowData: Partial<BaserowProspect> = {};
+      // Use the secure proxy - no secrets exposed client-side
+      const response = await fetch('/api/n8n/webhook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          webhookType: 'update-prospect',
+          prospect_id: id,
+          status: data.status,
+          recontact_date: data.volgende_actie_datum || null,
+          notes: data.notities || null,
+        }),
+      });
 
-      if (data.bedrijfsnaam !== undefined || data.voornaam !== undefined || data.achternaam !== undefined) {
-        baserowData.name = data.bedrijfsnaam || `${data.voornaam || ''} ${data.achternaam || ''}`.trim();
+      if (!response.ok) {
+        throw new Error(`Webhook request failed: ${response.status}`);
       }
-      if (data.email !== undefined) baserowData.email = data.email;
-      if (data.telefoon !== undefined || data.mobiel !== undefined) {
-        baserowData.phone = data.telefoon || data.mobiel || '';
-      }
-      if (data.adres !== undefined) baserowData.address = data.adres;
-      if (data.postcode !== undefined) baserowData.postal_code = data.postcode;
-      if (data.plaats !== undefined) baserowData.city = data.plaats;
-      if (data.notities !== undefined) baserowData.notes = data.notities || '';
-      if (data.eerste_contact_datum !== undefined) baserowData.first_contact_date = data.eerste_contact_datum;
-      if (data.laatste_contact_datum !== undefined) baserowData.last_contact_date = data.laatste_contact_datum;
-      if (data.volgende_actie_datum !== undefined) baserowData.recontact_date = data.volgende_actie_datum || null;
 
-      const updated = await baserowClient.updateRow<BaserowProspect>(
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error('Update failed: webhook returned success=false');
+      }
+
+      // Re-fetch the updated prospect from Baserow
+      const updated = await baserowClient.getRow<BaserowProspect>(
         PROSPECTS_TABLE_ID,
-        parseInt(id),
-        baserowData
+        parseInt(id)
       );
       return mapBaserowToProspect(updated);
     },

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUpdateProspect } from '@/lib/api/prospects';
+import { useQueryClient } from '@tanstack/react-query';
 import { Prospect } from '@/types';
 import { toast } from 'sonner';
 import {
@@ -12,9 +12,10 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { X } from 'lucide-react';
+
+// Webhook calls are now routed through the secure proxy at /api/n8n/webhook
 
 interface MarkAsLostDialogProps {
   open: boolean;
@@ -24,17 +25,18 @@ interface MarkAsLostDialogProps {
 
 const lostReasons = [
   { value: 'Te duur', labelKey: 'prospects.lostReasons.tooExpensive' },
-  { value: 'Concurrent gekozen', labelKey: 'prospects.lostReasons.competitor' },
+  { value: 'Andere partij gekozen', labelKey: 'prospects.lostReasons.competitor' },
   { value: 'Geen reactie', labelKey: 'prospects.lostReasons.noResponse' },
-  { value: 'Geen behoefte', labelKey: 'prospects.lostReasons.noNeed' },
-  { value: 'Anders', labelKey: 'prospects.lostReasons.other' },
+  { value: 'Niet serieus', labelKey: 'prospects.lostReasons.notSerious' },
+  { value: 'Timing niet goed', labelKey: 'prospects.lostReasons.badTiming' },
+  { value: 'Buiten doelgroep', labelKey: 'prospects.lostReasons.outOfTarget' },
 ];
 
 export function MarkAsLostDialog({ open, onOpenChange, prospect }: MarkAsLostDialogProps) {
   const { t } = useTranslation();
-  const updateProspect = useUpdateProspect();
+  const queryClient = useQueryClient();
   const [reason, setReason] = useState('');
-  const [notes, setNotes] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!prospect) return null;
 
@@ -44,28 +46,48 @@ export function MarkAsLostDialog({ open, onOpenChange, prospect }: MarkAsLostDia
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
-      await updateProspect.mutateAsync({
-        id: prospect.id,
-        data: {
-          status: 'Verloren',
-          verloren_reden: reason === 'Anders' && notes ? notes : reason,
-          notities: prospect.notities 
-            ? `${prospect.notities}\n\n[Verloren] ${reason}${notes ? `: ${notes}` : ''}`
-            : `[Verloren] ${reason}${notes ? `: ${notes}` : ''}`,
+      // Use the secure proxy - no secrets exposed client-side
+      const response = await fetch('/api/n8n/webhook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          webhookType: 'prospect-lost',
+          prospect_id: prospect.id,
+          lost_reason: reason,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Webhook request failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error('Update failed');
+      }
+
+      // Refresh prospects data
+      await queryClient.invalidateQueries({ queryKey: ['prospects'] });
+      await queryClient.invalidateQueries({ queryKey: ['prospect', prospect.id] });
+      await queryClient.invalidateQueries({ queryKey: ['prospect-stats'] });
 
       toast.success(t('prospects.markedAsLost'));
       onOpenChange(false);
       setReason('');
-      setNotes('');
     } catch (error) {
       toast.error(t('common.error'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const displayName = prospect.bedrijfsnaam || `${prospect.voornaam} ${prospect.achternaam}`;
+  const displayName = prospect.bedrijfsnaam || [prospect.voornaam, prospect.achternaam].filter(Boolean).join(' ') || '-';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -94,29 +116,18 @@ export function MarkAsLostDialog({ open, onOpenChange, prospect }: MarkAsLostDia
               ))}
             </RadioGroup>
           </div>
-
-          <div>
-            <Label>{t('prospects.additionalNotes')}</Label>
-            <Textarea
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-              placeholder={t('prospects.additionalNotesPlaceholder')}
-              rows={3}
-              className="mt-1"
-            />
-          </div>
         </div>
 
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t('common.cancel')}
+            {t('actions.cancel')}
           </Button>
-          <Button 
+          <Button
             variant="destructive"
             onClick={handleMarkAsLost}
-            disabled={updateProspect.isPending || !reason}
+            disabled={isSubmitting || !reason}
           >
-            {updateProspect.isPending ? t('common.saving') : t('common.confirm')}
+            {isSubmitting ? t('actions.save') : t('actions.confirm')}
           </Button>
         </div>
       </DialogContent>

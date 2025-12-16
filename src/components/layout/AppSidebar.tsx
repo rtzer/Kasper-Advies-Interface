@@ -13,13 +13,13 @@ import {
   BarChart3,
   Settings,
   CheckCircle,
-  Calendar,
   KanbanSquare,
   Clock,
   DollarSign,
   UserCircle,
   AlertCircle,
   Inbox,
+  Layers,
 } from 'lucide-react';
 import { useProspectStats } from '@/lib/api/prospects';
 import { useInboxStats } from '@/lib/api/inboxItems';
@@ -206,15 +206,8 @@ export function AppSidebar() {
                         </SidebarMenuSubItem>
                         <SidebarMenuSubItem>
                           <SidebarMenuSubButton asChild>
-                            <NavLink to="/projects/calendar" className={getNavCls(isActive('/projects/calendar'))}>
-                              <Calendar className="h-3 w-3 mr-1" />
-                              {t('common:time.calendar', 'Calendar')}
-                            </NavLink>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild>
                             <NavLink to="/projects/bulk" className={getNavCls(isActive('/projects/bulk'))}>
+                              <Layers className="h-3 w-3 mr-1" />
                               {t('common:projects.bulkProjects', 'Bulk projects')}
                             </NavLink>
                           </SidebarMenuSubButton>

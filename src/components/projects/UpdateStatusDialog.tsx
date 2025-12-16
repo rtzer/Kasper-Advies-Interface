@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { AlertCircle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -17,10 +16,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { useUpdateProjectStatus } from '@/lib/api/projects';
+import { updateProjectStatusWebhook } from '@/lib/api/n8nProxy';
 import { toast } from 'sonner';
 import { Project } from '@/types';
+import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
+
+// Baserow status options (from table 768 field API)
+type BaserowStatus = 'Concept' | 'Actief' | 'On hold' | 'Afgerond' | 'Geannuleerd';
+
+// Map frontend status to Baserow status
+function mapToBaserowStatus(frontendStatus: Project['status']): BaserowStatus {
+  switch (frontendStatus) {
+    case 'niet-gestart': return 'Concept';
+    case 'in-uitvoering': return 'Actief';
+    case 'geblokkeerd': return 'On hold';
+    case 'wacht-op-klant': return 'On hold';
+    case 'afgerond': return 'Afgerond';
+    default: return 'Concept';
+  }
+}
 
 interface UpdateStatusDialogProps {
   project: Project;
@@ -33,31 +48,42 @@ export default function UpdateStatusDialog({
   open,
   onOpenChange,
 }: UpdateStatusDialogProps) {
-  const [newStatus, setNewStatus] = useState<Project['status']>(project.status);
-  const [blockedReason, setBlockedReason] = useState(project.blocked_reason || '');
-  
-  const updateStatusMutation = useUpdateProjectStatus();
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [newStatus, setNewStatus] = useState<BaserowStatus>(mapToBaserowStatus(project.status));
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const statuses: { value: BaserowStatus; label: string }[] = [
+    { value: 'Concept', label: t('projects.status.concept') },
+    { value: 'Actief', label: t('projects.status.actief') },
+    { value: 'On hold', label: t('projects.status.onHold') },
+    { value: 'Afgerond', label: t('projects.status.afgerond') },
+    { value: 'Geannuleerd', label: t('projects.status.geannuleerd') },
+  ];
 
   const handleUpdate = async () => {
-    if (newStatus === 'geblokkeerd' && !blockedReason.trim()) {
-      toast.error('Geef een reden op waarom het project geblokkeerd is');
-      return;
-    }
+    setIsSubmitting(true);
 
     try {
-      await updateStatusMutation.mutateAsync({
-        id: project.id,
-        status: newStatus,
-        blocked_reason: newStatus === 'geblokkeerd' ? blockedReason : null,
-      });
+      const response = await updateProjectStatusWebhook(project.id, newStatus);
 
-      toast.success('Project status bijgewerkt!');
-      
-      // Small delay so toast is visible
-      setTimeout(() => onOpenChange(false), 300);
+      if (response.success && response.data?.success) {
+        toast.success(t('projects.updateStatusDialog.success'));
+
+        // Invalidate projects queries to refresh data
+        queryClient.invalidateQueries({ queryKey: ['projects'] });
+        queryClient.invalidateQueries({ queryKey: ['baserow-projects'] });
+
+        // Small delay so toast is visible
+        setTimeout(() => onOpenChange(false), 300);
+      } else {
+        toast.error(t('projects.updateStatusDialog.error'));
+      }
     } catch (error) {
-      toast.error('Fout bij updaten status');
+      toast.error(t('projects.updateStatusDialog.error'));
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -65,63 +91,44 @@ export default function UpdateStatusDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Project Status Updaten</DialogTitle>
+          <DialogTitle>{t('projects.updateStatusDialog.title')}</DialogTitle>
           <DialogDescription>
-            Wijzig de status van: {project.name}
+            {t('projects.updateStatusDialog.description', { name: project.name })}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="status">Nieuwe Status</Label>
-            <Select value={newStatus} onValueChange={(value) => setNewStatus(value as Project['status'])}>
+            <Label htmlFor="status">{t('projects.updateStatusDialog.newStatus')}</Label>
+            <Select value={newStatus} onValueChange={(value) => setNewStatus(value as BaserowStatus)}>
               <SelectTrigger id="status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="niet-gestart">Niet gestart</SelectItem>
-                <SelectItem value="in-uitvoering">In uitvoering</SelectItem>
-                <SelectItem value="wacht-op-klant">Wacht op klant</SelectItem>
-                <SelectItem value="geblokkeerd">Geblokkeerd</SelectItem>
-                <SelectItem value="afgerond">Afgerond</SelectItem>
+                {statuses.map((status) => (
+                  <SelectItem key={status.value} value={status.value}>
+                    {status.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
-
-          {newStatus === 'geblokkeerd' && (
-            <div className="space-y-2 animate-fade-in">
-              <Label htmlFor="blocked-reason" className="flex items-center gap-2 text-destructive">
-                <AlertCircle className="w-4 h-4" />
-                Reden voor blokkade *
-              </Label>
-              <Textarea
-                id="blocked-reason"
-                value={blockedReason}
-                onChange={(e) => setBlockedReason(e.target.value)}
-                placeholder="Bijv: Wachten op aanvullende documenten van klant..."
-                className="min-h-[100px]"
-              />
-              <p className="text-sm text-muted-foreground">
-                Beschrijf waarom het project geblokkeerd is, zodat het team weet wat er moet gebeuren.
-              </p>
-            </div>
-          )}
         </div>
 
         <DialogFooter>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={updateStatusMutation.isPending}
+            disabled={isSubmitting}
           >
-            Annuleren
+            {t('projects.updateStatusDialog.cancel')}
           </Button>
-          <Button 
+          <Button
             onClick={handleUpdate}
-            disabled={updateStatusMutation.isPending}
+            disabled={isSubmitting}
             className="bg-ka-green hover:bg-ka-green/90"
           >
-            {updateStatusMutation.isPending ? 'Bezig...' : 'Status Updaten'}
+            {isSubmitting ? t('projects.updateStatusDialog.updating') : t('projects.updateStatusDialog.update')}
           </Button>
         </DialogFooter>
       </DialogContent>

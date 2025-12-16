@@ -1,6 +1,5 @@
-// Baserow API Client
-const BASEROW_API_URL = import.meta.env.VITE_BASEROW_API_URL;
-const BASEROW_TOKEN = import.meta.env.VITE_BASEROW_TOKEN;
+// Baserow API Client - Routes through /api/baserow proxy for security
+// Secrets are kept server-side, never exposed to the browser
 
 export interface BaserowResponse<T> {
   count: number;
@@ -122,24 +121,24 @@ export interface BaserowCustomer {
 }
 
 class BaserowClient {
-  private baseUrl: string;
-  private token: string;
+  private proxyUrl: string;
 
   constructor() {
-    this.baseUrl = BASEROW_API_URL;
-    this.token = BASEROW_TOKEN;
+    // Use the Vercel API proxy - no tokens needed client-side
+    this.proxyUrl = '/api/baserow';
   }
 
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
+    // Transform endpoint: /api/database/rows/table/123 -> /api/baserow/rows/table/123
+    const proxyEndpoint = endpoint.replace('/api/database/', '');
+    const url = `${this.proxyUrl}/${proxyEndpoint}`;
 
     const response = await fetch(url, {
       ...options,
       headers: {
-        'Authorization': `Token ${this.token}`,
         'Content-Type': 'application/json',
         ...options.headers,
       },

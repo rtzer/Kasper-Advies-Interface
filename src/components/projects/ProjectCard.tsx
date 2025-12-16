@@ -1,9 +1,8 @@
 import { Clock, AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Project } from '@/types';
-import { formatDeadline, getDeadlineColor } from '@/lib/utils/projectHelpers';
+import { formatDeadline, getDeadlineColor, getStatusColor, getProjectTypeColor } from '@/lib/utils/projectHelpers';
 import { Link } from 'react-router-dom';
-import ProjectCategoryBadge from './ProjectCategoryBadge';
 import ProjectProgressBar from './ProjectProgressBar';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -15,24 +14,36 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   const { t } = useTranslation();
-  
-  const getStatusBadge = (status: string) => {
-    const statusConfig: Record<string, { label: string; className: string }> = {
-      'niet-gestart': { label: t('projects.status.notStarted', 'Niet gestart'), className: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300' },
-      'in-uitvoering': { label: t('projects.status.inProgress', 'Actief'), className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' },
-      'wacht-op-klant': { label: t('projects.status.waitingClient', 'Wacht op klant'), className: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300' },
-      'in-review': { label: t('projects.status.inReview', 'In review'), className: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300' },
-      'geblokkeerd': { label: t('projects.status.blocked', 'Geblokkeerd'), className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' },
-      'afgerond': { label: t('projects.status.completed', 'Afgerond'), className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' },
-    };
-    return statusConfig[status] || { label: status, className: 'bg-gray-100 text-gray-800' };
-  };
-
-  const statusBadge = getStatusBadge(project.status);
 
   // Get initials for team members
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
+
+  // Get status translation key
+  const getStatusKey = (status: string) => {
+    const keys: Record<string, string> = {
+      'Concept': 'concept',
+      'Actief': 'actief',
+      'On hold': 'onHold',
+      'Afgerond': 'afgerond',
+      'Geannuleerd': 'geannuleerd',
+    };
+    return keys[status] || status.toLowerCase().replace(/ /g, '');
+  };
+
+  // Get project type translation key
+  const getProjectTypeKey = (type: string) => {
+    const keys: Record<string, string> = {
+      'Groeibegeleiding': 'groeibegeleiding',
+      'Procesoptimalisatie': 'procesoptimalisatie',
+      'Digitalisering': 'digitalisering',
+      'VOF naar BV': 'vofNaarBv',
+      'Jaarrekening Pakket': 'jaarrekeningPakket',
+      'Bedrijfsoverdracht': 'bedrijfsoverdracht',
+      'Overig': 'overig',
+    };
+    return keys[type] || type.toLowerCase().replace(/ /g, '');
   };
 
   return (
@@ -41,14 +52,16 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         {/* Header with badges */}
         <div className="flex items-start justify-between gap-2 mb-2 xs:mb-3">
           <div className="flex flex-wrap gap-1.5">
-            <ProjectCategoryBadge 
-              category={project.category} 
-              projectCategory={project.project_category}
-              size="sm"
-            />
-            <Badge className={`${statusBadge.className} text-[10px] xs:text-xs px-1.5`}>
-              {statusBadge.label}
-            </Badge>
+            {project.category && (
+              <Badge className={`${getProjectTypeColor(project.category)} text-[10px] xs:text-xs px-1.5`}>
+                {t(`projects.projectTypes.${getProjectTypeKey(project.category)}`, project.category)}
+              </Badge>
+            )}
+            {project.status && (
+              <Badge className={`${getStatusColor(project.status)} text-[10px] xs:text-xs px-1.5`}>
+                {t(`projects.status.${getStatusKey(project.status)}`, project.status)}
+              </Badge>
+            )}
           </div>
           {(project.is_overdue || project.blocked_reason) && (
             <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
@@ -81,7 +94,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             <Clock className="w-3 h-3 mr-1" />
             {formatDeadline(project.deadline)}
           </div>
-          
+
           {/* Team avatars */}
           <div className="flex -space-x-2">
             <TooltipProvider>

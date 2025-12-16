@@ -40,34 +40,12 @@ interface StoredSession {
 }
 
 // Configuration from environment variables
+// Note: Webhook URL and credentials are now handled server-side via the proxy
 const AUTH_CONFIG = {
-  webhookUrl: import.meta.env.VITE_N8N_AUTH_WEBHOOK_URL || '',
-  basicAuthUsername: import.meta.env.VITE_N8N_AUTH_USERNAME || '',
-  basicAuthPassword: import.meta.env.VITE_N8N_AUTH_PASSWORD || '',
   sessionDurationDays: Number(import.meta.env.VITE_SESSION_DURATION_DAYS) || 30,
 } as const;
 
 const STORAGE_KEY = 'ka_auth_session';
-
-/**
- * Validates that all required environment variables are configured
- */
-function validateConfig(): void {
-  if (!AUTH_CONFIG.webhookUrl) {
-    throw new Error('VITE_N8N_AUTH_WEBHOOK_URL is not configured');
-  }
-  if (!AUTH_CONFIG.basicAuthUsername || !AUTH_CONFIG.basicAuthPassword) {
-    throw new Error('N8N Basic Auth credentials are not configured');
-  }
-}
-
-/**
- * Creates Basic Auth header value from credentials
- */
-function createBasicAuthHeader(): string {
-  const credentials = `${AUTH_CONFIG.basicAuthUsername}:${AUTH_CONFIG.basicAuthPassword}`;
-  return `Basic ${btoa(credentials)}`;
-}
 
 /**
  * Calculates session expiration timestamp
@@ -86,23 +64,22 @@ function isSessionValid(session: StoredSession): boolean {
 
 class AuthService {
   /**
-   * Authenticates user against n8n webhook
+   * Authenticates user against n8n webhook via secure proxy
    *
    * @param email - User's email address
    * @param password - User's password
    * @returns Authenticated user data
-   * @throws Error if authentication fails or webhook is misconfigured
+   * @throws Error if authentication fails
    */
   async login(email: string, password: string): Promise<AuthUser> {
-    validateConfig();
-
-    const response = await fetch(AUTH_CONFIG.webhookUrl, {
+    // Call the secure proxy endpoint - no secrets exposed client-side
+    const response = await fetch('/api/n8n/webhook', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': createBasicAuthHeader(),
       },
       body: JSON.stringify({
+        webhookType: 'auth',
         email: email.toLowerCase().trim(),
         password,
       }),
