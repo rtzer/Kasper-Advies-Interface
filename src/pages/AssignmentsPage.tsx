@@ -29,7 +29,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useOpdrachten } from '@/lib/api/opdrachten';
 import { useUsers } from '@/lib/api/users';
 import { useUserStore } from '@/store/userStore';
-import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { Link, useLocation } from 'react-router-dom';
 import { differenceInDays, isPast, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { OpdrachtTypeBadge } from '@/components/assignments/OpdrachtTypeBadge';
 import { DeadlineIndicator } from '@/components/assignments/DeadlineIndicator';
@@ -55,12 +56,16 @@ const assignmentTypes = [
 export default function AssignmentsPage() {
   const { t } = useTranslation(['common']);
   const { currentUser } = useUserStore();
+  const { user: authUser } = useAuth();
+  const location = useLocation();
+  const isMyAssignmentsPage = location.pathname === '/assignments/my';
+
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterType, setFilterType] = useState<string>('all');
   const [filterVerantwoordelijke, setFilterVerantwoordelijke] = useState<string>('all');
   const [filterInvoice, setFilterInvoice] = useState<string>('all');
   const [searchClient, setSearchClient] = useState('');
-  const [onlyMine, setOnlyMine] = useState(false);
+  const [onlyMine, setOnlyMine] = useState(isMyAssignmentsPage);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   
@@ -124,11 +129,11 @@ export default function AssignmentsPage() {
       if (filterType !== 'all' && opdracht.type_opdracht !== filterType) return false;
       if (filterVerantwoordelijke !== 'all' && opdracht.verantwoordelijk !== filterVerantwoordelijke) return false;
       if (filterInvoice !== 'all' && opdracht.facturatie_status !== filterInvoice) return false;
-      if (onlyMine && currentUser?.naam && opdracht.verantwoordelijk !== currentUser.naam) return false;
+      if ((isMyAssignmentsPage || onlyMine) && authUser?.id && !opdracht.user_ids?.includes(authUser.id)) return false;
       if (searchClient && !opdracht.klant_naam.toLowerCase().includes(searchClient.toLowerCase())) return false;
       return true;
     });
-  }, [opdrachten, filterStatus, filterType, filterVerantwoordelijke, filterInvoice, onlyMine, currentUser, searchClient]);
+  }, [opdrachten, filterStatus, filterType, filterVerantwoordelijke, filterInvoice, onlyMine, isMyAssignmentsPage, authUser, searchClient]);
   
   // Group by client for byClient view
   const groupedByClient = useMemo(() => {
@@ -155,11 +160,14 @@ export default function AssignmentsPage() {
   };
   
   return (
-    <div className="p-4 sm:p-6 space-y-6 bg-background min-h-screen">
+    <div className="bg-background min-h-screen -m-6 -mb-16 lg:-mb-6">
+      <div className="p-4 sm:p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">{t('assignments.title')}</h1>
+          <h1 className="text-2xl font-bold text-foreground">
+            {isMyAssignmentsPage ? t('assignments.myAssignments') : t('assignments.title')}
+          </h1>
           <p className="text-sm text-muted-foreground mt-1">
             {filteredOpdrachten.length} {filteredOpdrachten.length === 1 ? t('assignments.count', { count: filteredOpdrachten.length }) : t('assignments.count_plural', { count: filteredOpdrachten.length })}
           </p>
@@ -332,12 +340,14 @@ export default function AssignmentsPage() {
             </SelectContent>
           </Select>
           
-          <div className="flex items-center gap-2">
-            <Switch id="onlyMine" checked={onlyMine} onCheckedChange={setOnlyMine} />
-            <Label htmlFor="onlyMine" className="text-sm whitespace-nowrap">
-              {t('assignments.filters.onlyMine')}
-            </Label>
-          </div>
+          {!isMyAssignmentsPage && (
+            <div className="flex items-center gap-2">
+              <Switch id="onlyMine" checked={onlyMine} onCheckedChange={setOnlyMine} />
+              <Label htmlFor="onlyMine" className="text-sm whitespace-nowrap">
+                {t('assignments.filters.onlyMine')}
+              </Label>
+            </div>
+          )}
         </div>
       </div>
 
@@ -351,18 +361,18 @@ export default function AssignmentsPage() {
           ))}
         </div>
       ) : viewMode === 'kanban' ? (
-        <AssignmentsKanban 
+        <AssignmentsKanban
           filterType={filterType}
           filterVerantwoordelijke={filterVerantwoordelijke}
           onlyMine={onlyMine}
-          currentUserName={currentUser?.naam}
+          currentUserId={authUser?.id}
         />
       ) : viewMode === 'calendar' ? (
-        <AssignmentsCalendar 
+        <AssignmentsCalendar
           filterType={filterType}
           filterVerantwoordelijke={filterVerantwoordelijke}
           onlyMine={onlyMine}
-          currentUserName={currentUser?.naam}
+          currentUserId={authUser?.id}
         />
       ) : viewMode === 'byClient' ? (
         <div className="space-y-6">
@@ -485,6 +495,7 @@ export default function AssignmentsPage() {
           </Table>
         </Card>
       )}
+      </div>
     </div>
   );
 }

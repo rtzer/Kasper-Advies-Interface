@@ -378,7 +378,7 @@
       "tasks": "Tasks",
       "completed": "Completed",
       "importantDates": "Important dates",
-      "deadline": "Final deadline",
+      "deadline": "Deadline",
       "lastReminder": "Last reminder",
       "projectBlocked": "Project blocked",
       "resolveBlock": "Resolve block",
@@ -389,8 +389,19 @@
       "reminderSentEvent": "Reminder sent",
       "dateUnknown": "Date unknown",
       "uploadDocument": "Upload document",
-      "noDocumentsYet": "No documents added yet"
+      "noDocumentsYet": "No documents added yet",
+      "start": "Start",
+      "completedOn": "Completed on",
+      "expectedCompletion": "Expected completion"
     },
+    "workflowStatus": {
+      "complete": "Complete",
+      "inProgress": "In progress",
+      "notStarted": "Not started"
+    },
+    "addAssignment": "Assignment",
+    "addTask": "Add task",
+    "addSubtask": "Subtask",
     "linkedAssignments": "Linked Assignments",
     "noAssignments": "No assignments linked to this project",
     "projectTasks": "Project Tasks",
@@ -458,7 +469,86 @@
     "rejected": "Rejected",
     "approver": "Approver",
     "approvedBy": "Approved by",
-    "approvedOn": "Approved on"
+    "approvedOn": "Approved on",
+    "bulkBTW": "Bulk VAT",
+    "count": "{{count}} assignment",
+    "count_plural": "{{count}} assignments",
+    "hoursFormat": "{{spent}}/{{budget}}h",
+    "statusUpdated": "Status updated",
+    "statusChangedTo": "Status changed to {{status}}",
+    "statusUpdateFailed": "Failed to update status",
+    "stats": {
+      "totalActive": "Active assignments",
+      "deadlineThisWeek": "Deadline this week",
+      "overdue": "Overdue",
+      "awaitingApproval": "Awaiting approval",
+      "completedMonth": "Completed (month)"
+    },
+    "views": {
+      "list": "List",
+      "kanban": "Kanban",
+      "calendar": "Calendar",
+      "byClient": "By client"
+    },
+    "filters": {
+      "searchClient": "Search client...",
+      "allStatuses": "All statuses",
+      "allTypes": "All types",
+      "allResponsible": "All team members",
+      "onlyMine": "Only my assignments"
+    },
+    "status": {
+      "intake": "Intake",
+      "inProgress": "In progress",
+      "waitingClient": "Waiting for client",
+      "readyForReview": "Ready for review",
+      "completed": "Completed",
+      "submitted": "Submitted"
+    },
+    "table": {
+      "assignment": "Assignment",
+      "client": "Client",
+      "type": "Type",
+      "status": "Status",
+      "deadline": "Deadline",
+      "responsible": "Responsible",
+      "progress": "Progress",
+      "hours": "Hours",
+      "invoice": "Invoice"
+    },
+    "daysLate": "{{count}} day late",
+    "daysLate_plural": "{{count}} days late",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "daysLeft": "{{count}} day",
+    "daysLeft_plural": "{{count}} days",
+    "createDialog": {
+      "title": "Create new assignment",
+      "description": "Add a new assignment to this project",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "E.g. VAT return Q1 2025",
+      "assignmentType": "Assignment type",
+      "selectType": "Select type...",
+      "status": "Status",
+      "priority": "Priority",
+      "startDate": "Start date",
+      "deadline": "Deadline",
+      "notes": "Notes",
+      "notesPlaceholder": "Optional remarks...",
+      "fillRequired": "Please fill all required fields",
+      "create": "Create assignment",
+      "creating": "Creating...",
+      "success": "Assignment created successfully",
+      "error": "Error creating assignment"
+    }
+  },
+  "subtasks": {
+    "created": "Subtask created",
+    "createError": "Error creating subtask",
+    "completed": "Subtask completed",
+    "reopened": "Subtask reopened",
+    "toggleError": "Error updating subtask",
+    "namePlaceholder": "Subtask name..."
   },
   "tasks": {
     "title": "Tasks",
@@ -476,7 +566,25 @@
     "needsApproval": "Needs Approval",
     "approvalStatus": "Approval Status",
     "pending": "Pending",
-    "startedBy": "Started by"
+    "startedBy": "Started by",
+    "createDialog": {
+      "title": "Create new task",
+      "description": "Add a new task to {{assignment}}",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "E.g. Collect VAT documents",
+      "taskType": "Task type",
+      "selectType": "Select type...",
+      "status": "Status",
+      "priority": "Priority",
+      "deadline": "Deadline",
+      "details": "Details",
+      "detailsPlaceholder": "Additional information...",
+      "fillRequired": "Please fill all required fields",
+      "create": "Create task",
+      "creating": "Creating...",
+      "success": "Task created successfully",
+      "error": "Error creating task"
+    }
   },
   "prospects": {
     "title": "Prospects",
@@ -615,6 +723,7 @@
     "info": "Info",
     "notFound": "Not found",
     "somethingWentWrong": "Something went wrong",
+    "notAuthenticated": "You are not logged in",
     "tryAgain": "Try again",
     "noData": "No data available",
     "selectOption": "Select an option",

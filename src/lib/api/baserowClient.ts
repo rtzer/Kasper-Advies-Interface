@@ -160,6 +160,7 @@ class BaserowClient {
       search?: string;
       orderBy?: string;
       filters?: Record<string, any>;
+      bustCache?: boolean;
     }
   ): Promise<BaserowResponse<T>> {
     const searchParams = new URLSearchParams();
@@ -169,6 +170,7 @@ class BaserowClient {
     if (params?.size) searchParams.set('size', params.size.toString());
     if (params?.search) searchParams.set('search', params.search);
     if (params?.orderBy) searchParams.set('order_by', params.orderBy);
+    if (params?.bustCache) searchParams.set('_', Date.now().toString());
 
     return this.request<BaserowResponse<T>>(
       `/api/database/rows/table/${tableId}/?${searchParams.toString()}`
@@ -176,13 +178,13 @@ class BaserowClient {
   }
 
   // Fetch all rows (handles pagination automatically)
-  async getAllTableRows<T>(tableId: number | string): Promise<T[]> {
+  async getAllTableRows<T>(tableId: number | string, bustCache = false): Promise<T[]> {
     const allResults: T[] = [];
     let page = 1;
     let hasMore = true;
 
     while (hasMore) {
-      const response = await this.getTableRows<T>(tableId, { page, size: 200 });
+      const response = await this.getTableRows<T>(tableId, { page, size: 200, bustCache });
       allResults.push(...response.results);
       hasMore = response.next !== null;
       page++;

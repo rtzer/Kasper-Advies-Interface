@@ -14,7 +14,11 @@ export type WebhookType =
   | 'update-prospect'
   | 'prospect-lost'
   | 'create-project'
-  | 'update-project-status';
+  | 'update-project-status'
+  | 'create-assignment'
+  | 'create-task'
+  | 'create-subtask'
+  | 'toggle-subtask';
 
 interface ProxyResponse<T = unknown> {
   success: boolean;
@@ -142,4 +146,58 @@ export async function updateProjectStatusWebhook(projectId: string, status: stri
     project_id: projectId,
     status: status,
   });
+}
+
+/**
+ * Create a new assignment via n8n webhook
+ */
+export async function createAssignmentWebhook(payload: {
+  project_id: number;
+  user_id: number;
+  description: string;
+  assignment_type: string;
+  status: string;
+  priority: string;
+  start_date: string;
+  deadline: string | null;
+  notes: string;
+}) {
+  return callN8nWebhook<{ success: boolean }>('create-assignment', payload);
+}
+
+/**
+ * Create a new task via n8n webhook
+ */
+export async function createTaskWebhook(payload: {
+  assignment_id: number;
+  user_id: number;
+  description: string;
+  details: string;
+  task_type: string;
+  status: string;
+  priority: string;
+  deadline: string | null;
+}) {
+  return callN8nWebhook<{ success: boolean }>('create-task', payload);
+}
+
+/**
+ * Create a new subtask via n8n webhook
+ */
+export async function createSubtaskWebhook(payload: {
+  name: string;
+  task_id: number;
+  user_id: number;
+}) {
+  return callN8nWebhook<{ success: boolean }>('create-subtask', payload);
+}
+
+/**
+ * Toggle subtask completion status via n8n webhook
+ */
+export async function toggleSubtaskWebhook(payload: {
+  subtask_id: number;
+  done: boolean;
+}) {
+  return callN8nWebhook<{ success: boolean }>('toggle-subtask', payload);
 }

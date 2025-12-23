@@ -720,15 +720,77 @@
       "inReview": "In review",
       "waitingClient": "Waiting for client",
       "blocked": "Blocked",
-      "completed": "Completed"
+      "completed": "Completed",
+      "concept": "Draft",
+      "actief": "Active",
+      "onHold": "On hold",
+      "afgerond": "Completed",
+      "geannuleerd": "Cancelled"
     },
-    "workload": {
+    "workloadLevel": {
       "label": "Workload",
       "low": "Low",
       "normal": "Normal",
       "high": "High",
       "overloaded": "Overloaded"
-    }
+    },
+    "workflowStatus": {
+      "complete": "Complete",
+      "inProgress": "In progress",
+      "notStarted": "Not started"
+    },
+    "detail": {
+      "backToProjects": "Back to projects",
+      "blocked": "Blocked",
+      "sending": "Sending...",
+      "sendReminder": "Send reminder",
+      "sendReminderShort": "Remind",
+      "updateStatus": "Update status",
+      "totalProgress": "Total progress",
+      "notFound": "Project not found",
+      "notFoundDescription": "This project does not exist or has been deleted",
+      "reminderSent": "Reminder sent",
+      "reminderSentDescription": "Reminder sent to {{name}}",
+      "reminderError": "Error sending",
+      "reminderErrorDescription": "Could not send reminder",
+      "reminderSentEvent": "Reminder sent",
+      "projectCreated": "Project created",
+      "projectStarted": "Project started",
+      "dateUnknown": "Date unknown",
+      "uploadDocument": "Upload document",
+      "client": "Client",
+      "call": "Call",
+      "email": "Email",
+      "team": "Team",
+      "responsible": "Responsible",
+      "statistics": "Statistics",
+      "assignments": "Assignments",
+      "tasks": "Tasks",
+      "completed": "Completed",
+      "importantDates": "Important dates",
+      "deadline": "Deadline",
+      "lastReminder": "Last reminder",
+      "projectBlocked": "Project blocked",
+      "resolveBlock": "Resolve block",
+      "start": "Start",
+      "completedOn": "Completed on",
+      "expectedCompletion": "Expected completion"
+    },
+    "addAssignment": "Assignment",
+    "addTask": "Add task",
+    "addSubtask": "Subtask",
+    "updateStatusDialog": {
+      "title": "Update status",
+      "description": "Change the status of {{name}}",
+      "newStatus": "New status",
+      "cancel": "Cancel",
+      "update": "Update",
+      "updating": "Updating...",
+      "success": "Status updated successfully",
+      "error": "Error updating status"
+    },
+    "newProject": "New project",
+    "deadline": "Deadline"
   },
   "common": {
     "save": "Save",
@@ -740,6 +802,7 @@
     "error": "Error",
     "success": "Success",
     "confirm": "Confirm",
+    "comingSoon": "Coming soon",
     "actions": {
       "reply": "Reply"
     },

@@ -378,7 +378,7 @@
       "tasks": "Taken",
       "completed": "Afgerond",
       "importantDates": "Belangrijke data",
-      "deadline": "Uiterlijke deadline",
+      "deadline": "Deadline",
       "lastReminder": "Laatste herinnering",
       "projectBlocked": "Project geblokkeerd",
       "resolveBlock": "Blokkade oplossen",
@@ -389,8 +389,19 @@
       "reminderSentEvent": "Herinnering verzonden",
       "dateUnknown": "Datum onbekend",
       "uploadDocument": "Document uploaden",
-      "noDocumentsYet": "Nog geen documenten toegevoegd"
+      "noDocumentsYet": "Nog geen documenten toegevoegd",
+      "start": "Start",
+      "completedOn": "Afgerond op",
+      "expectedCompletion": "Verwacht klaar"
     },
+    "workflowStatus": {
+      "complete": "Compleet",
+      "inProgress": "In uitvoering",
+      "notStarted": "Nog niet gestart"
+    },
+    "addAssignment": "Opdracht",
+    "addTask": "Taak toevoegen",
+    "addSubtask": "Subtaak",
     "linkedAssignments": "Gekoppelde Opdrachten",
     "noAssignments": "Geen opdrachten gekoppeld aan dit project",
     "projectTasks": "Project Taken",
@@ -458,7 +469,86 @@
     "rejected": "Afgekeurd",
     "approver": "Goedkeurder",
     "approvedBy": "Goedgekeurd door",
-    "approvedOn": "Goedgekeurd op"
+    "approvedOn": "Goedgekeurd op",
+    "bulkBTW": "Bulk BTW",
+    "count": "{{count}} opdracht",
+    "count_plural": "{{count}} opdrachten",
+    "hoursFormat": "{{spent}}/{{budget}}u",
+    "statusUpdated": "Status bijgewerkt",
+    "statusChangedTo": "Status gewijzigd naar {{status}}",
+    "statusUpdateFailed": "Status kon niet worden bijgewerkt",
+    "stats": {
+      "totalActive": "Actieve opdrachten",
+      "deadlineThisWeek": "Deadline deze week",
+      "overdue": "Achterstallig",
+      "awaitingApproval": "Wacht op goedkeuring",
+      "completedMonth": "Afgerond (maand)"
+    },
+    "views": {
+      "list": "Lijst",
+      "kanban": "Kanban",
+      "calendar": "Kalender",
+      "byClient": "Per klant"
+    },
+    "filters": {
+      "searchClient": "Zoek klant...",
+      "allStatuses": "Alle statussen",
+      "allTypes": "Alle types",
+      "allResponsible": "Alle medewerkers",
+      "onlyMine": "Alleen mijn opdrachten"
+    },
+    "status": {
+      "intake": "Intake",
+      "inProgress": "In behandeling",
+      "waitingClient": "Wacht op klant",
+      "readyForReview": "Gereed voor controle",
+      "completed": "Afgerond",
+      "submitted": "Ingediend"
+    },
+    "table": {
+      "assignment": "Opdracht",
+      "client": "Klant",
+      "type": "Type",
+      "status": "Status",
+      "deadline": "Deadline",
+      "responsible": "Verantwoordelijk",
+      "progress": "Voortgang",
+      "hours": "Uren",
+      "invoice": "Factuur"
+    },
+    "daysLate": "{{count}} dag te laat",
+    "daysLate_plural": "{{count}} dagen te laat",
+    "today": "Vandaag",
+    "tomorrow": "Morgen",
+    "daysLeft": "{{count}} dag",
+    "daysLeft_plural": "{{count}} dagen",
+    "createDialog": {
+      "title": "Nieuwe opdracht aanmaken",
+      "description": "Voeg een nieuwe opdracht toe aan dit project",
+      "descriptionLabel": "Omschrijving",
+      "descriptionPlaceholder": "Bijv. BTW aangifte Q1 2025",
+      "assignmentType": "Opdracht type",
+      "selectType": "Selecteer type...",
+      "status": "Status",
+      "priority": "Prioriteit",
+      "startDate": "Startdatum",
+      "deadline": "Deadline",
+      "notes": "Notities",
+      "notesPlaceholder": "Eventuele opmerkingen...",
+      "fillRequired": "Vul alle verplichte velden in",
+      "create": "Opdracht aanmaken",
+      "creating": "Aanmaken...",
+      "success": "Opdracht succesvol aangemaakt",
+      "error": "Fout bij aanmaken opdracht"
+    }
+  },
+  "subtasks": {
+    "created": "Subtaak aangemaakt",
+    "createError": "Fout bij aanmaken subtaak",
+    "completed": "Subtaak afgerond",
+    "reopened": "Subtaak heropend",
+    "toggleError": "Fout bij bijwerken subtaak",
+    "namePlaceholder": "Naam subtaak..."
   },
   "tasks": {
     "title": "Taken",
@@ -476,7 +566,25 @@
     "needsApproval": "Goedkeuring vereist",
     "approvalStatus": "Goedkeuringsstatus",
     "pending": "In behandeling",
-    "startedBy": "Gestart door"
+    "startedBy": "Gestart door",
+    "createDialog": {
+      "title": "Nieuwe taak aanmaken",
+      "description": "Voeg een nieuwe taak toe aan {{assignment}}",
+      "descriptionLabel": "Omschrijving",
+      "descriptionPlaceholder": "Bijv. BTW documenten verzamelen",
+      "taskType": "Taak type",
+      "selectType": "Selecteer type...",
+      "status": "Status",
+      "priority": "Prioriteit",
+      "deadline": "Deadline",
+      "details": "Details",
+      "detailsPlaceholder": "Eventuele extra informatie...",
+      "fillRequired": "Vul alle verplichte velden in",
+      "create": "Taak aanmaken",
+      "creating": "Aanmaken...",
+      "success": "Taak succesvol aangemaakt",
+      "error": "Fout bij aanmaken taak"
+    }
   },
   "prospects": {
     "title": "Prospects",
@@ -615,6 +723,7 @@
     "info": "Info",
     "notFound": "Niet gevonden",
     "somethingWentWrong": "Er is iets misgegaan",
+    "notAuthenticated": "Je bent niet ingelogd",
     "tryAgain": "Probeer opnieuw",
     "noData": "Geen gegevens beschikbaar",
     "selectOption": "Selecteer een optie",

@@ -1,26 +1,30 @@
 import { useParams, Link } from 'react-router-dom';
 import { useProject, useSendReminder } from '@/lib/api/projects';
-import { useOpdrachten } from '@/lib/api/opdrachten';
-import { useTaken } from '@/lib/api/taken';
-import { CheckCircle, Circle, Clock, AlertCircle, Send, ArrowLeft, Phone, Mail, FileText, ClipboardList, LayoutList, Calendar } from 'lucide-react';
+import { useProjectWorkflow } from '@/lib/api/assignments';
+import { Clock, AlertCircle, Send, ArrowLeft, Phone, Mail, FileText, ClipboardList, LayoutList, Calendar, CheckCircle, Circle, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { getStatusColor, getStatusLabel, formatDeadline, getCategoryColor } from '@/lib/utils/projectHelpers';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import UpdateStatusDialog from '@/components/projects/UpdateStatusDialog';
-import ProjectStageTracker from '@/components/projects/ProjectStageTracker';
-import { useState } from 'react';
+import CreateAssignmentDialog from '@/components/projects/CreateAssignmentDialog';
+import CreateAssignmentTaskDialog from '@/components/projects/CreateAssignmentTaskDialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useState, useRef, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useKlanten } from '@/lib/api/klanten';
+import { useAuth } from '@/contexts/AuthContext';
+import { createSubtaskWebhook, toggleSubtaskWebhook } from '@/lib/api/n8nProxy';
+import { Input } from '@/components/ui/input';
 import { responsiveHeading, responsiveBody } from '@/lib/utils/typography';
 import { useDeviceChecks } from '@/hooks/useBreakpoint';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
-import { OpdrachtTypeBadge } from '@/components/assignments/OpdrachtTypeBadge';
 import { TaskDeadlineBadge } from '@/components/tasks/TaskDeadlineBadge';
 
 export default function ProjectDetailPage() {
@@ -29,23 +33,157 @@ export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: project, isLoading } = useProject(id || '');
   const { data: klantenData } = useKlanten();
-  const { data: opdrachtenData } = useOpdrachten();
-  const { data: takenData } = useTaken();
+  const { workflow, assignments, tasks, isLoading: workflowLoading } = useProjectWorkflow(id);
   const sendReminderMutation = useSendReminder();
   const { toast } = useToast();
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+  const [createAssignmentOpen, setCreateAssignmentOpen] = useState(false);
+  const [createTaskOpen, setCreateTaskOpen] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState<{ id: number; name: string } | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
-  
+
+  // Inline subtask creation state
+  const [addingSubtaskForTask, setAddingSubtaskForTask] = useState<number | null>(null);
+  const [newSubtaskName, setNewSubtaskName] = useState('');
+  const [isCreatingSubtask, setIsCreatingSubtask] = useState(false);
+  const [togglingSubtaskId, setTogglingSubtaskId] = useState<string | null>(null);
+  const subtaskInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
   const { isMobile } = useDeviceChecks();
+
+  // Focus input when adding subtask
+  useEffect(() => {
+    if (addingSubtaskForTask !== null && subtaskInputRef.current) {
+      subtaskInputRef.current.focus();
+    }
+  }, [addingSubtaskForTask]);
+
+  // Handle subtask creation
+  const handleCreateSubtask = async (taskId: number) => {
+    if (!newSubtaskName.trim() || !user) return;
+
+    setIsCreatingSubtask(true);
+    try {
+      const response = await createSubtaskWebhook({
+        name: newSubtaskName.trim(),
+        task_id: taskId,
+        user_id: Number(user.id),
+      });
+
+      if (response.success && response.data?.success) {
+        toast({
+          title: t('subtasks.created', 'Subtaak aangemaakt'),
+          description: newSubtaskName.trim(),
+        });
+        setNewSubtaskName('');
+        setAddingSubtaskForTask(null);
+        // Refetch workflow data
+        await queryClient.refetchQueries({
+          predicate: (query) => {
+            const key = query.queryKey[0];
+            return key === 'baserow-assignments' || key === 'baserow-tasks' || key === 'baserow-subtasks';
+          }
+        });
+      } else {
+        toast({
+          title: t('common.error', 'Fout'),
+          description: response.error || t('subtasks.createError', 'Fout bij aanmaken subtaak'),
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: t('common.error', 'Fout'),
+        description: t('subtasks.createError', 'Fout bij aanmaken subtaak'),
+        variant: 'destructive',
+      });
+    } finally {
+      setIsCreatingSubtask(false);
+    }
+  };
+
+  // Handle keyboard events for subtask input
+  const handleSubtaskKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, taskId: number) => {
+    if (e.key === 'Enter' && !isCreatingSubtask) {
+      e.preventDefault();
+      handleCreateSubtask(taskId);
+    } else if (e.key === 'Escape') {
+      setNewSubtaskName('');
+      setAddingSubtaskForTask(null);
+    }
+  };
+
+  // Handle subtask toggle
+  const handleToggleSubtask = async (subtaskId: string, currentDone: boolean) => {
+    setTogglingSubtaskId(subtaskId);
+    try {
+      const response = await toggleSubtaskWebhook({
+        subtask_id: Number(subtaskId),
+        done: !currentDone,
+      });
+
+      if (response.success && response.data?.success) {
+        toast({
+          title: !currentDone ? t('subtasks.completed', 'Subtaak afgerond') : t('subtasks.reopened', 'Subtaak heropend'),
+        });
+        // Refetch workflow data
+        await queryClient.refetchQueries({
+          predicate: (query) => {
+            const key = query.queryKey[0];
+            return key === 'baserow-assignments' || key === 'baserow-tasks' || key === 'baserow-subtasks';
+          }
+        });
+      } else {
+        toast({
+          title: t('common.error', 'Fout'),
+          description: response.error || t('subtasks.toggleError', 'Fout bij bijwerken subtaak'),
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: t('common.error', 'Fout'),
+        description: t('subtasks.toggleError', 'Fout bij bijwerken subtaak'),
+        variant: 'destructive',
+      });
+    } finally {
+      setTogglingSubtaskId(null);
+    }
+  };
 
   // Find client details
   const client = klantenData?.results?.find(k => k.id === project?.client_id);
-  
-  // Find related opdrachten and taken
-  const relatedOpdrachten = opdrachtenData?.results?.filter(o => o.project_id === id) || [];
-  const relatedTaken = takenData?.results?.filter(t => 
-    relatedOpdrachten.some(o => o.id === t.gerelateerde_opdracht_id)
-  ) || [];
+
+  // Sort assignments by ID and transform for display
+  const sortedWorkflow = [...workflow].sort((a, b) => a.id - b.id);
+
+  // Transform workflow data: Assignments -> Tasks -> Subtasks
+  const workflowStages = sortedWorkflow.map((assignment, index) => ({
+    assignmentNumber: index + 1,
+    assignmentId: assignment.id,
+    assignmentName: assignment.description,
+    assignmentStatus: assignment.status?.value,
+    startDate: assignment.start_date ? format(new Date(assignment.start_date), 'dd MMMM', { locale }) : undefined,
+    deadline: assignment.deadline ? format(new Date(assignment.deadline), 'dd MMMM', { locale }) : undefined,
+    tasks: assignment.tasks.map((task) => ({
+      id: task.id,
+      name: task.description,
+      completed: task.status?.value === 'Afgerond' || task.status?.value === 'Completed',
+      completedDate: task.completed_at ? format(new Date(task.completed_at), 'dd MMMM yyyy', { locale }) : undefined,
+      startDate: assignment.start_date ? format(new Date(assignment.start_date), 'dd MMMM', { locale }) : undefined,
+      expectedCompletion: task.deadline ? format(new Date(task.deadline), 'dd MMMM', { locale }) : undefined,
+      status: task.status?.value,
+      subtasks: task.subtasks.map((subtask: { id: number; name: string; done: boolean }) => ({
+        id: subtask.id.toString(),
+        text: subtask.name,
+        completed: subtask.done,
+      })),
+    })),
+  }));
 
   const handleSendReminder = () => {
     if (!project) return;
@@ -205,61 +343,188 @@ export default function ProjectDetailPage() {
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="mt-0">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6">
-                <h2 className={`${responsiveHeading.h4} mb-3 xs:mb-4`}>
-                  {t('projects.detail.workflowStages')}
-                </h2>
-                <ProjectStageTracker 
-                  stages={[
-                    {
-                      id: 1,
-                      name: 'Documentatie aanvragen',
-                      completed: true,
-                      completedDate: '5 oktober 2025',
-                      checklist: [
-                        { id: '1-1', text: 'Verkoopfacturen verzameld', completed: true },
-                        { id: '1-2', text: 'Aankoopfacturen verzameld', completed: true },
-                        { id: '1-3', text: 'Bankafschriften ontvangen', completed: true },
-                      ]
-                    },
-                    {
-                      id: 2,
-                      name: 'Controle & Verwerking',
-                      completed: false,
-                      startDate: '6 oktober',
-                      expectedCompletion: '13 oktober',
-                      checklist: [
-                        { id: '2-1', text: 'Facturen verwerkt in systeem', completed: true },
-                        { id: '2-2', text: 'BTW berekend (bezig)', completed: false },
-                        { id: '2-3', text: 'Controle op fouten', completed: false },
-                      ]
-                    },
-                    {
-                      id: 3,
-                      name: 'Aangifte indienen',
-                      completed: false,
-                      startDate: '14 oktober',
-                      checklist: [
-                        { id: '3-1', text: 'Definitieve controle', completed: false },
-                        { id: '3-2', text: 'BTW aangifte indienen bij Belastingdienst', completed: false },
-                        { id: '3-3', text: 'Bevestiging ontvangen', completed: false },
-                      ]
-                    },
-                    {
-                      id: 4,
-                      name: 'Betaling & Afsluiting',
-                      completed: false,
-                      startDate: '17 oktober',
-                      checklist: [
-                        { id: '4-1', text: 'Betaling gecontroleerd', completed: false },
-                        { id: '4-2', text: 'Klant geïnformeerd', completed: false },
-                        { id: '4-3', text: 'Project afgesloten', completed: false },
-                      ]
-                    }
-                  ]}
-                  projectId={project.id}
-                />
+              {/* Add Assignment Button */}
+              <div className="flex justify-end mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 xs:h-9 text-xs xs:text-sm"
+                  onClick={() => setCreateAssignmentOpen(true)}
+                >
+                  <Plus className="w-3 h-3 xs:w-4 xs:h-4 mr-1" />
+                  {t('projects.addAssignment', 'Opdracht')}
+                </Button>
               </div>
+
+              {workflowLoading ? (
+                <div className="space-y-4">
+                  <Skeleton className="h-32" />
+                  <Skeleton className="h-32" />
+                </div>
+              ) : workflowStages.length === 0 ? (
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6">
+                  <p className="text-sm text-muted-foreground">{t('projects.noAssignments', 'Geen opdrachten voor dit project')}</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {workflowStages.map((assignment) => {
+                    const allTasksCompleted = assignment.tasks.length > 0 && assignment.tasks.every(t => t.completed);
+                    const someTasksCompleted = assignment.tasks.some(t => t.completed);
+                    const assignmentStatusLabel = allTasksCompleted ? t('projects.workflowStatus.complete') : someTasksCompleted ? t('projects.workflowStatus.inProgress') : t('projects.workflowStatus.notStarted');
+                    const statusBgColor = allTasksCompleted ? 'bg-green-100 text-green-800' : someTasksCompleted ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800';
+
+                    return (
+                      <Card key={assignment.assignmentId} className="overflow-hidden">
+                        {/* Assignment Header */}
+                        <div className={`px-4 py-3 border-b ${allTasksCompleted ? 'bg-green-50' : someTasksCompleted ? 'bg-blue-50' : 'bg-gray-50'}`}>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              {allTasksCompleted ? (
+                                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                              ) : (
+                                <Circle className={`w-5 h-5 flex-shrink-0 ${someTasksCompleted ? 'text-blue-500' : 'text-gray-400'}`} />
+                              )}
+                              <div>
+                                <h3 className="font-semibold text-foreground">
+                                  {assignment.assignmentNumber}. {assignment.assignmentName}
+                                </h3>
+                                {(assignment.startDate || assignment.deadline) && (
+                                  <p className="text-xs text-muted-foreground">
+                                    {assignment.startDate && `${t('projects.detail.start')}: ${assignment.startDate}`}
+                                    {assignment.startDate && assignment.deadline && ' • '}
+                                    {assignment.deadline && `${t('projects.detail.deadline')}: ${assignment.deadline}`}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            <Badge className={statusBgColor}>{assignmentStatusLabel}</Badge>
+                          </div>
+                        </div>
+
+                        {/* Tasks */}
+                        <CardContent className="p-0">
+                          <div className="divide-y">
+                            {assignment.tasks.map((task) => {
+                              const taskStatusLabel = task.completed ? t('projects.workflowStatus.complete') : task.status === 'In behandeling' ? t('projects.workflowStatus.inProgress') : t('projects.workflowStatus.notStarted');
+                              const taskStatusColor = task.completed ? 'bg-green-100 text-green-800' : task.status === 'In behandeling' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800';
+
+                              return (
+                                <div key={task.id} className={`px-4 py-3 ${task.completed ? 'bg-green-50/30' : ''}`}>
+                                  <div className="flex items-start justify-between mb-2">
+                                    <div className="flex items-center gap-2">
+                                      {task.completed ? (
+                                        <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                                      ) : (
+                                        <Circle className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                                      )}
+                                      <span className={`text-sm font-medium ${task.completed ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
+                                        {task.name}
+                                      </span>
+                                    </div>
+                                    <Badge className={`text-xs ${taskStatusColor}`}>{taskStatusLabel}</Badge>
+                                  </div>
+
+                                  {/* Task dates */}
+                                  {(task.completedDate || task.expectedCompletion) && (
+                                    <p className="text-xs text-muted-foreground ml-6 mb-2">
+                                      {task.completed && task.completedDate
+                                        ? `${t('projects.detail.completedOn')} ${task.completedDate}`
+                                        : task.expectedCompletion
+                                        ? `${t('projects.detail.expectedCompletion')}: ${task.expectedCompletion}`
+                                        : ''}
+                                    </p>
+                                  )}
+
+                                  {/* Subtasks */}
+                                  <div className="ml-6 mt-2 space-y-1.5">
+                                    {task.subtasks.map((subtask) => (
+                                      <div key={subtask.id} className="flex items-center gap-2">
+                                        <Checkbox
+                                          id={`subtask-${subtask.id}`}
+                                          checked={subtask.completed}
+                                          disabled={togglingSubtaskId === subtask.id}
+                                          onCheckedChange={() => handleToggleSubtask(subtask.id, subtask.completed)}
+                                          className="h-4 w-4 cursor-pointer"
+                                        />
+                                        <label
+                                          htmlFor={`subtask-${subtask.id}`}
+                                          className={`text-sm cursor-pointer ${subtask.completed ? 'text-muted-foreground line-through' : 'text-foreground'}`}
+                                        >
+                                          {subtask.text}
+                                        </label>
+                                      </div>
+                                    ))}
+
+                                    {/* Add Subtask Input/Button */}
+                                    {addingSubtaskForTask === task.id ? (
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <Input
+                                          ref={subtaskInputRef}
+                                          type="text"
+                                          value={newSubtaskName}
+                                          onChange={(e) => setNewSubtaskName(e.target.value)}
+                                          onKeyDown={(e) => handleSubtaskKeyDown(e, task.id)}
+                                          onBlur={() => {
+                                            if (!newSubtaskName.trim()) {
+                                              setAddingSubtaskForTask(null);
+                                            }
+                                          }}
+                                          placeholder={t('subtasks.namePlaceholder', 'Naam subtaak...')}
+                                          className="h-7 text-sm flex-1"
+                                          disabled={isCreatingSubtask}
+                                        />
+                                        <Button
+                                          size="sm"
+                                          className="h-7 px-2 text-xs"
+                                          onClick={() => handleCreateSubtask(task.id)}
+                                          disabled={isCreatingSubtask || !newSubtaskName.trim()}
+                                        >
+                                          {isCreatingSubtask ? '...' : t('common.add', 'Toevoegen')}
+                                        </Button>
+                                      </div>
+                                    ) : (
+                                      <button
+                                        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mt-1"
+                                        onClick={() => setAddingSubtaskForTask(task.id)}
+                                      >
+                                        <Plus className="w-3 h-3" />
+                                        {t('projects.addSubtask', 'Subtaak')}
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+
+                            {/* Empty tasks state */}
+                            {assignment.tasks.length === 0 && (
+                              <div className="px-4 py-3 text-sm text-muted-foreground">
+                                {t('projects.noTasks', 'Geen taken voor deze opdracht')}
+                              </div>
+                            )}
+
+                            {/* Add Task Button */}
+                            <div className="px-4 py-3 border-t">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 text-xs text-muted-foreground hover:text-foreground w-full justify-start"
+                                onClick={() => {
+                                  setSelectedAssignment({ id: assignment.assignmentId, name: assignment.assignmentName });
+                                  setCreateTaskOpen(true);
+                                }}
+                              >
+                                <Plus className="w-3 h-3 mr-1" />
+                                {t('projects.addTask', 'Taak toevoegen')}
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )}
             </TabsContent>
 
             {/* Opdrachten Tab */}
@@ -268,31 +533,33 @@ export default function ProjectDetailPage() {
                 <h2 className={`${responsiveHeading.h4} mb-3 xs:mb-4`}>
                   {t('projects.linkedAssignments', 'Gekoppelde Opdrachten')}
                 </h2>
-                {relatedOpdrachten.length === 0 ? (
+                {workflowLoading ? (
+                  <div className="space-y-3">
+                    <Skeleton className="h-24" />
+                    <Skeleton className="h-24" />
+                  </div>
+                ) : !assignments || assignments.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t('projects.noAssignments', 'Geen opdrachten gekoppeld aan dit project')}</p>
                 ) : (
                   <div className="space-y-3">
-                    {relatedOpdrachten.map((opdracht) => (
-                      <Link key={opdracht.id} to={`/assignments/${opdracht.id}`}>
-                        <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                          <CardContent className="p-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <OpdrachtTypeBadge type={opdracht.type_opdracht} />
-                              <Badge variant="outline">{opdracht.status}</Badge>
-                            </div>
-                            <h4 className="font-medium text-sm">{opdracht.opdracht_naam}</h4>
-                            <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-                              <span>{opdracht.verantwoordelijk}</span>
-                              {opdracht.deadline && (
-                                <span>Deadline: {format(new Date(opdracht.deadline), 'dd MMM', { locale })}</span>
-                              )}
-                            </div>
-                            {opdracht.voortgang_percentage !== undefined && (
-                              <Progress value={opdracht.voortgang_percentage} className="h-1.5 mt-2" />
+                    {assignments.map((assignment) => (
+                      <Card key={assignment.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            {assignment.assignment_type && (
+                              <Badge className="bg-blue-100 text-blue-800">{assignment.assignment_type.value}</Badge>
                             )}
-                          </CardContent>
-                        </Card>
-                      </Link>
+                            <Badge variant="outline">{assignment.status?.value || '-'}</Badge>
+                          </div>
+                          <h4 className="font-medium text-sm">{assignment.description}</h4>
+                          <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+                            <span>{assignment.assignment_id}</span>
+                            {assignment.deadline && (
+                              <span>{t('projects.detail.deadline')}: {format(new Date(assignment.deadline), 'dd MMM', { locale })}</span>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
                 )}
@@ -305,23 +572,28 @@ export default function ProjectDetailPage() {
                 <h2 className={`${responsiveHeading.h4} mb-3 xs:mb-4`}>
                   {t('projects.projectTasks', 'Project Taken')}
                 </h2>
-                {relatedTaken.length === 0 ? (
+                {workflowLoading ? (
+                  <div className="space-y-3">
+                    <Skeleton className="h-24" />
+                    <Skeleton className="h-24" />
+                  </div>
+                ) : !tasks || tasks.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t('projects.noTasks', 'Geen taken voor dit project')}</p>
                 ) : (
                   <div className="space-y-3">
-                    {relatedTaken.map((taak) => (
-                      <Card key={taak.id} className="hover:shadow-md transition-shadow">
+                    {tasks.map((task) => (
+                      <Card key={task.id} className="hover:shadow-md transition-shadow">
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between mb-2">
-                            <Badge variant={taak.status === 'Afgerond' ? 'default' : 'outline'}>
-                              {taak.status}
+                            <Badge variant={task.status?.value === 'Afgerond' ? 'default' : 'outline'}>
+                              {task.status?.value || '-'}
                             </Badge>
-                            {taak.deadline && <TaskDeadlineBadge deadline={taak.deadline} />}
+                            {task.deadline && <TaskDeadlineBadge deadline={task.deadline} />}
                           </div>
-                          <h4 className="font-medium text-sm">{taak.taak_omschrijving}</h4>
+                          <h4 className="font-medium text-sm">{task.description}</h4>
                           <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-                            <span>{taak.toegewezen_aan}</span>
-                            <span>{taak.priority}</span>
+                            <span>{task.task_id}</span>
+                            {task.priority && <span>{task.priority.value}</span>}
                           </div>
                         </CardContent>
                       </Card>
@@ -450,15 +722,15 @@ export default function ProjectDetailPage() {
             <div className="space-y-2 text-xs xs:text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">{t('projects.detail.assignments')}</span>
-                <span className="font-medium">{relatedOpdrachten.length}</span>
+                <span className="font-medium">{assignments?.length || 0}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">{t('projects.detail.tasks')}</span>
-                <span className="font-medium">{relatedTaken.length}</span>
+                <span className="font-medium">{tasks?.length || 0}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">{t('projects.detail.completed')}</span>
-                <span className="font-medium">{relatedTaken.filter(task => task.status === 'Afgerond').length}</span>
+                <span className="font-medium">{tasks?.filter(task => task.status?.value === 'Afgerond').length || 0}</span>
               </div>
             </div>
           </div>
@@ -508,10 +780,27 @@ export default function ProjectDetailPage() {
       </div>
 
       {project && (
-        <UpdateStatusDialog 
+        <UpdateStatusDialog
           project={project}
           open={statusDialogOpen}
           onOpenChange={setStatusDialogOpen}
+        />
+      )}
+
+      {/* Create Assignment Dialog */}
+      <CreateAssignmentDialog
+        projectId={id || ''}
+        open={createAssignmentOpen}
+        onOpenChange={setCreateAssignmentOpen}
+      />
+
+      {/* Create Task Dialog */}
+      {selectedAssignment && (
+        <CreateAssignmentTaskDialog
+          assignmentId={selectedAssignment.id}
+          assignmentName={selectedAssignment.name}
+          open={createTaskOpen}
+          onOpenChange={setCreateTaskOpen}
         />
       )}
     </div>

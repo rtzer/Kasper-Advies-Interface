@@ -72,6 +72,10 @@ export default defineConfig(({ mode }) => {
                   'prospect-lost': env.N8N_PROSPECT_LOST_WEBHOOK_URL,
                   'create-project': env.N8N_CREATE_PROJECT_WEBHOOK_URL,
                   'update-project-status': env.N8N_UPDATE_PROJECT_STATUS_WEBHOOK_URL,
+                  'create-assignment': env.N8N_CREATE_ASSIGNMENT_WEBHOOK_URL,
+                  'create-task': env.N8N_CREATE_TASK_WEBHOOK_URL,
+                  'create-subtask': env.N8N_CREATE_SUBTASK_WEBHOOK_URL,
+                  'toggle-subtask': env.N8N_TOGGLE_SUBTASK_WEBHOOK_URL,
                 };
 
                 const webhookUrl = webhookUrls[webhookType];

@@ -15,6 +15,10 @@ const WEBHOOK_URLS: Record<string, string | undefined> = {
   'prospect-lost': process.env.N8N_PROSPECT_LOST_WEBHOOK_URL,
   'create-project': process.env.N8N_CREATE_PROJECT_WEBHOOK_URL,
   'update-project-status': process.env.N8N_UPDATE_PROJECT_STATUS_WEBHOOK_URL,
+  'create-assignment': process.env.N8N_CREATE_ASSIGNMENT_WEBHOOK_URL,
+  'create-task': process.env.N8N_CREATE_TASK_WEBHOOK_URL,
+  'create-subtask': process.env.N8N_CREATE_SUBTASK_WEBHOOK_URL,
+  'toggle-subtask': process.env.N8N_TOGGLE_SUBTASK_WEBHOOK_URL,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

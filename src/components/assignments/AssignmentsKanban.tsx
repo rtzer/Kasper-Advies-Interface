@@ -26,15 +26,15 @@ interface AssignmentsKanbanProps {
   filterType?: string;
   filterVerantwoordelijke?: string;
   onlyMine?: boolean;
-  currentUserName?: string;
+  currentUserId?: string;
 }
 
-export function AssignmentsKanban({ 
-  filterStatus, 
-  filterType, 
+export function AssignmentsKanban({
+  filterStatus,
+  filterType,
   filterVerantwoordelijke,
   onlyMine,
-  currentUserName,
+  currentUserId,
 }: AssignmentsKanbanProps) {
   const { t } = useTranslation(['common']);
   const { toast } = useToast();
@@ -52,8 +52,8 @@ export function AssignmentsKanban({
   if (filterVerantwoordelijke && filterVerantwoordelijke !== 'all') {
     filteredOpdrachten = filteredOpdrachten.filter(o => o.verantwoordelijk === filterVerantwoordelijke);
   }
-  if (onlyMine && currentUserName) {
-    filteredOpdrachten = filteredOpdrachten.filter(o => o.verantwoordelijk === currentUserName);
+  if (onlyMine && currentUserId) {
+    filteredOpdrachten = filteredOpdrachten.filter(o => o.user_ids?.includes(currentUserId));
   }
 
   const handleDragEnd = async (result: DropResult) => {

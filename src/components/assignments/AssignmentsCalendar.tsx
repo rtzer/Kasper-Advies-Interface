@@ -17,14 +17,14 @@ interface AssignmentsCalendarProps {
   filterType?: string;
   filterVerantwoordelijke?: string;
   onlyMine?: boolean;
-  currentUserName?: string;
+  currentUserId?: string;
 }
 
 export function AssignmentsCalendar({
   filterType,
   filterVerantwoordelijke,
   onlyMine,
-  currentUserName,
+  currentUserId,
 }: AssignmentsCalendarProps) {
   const { t, i18n } = useTranslation(['common']);
   const locale = i18n.language === 'nl' ? nl : enUS;
@@ -42,8 +42,8 @@ export function AssignmentsCalendar({
   if (filterVerantwoordelijke && filterVerantwoordelijke !== 'all') {
     filteredOpdrachten = filteredOpdrachten.filter(o => o.verantwoordelijk === filterVerantwoordelijke);
   }
-  if (onlyMine && currentUserName) {
-    filteredOpdrachten = filteredOpdrachten.filter(o => o.verantwoordelijk === currentUserName);
+  if (onlyMine && currentUserId) {
+    filteredOpdrachten = filteredOpdrachten.filter(o => o.user_ids?.includes(currentUserId));
   }
 
   const opdrachtenOnDate = filteredOpdrachten.filter((o) => {

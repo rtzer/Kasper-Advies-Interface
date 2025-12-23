@@ -427,6 +427,7 @@ export interface Opdracht {
   
   // Verantwoordelijkheid & Goedkeuring
   verantwoordelijk: string;              // Hoofdverantwoordelijke (vaak Harm-Jan)
+  user_ids?: string[];                   // Baserow user IDs (voor filtering)
   team_members?: string[];               // Team dat eraan werkt
   goedkeurder?: string;                  // Wie moet aftekenen (vaak Harm-Jan)
   goedgekeurd_door?: string;             // Wie heeft afgetekend

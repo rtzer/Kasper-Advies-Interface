@@ -720,15 +720,77 @@
       "inReview": "In review",
       "waitingClient": "Wacht op klant",
       "blocked": "Geblokkeerd",
-      "completed": "Afgerond"
+      "completed": "Afgerond",
+      "concept": "Concept",
+      "actief": "Actief",
+      "onHold": "On hold",
+      "afgerond": "Afgerond",
+      "geannuleerd": "Geannuleerd"
     },
-    "workload": {
+    "workloadLevel": {
       "label": "Belasting",
       "low": "Laag",
       "normal": "Normaal",
       "high": "Hoog",
       "overloaded": "Overbelast"
-    }
+    },
+    "workflowStatus": {
+      "complete": "Compleet",
+      "inProgress": "In uitvoering",
+      "notStarted": "Nog niet gestart"
+    },
+    "detail": {
+      "backToProjects": "Terug naar projecten",
+      "blocked": "Geblokkeerd",
+      "sending": "Verzenden...",
+      "sendReminder": "Herinnering sturen",
+      "sendReminderShort": "Herinneren",
+      "updateStatus": "Status bijwerken",
+      "totalProgress": "Totale voortgang",
+      "notFound": "Project niet gevonden",
+      "notFoundDescription": "Dit project bestaat niet of is verwijderd",
+      "reminderSent": "Herinnering verzonden",
+      "reminderSentDescription": "Herinnering verzonden naar {{name}}",
+      "reminderError": "Fout bij verzenden",
+      "reminderErrorDescription": "Kon herinnering niet verzenden",
+      "reminderSentEvent": "Herinnering verzonden",
+      "projectCreated": "Project aangemaakt",
+      "projectStarted": "Project gestart",
+      "dateUnknown": "Datum onbekend",
+      "uploadDocument": "Document uploaden",
+      "client": "Klant",
+      "call": "Bellen",
+      "email": "Email",
+      "team": "Team",
+      "responsible": "Verantwoordelijke",
+      "statistics": "Statistieken",
+      "assignments": "Opdrachten",
+      "tasks": "Taken",
+      "completed": "Afgerond",
+      "importantDates": "Belangrijke data",
+      "deadline": "Deadline",
+      "lastReminder": "Laatste herinnering",
+      "projectBlocked": "Project geblokkeerd",
+      "resolveBlock": "Blokkade oplossen",
+      "start": "Start",
+      "completedOn": "Afgerond op",
+      "expectedCompletion": "Verwacht klaar"
+    },
+    "addAssignment": "Opdracht",
+    "addTask": "Taak toevoegen",
+    "addSubtask": "Subtaak",
+    "updateStatusDialog": {
+      "title": "Status bijwerken",
+      "description": "Wijzig de status van {{name}}",
+      "newStatus": "Nieuwe status",
+      "cancel": "Annuleren",
+      "update": "Bijwerken",
+      "updating": "Bijwerken...",
+      "success": "Status succesvol bijgewerkt",
+      "error": "Fout bij bijwerken status"
+    },
+    "newProject": "Nieuw project",
+    "deadline": "Deadline"
   },
   "common": {
     "save": "Opslaan",
@@ -743,6 +805,7 @@
     "today": "Vandaag",
     "more": "meer",
     "filters": "Filters",
+    "comingSoon": "Binnenkort beschikbaar",
     "actions": {
       "reply": "Antwoorden"
     },
