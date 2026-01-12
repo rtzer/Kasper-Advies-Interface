@@ -109,6 +109,23 @@ All colors MUST be HSL.
     /* Hover states */
     --conversation-hover: 210 40% 98%;
     --conversation-active: 217.2 91.2% 95%;
+    
+    /* Alert tokens (Feedback UI) */
+    --alert-success-bg: 142 76% 95%;
+    --alert-success-text: 142 76% 30%;
+    --alert-success-border: 142 76% 80%;
+    
+    --alert-warning-bg: 38 92% 95%;
+    --alert-warning-text: 38 92% 30%;
+    --alert-warning-border: 38 92% 75%;
+    
+    --alert-error-bg: 0 84% 95%;
+    --alert-error-text: 0 84% 35%;
+    --alert-error-border: 0 84% 80%;
+    
+    --alert-info-bg: 217 91% 95%;
+    --alert-info-text: 217 91% 35%;
+    --alert-info-border: 217 91% 80%;
   }
 
   .dark {
@@ -207,6 +224,23 @@ All colors MUST be HSL.
     /* Hover states - dark mode */
     --conversation-hover: 217.2 32.6% 20%;
     --conversation-active: 217.2 32.6% 25%;
+    
+    /* Alert tokens - dark mode */
+    --alert-success-bg: 142 76% 15%;
+    --alert-success-text: 142 76% 70%;
+    --alert-success-border: 142 76% 40%;
+    
+    --alert-warning-bg: 38 92% 15%;
+    --alert-warning-text: 38 92% 70%;
+    --alert-warning-border: 38 92% 40%;
+    
+    --alert-error-bg: 0 84% 15%;
+    --alert-error-text: 0 84% 70%;
+    --alert-error-border: 0 84% 40%;
+    
+    --alert-info-bg: 217 91% 15%;
+    --alert-info-text: 217 91% 70%;
+    --alert-info-border: 217 91% 40%;
   }
 }
 
