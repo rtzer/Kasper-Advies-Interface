@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { 
@@ -6,12 +5,6 @@ import {
   Inbox, 
   BarChart3, 
   Settings, 
-  MessageSquare, 
-  Mail, 
-  Phone, 
-  Video, 
-  MessageCircle,
-  ChevronDown,
   X,
   Palette
 } from "lucide-react";
@@ -22,7 +15,6 @@ interface FlowbiteSidebarProps {
 }
 
 export function FlowbiteSidebar({ isOpen, onToggle }: FlowbiteSidebarProps) {
-  const [channelsOpen, setChannelsOpen] = useState(true);
   const { t } = useTranslation();
 
   const translatedMainRoutes = [
@@ -31,14 +23,6 @@ export function FlowbiteSidebar({ isOpen, onToggle }: FlowbiteSidebarProps) {
     { title: t('sidebar.analytics'), url: "/app/analytics", icon: BarChart3 },
     { title: "Brand Guide", url: "/app/docs/brand-guide-extended", icon: Palette },
     { title: t('sidebar.settings'), url: "/app/settings", icon: Settings },
-  ];
-
-  const translatedChannelRoutes = [
-    { title: t('sidebar.whatsapp'), url: "/app/inbox/channels/whatsapp", icon: MessageSquare, badge: 3 },
-    { title: t('sidebar.email'), url: "/app/inbox/channels/email", icon: Mail, badge: 2 },
-    { title: t('sidebar.sms'), url: "/app/inbox/channels/sms", icon: MessageCircle, badge: 1 },
-    { title: t('sidebar.phone'), url: "/app/inbox/channels/phone", icon: Phone },
-    { title: "Video", url: "/app/inbox/channels/video", icon: Video },
   ];
 
   return (
@@ -100,44 +84,7 @@ export function FlowbiteSidebar({ isOpen, onToggle }: FlowbiteSidebarProps) {
 
           {/* Divider */}
           <div className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
-            {/* Channels Dropdown */}
-            <button
-              type="button"
-              onClick={() => setChannelsOpen(!channelsOpen)}
-              className="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-            >
-              <MessageSquare className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <span className="flex-1 ms-3 text-left">{t('sidebar.channels')}</span>
-              <ChevronDown
-                className={`w-5 h-5 transition-transform ${
-                  channelsOpen ? 'rotate-180' : ''
-                }`}
-              />
-            </button>
-
-            {/* Channels List */}
-            <ul className={`${channelsOpen ? 'block' : 'hidden'} space-y-2 ps-6`}>
-              {translatedChannelRoutes.map((route) => (
-                <li key={route.url}>
-                  <NavLink
-                    to={route.url}
-                    className={({ isActive }) =>
-                      `flex items-center p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ${
-                        isActive ? 'bg-gray-100 dark:bg-gray-700' : ''
-                      }`
-                    }
-                  >
-                    <route.icon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                    <span className="ms-3 flex-1">{route.title}</span>
-                    {route.badge && (
-                      <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                        {route.badge}
-                      </span>
-                    )}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
+            {/* Channel filtering is handled inside the Inbox UI now */}
           </div>
         </div>
       </aside>

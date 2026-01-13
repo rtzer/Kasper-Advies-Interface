@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
@@ -8,8 +8,6 @@ import {
   FileText,
   CheckSquare,
   ChevronDown,
-  Home,
-  MessageSquare,
   BarChart3,
   Settings,
   Palette,
@@ -21,9 +19,6 @@ import {
   AlertCircle,
   Inbox,
   Layers,
-  Mail,
-  Phone,
-  Video,
 } from 'lucide-react';
 import { useProspectStats } from '@/lib/api/prospects';
 import { useInboxStats } from '@/lib/api/inboxItems';
@@ -64,15 +59,8 @@ export function AppSidebar() {
 
   const isActive = (path: string) => currentPath === path;
   const isGroupActive = (paths: string[]) => paths.some(path => currentPath.startsWith(path));
-  const isInboxGroupActive = isGroupActive(['/app/inbox']);
-
-  // Track if user manually closed the inbox group
-  const inboxManuallyClosedRef = useRef(false);
-  const prevPathRef = useRef<string | null>(null);
   
-  // Initialize inbox state based on current path to avoid flicker on mount
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => ({
-    inbox: isInboxGroupActive, // Initialize based on current path
     klanten: false,
     projecten: false,
     opdrachten: false,
@@ -83,34 +71,6 @@ export function AppSidebar() {
   const toggleGroup = (group: string) => {
     setOpenGroups(prev => ({ ...prev, [group]: !prev[group] }));
   };
-
-  // Handle inbox group auto-open/close logic on path changes
-  useEffect(() => {
-    const isNowOnInbox = isInboxGroupActive;
-    const wasOnInbox = prevPathRef.current?.startsWith('/app/inbox') ?? false;
-    
-    // On initial load (prevPathRef is null) or navigating TO inbox from different section
-    if (isNowOnInbox && (prevPathRef.current === null || !wasOnInbox)) {
-      // Only auto-open if not manually closed
-      if (!inboxManuallyClosedRef.current) {
-        setOpenGroups(prev => ({ ...prev, inbox: true }));
-      }
-      inboxManuallyClosedRef.current = false; // Reset on navigation to inbox
-    }
-    
-    // Reset manual close flag when navigating away from inbox
-    if (!isNowOnInbox && wasOnInbox) {
-      inboxManuallyClosedRef.current = false;
-    }
-    
-    prevPathRef.current = currentPath;
-  }, [currentPath, isInboxGroupActive]);
-
-  // Compute inbox open state directly to avoid flicker
-  // Auto-open if on inbox page (unless manually closed), otherwise use state
-  const inboxOpenState = isInboxGroupActive && !inboxManuallyClosedRef.current 
-    ? true 
-    : openGroups.inbox;
 
   const getNavCls = (active: boolean) =>
     active ? 'bg-ka-green/20 text-ka-navy dark:text-ka-green font-medium' : 'hover:bg-muted/50';
@@ -123,99 +83,15 @@ export function AppSidebar() {
           <SidebarGroupLabel>{t('common:common.navigation', 'Navigation')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {/* Inbox + Channels (nested) */}
-              <Collapsible
-                open={inboxOpenState}
-                onOpenChange={(open) => {
-                  setOpenGroups(prev => ({ ...prev, inbox: open }));
-                  // Track manual close when user closes while on inbox page
-                  if (!open && isInboxGroupActive) {
-                    inboxManuallyClosedRef.current = true;
-                  }
-                }}
-              >
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className={getNavCls(isGroupActive(['/app/inbox']))}>
-                      <Home className="h-4 w-4" />
-                      {!collapsed && (
-                        <>
-                          <span>{t('navigation:menu.inbox')}</span>
-                          <ChevronDown className="ml-auto h-4 w-4 transition-transform" />
-                        </>
-                      )}
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  {!collapsed && (
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild>
-                            <NavLink to="/app/inbox" className={getNavCls(isActive('/app/inbox'))}>
-                              {t('common:common.all', 'All')}
-                            </NavLink>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild>
-                            <NavLink
-                              to="/app/inbox/channels/whatsapp"
-                              className={getNavCls(isActive('/app/inbox/channels/whatsapp'))}
-                            >
-                              <MessageSquare className="h-3 w-3 mr-1" />
-                              {t('navigation:channels.whatsapp')}
-                            </NavLink>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild>
-                            <NavLink
-                              to="/app/inbox/channels/email"
-                              className={getNavCls(isActive('/app/inbox/channels/email'))}
-                            >
-                              <Mail className="h-3 w-3 mr-1" />
-                              {t('navigation:channels.email')}
-                            </NavLink>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild>
-                            <NavLink
-                              to="/app/inbox/channels/sms"
-                              className={getNavCls(isActive('/app/inbox/channels/sms'))}
-                            >
-                              <Inbox className="h-3 w-3 mr-1" />
-                              {t('navigation:channels.sms')}
-                            </NavLink>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild>
-                            <NavLink
-                              to="/app/inbox/channels/phone"
-                              className={getNavCls(isActive('/app/inbox/channels/phone'))}
-                            >
-                              <Phone className="h-3 w-3 mr-1" />
-                              {t('navigation:channels.phone')}
-                            </NavLink>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton asChild>
-                            <NavLink
-                              to="/app/inbox/channels/video"
-                              className={getNavCls(isActive('/app/inbox/channels/video'))}
-                            >
-                              <Video className="h-3 w-3 mr-1" />
-                              {t('navigation:channels.video')}
-                            </NavLink>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  )}
-                </SidebarMenuItem>
-              </Collapsible>
+              {/* Inbox */}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/app/inbox" className={getNavCls(isGroupActive(['/app/inbox']))}>
+                    <Inbox className="h-4 w-4" />
+                    {!collapsed && <span>{t('navigation:menu.inbox')}</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
 
               {/* Inbox Review */}
               <SidebarMenuItem>
