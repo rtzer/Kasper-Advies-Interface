@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FilterPopover } from "@/components/inbox/FilterPopover";
@@ -22,7 +22,7 @@ import { useUserStore } from "@/store/userStore";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 export default function FlowbiteUnifiedInbox() {
-  const { channel, id } = useParams<{ channel?: string; id?: string }>();
+  const { id } = useParams<{ id?: string }>();
   const { t, i18n } = useTranslation(['common', 'translation']);
   const currentLocale = i18n.language === 'en' ? enUS : nl;
   const { isMobile, isTablet } = useDeviceChecks();
@@ -32,7 +32,6 @@ export default function FlowbiteUnifiedInbox() {
   const { data: inboxStats } = useInboxStats();
   const conversations = conversationsData?.results || [];
   
-  const [selectedConversationId, setSelectedConversationId] = useState<string>(id || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -46,42 +45,17 @@ export default function FlowbiteUnifiedInbox() {
     missedCallsOnly: false,
   });
 
-  // Sync channel filter with /app/inbox/channels/:channel
-  useEffect(() => {
-    setFilters((prev) => ({
-      ...prev,
-      channel: channel || 'all',
-    }));
-  }, [channel]);
+  const resolvedConversationId = useMemo(() => {
+    if (id && conversations.some((c) => c.id === id)) return id;
+    return conversations[0]?.id || "";
+  }, [conversations, id]);
 
   const handleSelectConversation = (conversationId: string, options?: { replace?: boolean }) => {
-    setSelectedConversationId(conversationId);
-
-    const targetPath = channel
-      ? `/app/inbox/channels/${channel}/conversations/${conversationId}`
-      : `/app/inbox/conversations/${conversationId}`;
-
-    navigate(targetPath, { replace: options?.replace ?? false });
+    navigate(`/app/inbox/conversations/${conversationId}`, { replace: options?.replace ?? false });
   };
-
-  // Sync selection with /app/inbox/conversations/:id (if present)
-  useEffect(() => {
-    if (id && id !== selectedConversationId) {
-      setSelectedConversationId(id);
-    }
-  }, [id, selectedConversationId]);
-
-  // Ensure a conversation is selected by default so the chat (2nd column) is never empty
-  useEffect(() => {
-    if (!conversations.length) return;
-    if (id) return; // URL selection wins
-    if (!selectedConversationId || !conversations.some((c) => c.id === selectedConversationId)) {
-      handleSelectConversation(conversations[0].id, { replace: true });
-    }
-  }, [conversations, id, selectedConversationId]);
   
   // Get messages for selected conversation
-  const { data: messagesData } = useConversationMessages(selectedConversationId);
+  const { data: messagesData } = useConversationMessages(resolvedConversationId);
 
   // Calculate unread count
   const unreadCount = useMemo(() => {
@@ -122,7 +96,7 @@ export default function FlowbiteUnifiedInbox() {
     });
   }, [conversations, searchQuery, filters, currentUser]);
 
-  const selectedConversation = conversations.find((c) => c.id === selectedConversationId);
+  const selectedConversation = conversations.find((c) => c.id === resolvedConversationId);
   
   // Transform messages to match FlowbiteChatView format
   const transformedMessages = (messagesData?.results || []).map((msg) => ({
@@ -248,12 +222,7 @@ export default function FlowbiteUnifiedInbox() {
               const isMissedCall = conversation.primary_channel === 'Telefoon' && conversation.status === 'pending';
               
               return (
-                <button
-                  key={conversation.id}
-                  type="button"
-                  className="w-full text-left"
-                  onClick={() => handleSelectConversation(conversation.id)}
-                >
+                <div key={conversation.id} className="w-full">
                   <FlowbiteConversationItem
                     id={conversation.id}
                     name={conversation.klant_naam}
@@ -261,7 +230,7 @@ export default function FlowbiteUnifiedInbox() {
                     timestamp={lastMessageTime}
                     channel={normalizeChannelForIcon(conversation.primary_channel)}
                     unreadCount={conversation.is_unread ? 1 : 0}
-                    isActive={conversation.id === selectedConversationId}
+                    isActive={conversation.id === resolvedConversationId}
                     onClick={() => handleSelectConversation(conversation.id)}
                     avatarUrl={`https://api.dicebear.com/7.x/avataaars/svg?seed=${conversation.klant_naam}`}
                     priority={conversation.priority}
@@ -269,7 +238,7 @@ export default function FlowbiteUnifiedInbox() {
                     tags={conversation.tags}
                     isMissedCall={isMissedCall}
                   />
-                </button>
+                </div>
               );
             })
           ) : (
