@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FilterPopover } from "@/components/inbox/FilterPopover";
 import { CreateConversationDialog } from "@/components/inbox/CreateConversationDialog";
@@ -22,16 +22,17 @@ import { useUserStore } from "@/store/userStore";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 export default function FlowbiteUnifiedInbox() {
-  const { channel } = useParams<{ channel?: string }>();
+  const { channel, id } = useParams<{ channel?: string; id?: string }>();
   const { t, i18n } = useTranslation(['common', 'translation']);
   const currentLocale = i18n.language === 'en' ? enUS : nl;
   const { isMobile, isTablet } = useDeviceChecks();
+  const navigate = useNavigate();
   const { currentUser } = useUserStore();
   const { data: conversationsData, isLoading } = useConversations();
   const { data: inboxStats } = useInboxStats();
   const conversations = conversationsData?.results || [];
   
-  const [selectedConversationId, setSelectedConversationId] = useState<string>(conversations[0]?.id || "1");
+  const [selectedConversationId, setSelectedConversationId] = useState<string>(id || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -52,6 +53,32 @@ export default function FlowbiteUnifiedInbox() {
       channel: channel || 'all',
     }));
   }, [channel]);
+
+  const handleSelectConversation = (conversationId: string, options?: { replace?: boolean }) => {
+    setSelectedConversationId(conversationId);
+
+    const targetPath = channel
+      ? `/app/inbox/channels/${channel}/conversations/${conversationId}`
+      : `/app/inbox/conversations/${conversationId}`;
+
+    navigate(targetPath, { replace: options?.replace ?? false });
+  };
+
+  // Sync selection with /app/inbox/conversations/:id (if present)
+  useEffect(() => {
+    if (id && id !== selectedConversationId) {
+      setSelectedConversationId(id);
+    }
+  }, [id, selectedConversationId]);
+
+  // Ensure a conversation is selected by default so the chat (2nd column) is never empty
+  useEffect(() => {
+    if (!conversations.length) return;
+    if (id) return; // URL selection wins
+    if (!selectedConversationId || !conversations.some((c) => c.id === selectedConversationId)) {
+      handleSelectConversation(conversations[0].id, { replace: true });
+    }
+  }, [conversations, id, selectedConversationId]);
   
   // Get messages for selected conversation
   const { data: messagesData } = useConversationMessages(selectedConversationId);
@@ -112,7 +139,7 @@ export default function FlowbiteUnifiedInbox() {
     <div className="flex h-[calc(100vh-64px)]">
       {/* Conversation List - Always visible, responsive width */}
       <div className={`${
-        isMobile ? 'w-full' : isTablet ? 'w-80' : 'w-96'
+        isMobile ? 'w-72' : isTablet ? 'w-80' : 'w-96'
       } bg-card border-r border-border flex flex-col`}>
         {/* Header - Optimized for 360px */}
         <div className="px-3 xs:px-4 py-3 xs:py-4 border-b border-border">
@@ -221,7 +248,12 @@ export default function FlowbiteUnifiedInbox() {
               const isMissedCall = conversation.primary_channel === 'Telefoon' && conversation.status === 'pending';
               
               return (
-                <Link key={conversation.id} to={`/app/inbox/conversations/${conversation.id}`}>
+                <button
+                  key={conversation.id}
+                  type="button"
+                  className="w-full text-left"
+                  onClick={() => handleSelectConversation(conversation.id)}
+                >
                   <FlowbiteConversationItem
                     id={conversation.id}
                     name={conversation.klant_naam}
@@ -230,14 +262,14 @@ export default function FlowbiteUnifiedInbox() {
                     channel={normalizeChannelForIcon(conversation.primary_channel)}
                     unreadCount={conversation.is_unread ? 1 : 0}
                     isActive={conversation.id === selectedConversationId}
-                    onClick={() => setSelectedConversationId(conversation.id)}
+                    onClick={() => handleSelectConversation(conversation.id)}
                     avatarUrl={`https://api.dicebear.com/7.x/avataaars/svg?seed=${conversation.klant_naam}`}
                     priority={conversation.priority}
                     assignedTo={conversation.toegewezen_aan}
                     tags={conversation.tags}
                     isMissedCall={isMissedCall}
                   />
-                </Link>
+                </button>
               );
             })
           ) : (
@@ -254,22 +286,27 @@ export default function FlowbiteUnifiedInbox() {
         </div>
       </div>
 
-      {/* Chat View - Hidden on mobile (use conversation detail page instead) */}
-      {!isMobile && (
-        <div className="flex-1 flex flex-col">
-          {selectedConversation && (
-            <FlowbiteChatView
-              conversationName={selectedConversation.klant_naam}
-              conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation.klant_naam}`}
-              channel={normalizeChannelForIcon(selectedConversation.primary_channel)}
-              messages={transformedMessages}
-              isOnline={selectedConversation.status === 'open'}
-              clientId={selectedConversation.klant_id}
-              onProfileClick={() => setContactSheetOpen(true)}
-            />
-          )}
-        </div>
-      )}
+      {/* Chat View (always visible as 2nd column) */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {selectedConversation ? (
+          <FlowbiteChatView
+            conversationName={selectedConversation.klant_naam}
+            conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation.klant_naam}`}
+            channel={normalizeChannelForIcon(selectedConversation.primary_channel)}
+            messages={transformedMessages}
+            isOnline={selectedConversation.status === 'open'}
+            clientId={selectedConversation.klant_id}
+            onProfileClick={() => setContactSheetOpen(true)}
+          />
+        ) : (
+          <div className="flex-1 flex items-center justify-center bg-background text-muted-foreground">
+            <div className="max-w-sm text-center px-4">
+              <p className="text-sm font-medium text-foreground">{t('inbox.selectConversation', 'Selecteer een gesprek')}</p>
+              <p className="text-xs mt-1">{t('inbox.selectConversationHint', 'Kies links een gesprek om berichten te bekijken.')}</p>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Create Conversation Dialog */}
       <CreateConversationDialog

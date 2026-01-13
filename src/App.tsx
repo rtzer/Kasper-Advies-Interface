@@ -40,7 +40,6 @@ import DienstenMKB from "./pages/DienstenMKB";
 import DienstenZZP from "./pages/DienstenZZP";
 import ContactKaspers from "./pages/ContactKaspers";
 import FlowbiteUnifiedInbox from "./pages/FlowbiteUnifiedInbox";
-import FlowbiteConversationDetail from "./pages/FlowbiteConversationDetail";
 import FlowbiteCustomerDetail from "./pages/FlowbiteCustomerDetail";
 import FlowbiteSettings from "./pages/FlowbiteSettings";
 import FlowbiteAnalytics from "./pages/FlowbiteAnalytics";
@@ -93,7 +92,8 @@ const App = () => {
               <Route path="/app/inbox" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
               <Route path="/app/inbox/review" element={<ProtectedRoute><AppLayout><InboxReviewPage /></AppLayout></ProtectedRoute>} />
               <Route path="/app/inbox/channels/:channel" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
-              <Route path="/app/inbox/conversations/:id" element={<ProtectedRoute><AppLayout><FlowbiteConversationDetail /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/inbox/conversations/:id" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/inbox/channels/:channel/conversations/:id" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
 
               <Route path="/app/prospects" element={<ProtectedRoute><AppLayout><ProspectsPage /></AppLayout></ProtectedRoute>} />
 
