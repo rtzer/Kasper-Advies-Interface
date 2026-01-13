@@ -22,7 +22,7 @@ import { useUserStore } from "@/store/userStore";
 
 export default function FlowbiteUnifiedInbox() {
   const { channel } = useParams<{ channel?: string }>();
-  const { t, i18n } = useTranslation('common');
+  const { t, i18n } = useTranslation(['common', 'translation']);
   const currentLocale = i18n.language === 'en' ? enUS : nl;
   const { isMobile, isTablet } = useDeviceChecks();
   const { currentUser } = useUserStore();
@@ -168,18 +168,18 @@ export default function FlowbiteUnifiedInbox() {
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-xs">
                   <div className="text-xs space-y-1">
-                    <p className="font-semibold mb-2">{t('inbox.shortcuts.title', 'Sneltoetsen')}</p>
+                    <p className="font-semibold mb-2">{t('translation:inbox.shortcuts.title')}</p>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                       <span className="text-muted-foreground">Ctrl+K</span>
-                      <span>{t('inbox.shortcuts.search', 'Zoeken')}</span>
+                      <span>{t('translation:inbox.shortcuts.search')}</span>
                       <span className="text-muted-foreground">Ctrl+N</span>
-                      <span>{t('inbox.shortcuts.new', 'Nieuw gesprek')}</span>
+                      <span>{t('translation:inbox.shortcuts.new')}</span>
                       <span className="text-muted-foreground">Ctrl+Enter</span>
-                      <span>{t('inbox.shortcuts.send', 'Versturen')}</span>
+                      <span>{t('translation:inbox.shortcuts.send')}</span>
                       <span className="text-muted-foreground">↑/↓</span>
-                      <span>{t('inbox.shortcuts.navigate', 'Navigeren')}</span>
+                      <span>{t('translation:inbox.shortcuts.navigate')}</span>
                       <span className="text-muted-foreground">Esc</span>
-                      <span>{t('inbox.shortcuts.close', 'Sluiten')}</span>
+                      <span>{t('translation:inbox.shortcuts.close')}</span>
                     </div>
                   </div>
                 </TooltipContent>
@@ -195,7 +195,7 @@ export default function FlowbiteUnifiedInbox() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8 xs:pl-10 h-9 xs:h-10 text-xs xs:text-sm bg-[hsl(var(--conversation-hover))] border-primary/20 focus:border-primary focus:ring-primary/30"
-              placeholder={isMobile ? "Zoeken..." : t('inbox.searchPlaceholder')}
+              placeholder={t('inbox.searchPlaceholder')}
               title={t('inbox.searchTitle')}
             />
           </div>

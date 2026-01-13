@@ -163,7 +163,7 @@ export function AppSidebar() {
                               className={getNavCls(isActive('/app/inbox/channels/whatsapp'))}
                             >
                               <MessageSquare className="h-3 w-3 mr-1" />
-                              WhatsApp
+                              {t('navigation:channels.whatsapp')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -174,7 +174,7 @@ export function AppSidebar() {
                               className={getNavCls(isActive('/app/inbox/channels/email'))}
                             >
                               <Mail className="h-3 w-3 mr-1" />
-                              Email
+                              {t('navigation:channels.email')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -185,7 +185,7 @@ export function AppSidebar() {
                               className={getNavCls(isActive('/app/inbox/channels/sms'))}
                             >
                               <Inbox className="h-3 w-3 mr-1" />
-                              SMS
+                              {t('navigation:channels.sms')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -196,7 +196,7 @@ export function AppSidebar() {
                               className={getNavCls(isActive('/app/inbox/channels/phone'))}
                             >
                               <Phone className="h-3 w-3 mr-1" />
-                              {t('inbox.filters.phone', 'Telefoon')}
+                              {t('navigation:channels.phone')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -207,7 +207,7 @@ export function AppSidebar() {
                               className={getNavCls(isActive('/app/inbox/channels/video'))}
                             >
                               <Video className="h-3 w-3 mr-1" />
-                              Video
+                              {t('navigation:channels.video')}
                             </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>

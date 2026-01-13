@@ -92,7 +92,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-hide">
         <div className="space-y-1">
           <h3 className="px-3 pb-2 text-xs font-semibold text-ka-gray-500 dark:text-gray-400 uppercase tracking-wider">
-            Dagelijks
+            {t('navigation:sections.daily', 'Dagelijks')}
           </h3>
           
           {/* Inbox met Kanalen submenu */}
@@ -189,7 +189,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Secondary Navigation - Collapsible */}
         <Collapsible open={isOverigeOpen} onOpenChange={setIsOverigeOpen} className="pt-6">
           <CollapsibleTrigger className="w-full px-3 pb-2 flex items-center justify-between text-xs font-semibold text-ka-gray-500 dark:text-gray-400 uppercase tracking-wider hover:text-ka-gray-700 dark:hover:text-gray-300 transition-colors">
-            <span>Overige</span>
+            <span>{t('navigation:sections.other', 'Overige')}</span>
             <ChevronDown className={`w-4 h-4 transition-transform ${isOverigeOpen ? 'rotate-180' : ''}`} />
           </CollapsibleTrigger>
           <CollapsibleContent>

@@ -21,5 +21,9 @@
     "phone": "Telefoon",
     "video": "Video",
     "sms": "SMS"
+  },
+  "sections": {
+    "daily": "Dagelijks",
+    "other": "Overige"
   }
 }
