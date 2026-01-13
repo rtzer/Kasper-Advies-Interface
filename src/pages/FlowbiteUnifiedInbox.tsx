@@ -19,6 +19,7 @@ import { normalizeChannelForIcon } from "@/lib/utils/channelHelpers";
 import { useDeviceChecks } from "@/hooks/useBreakpoint";
 import { responsiveHeading, responsiveBody } from "@/lib/utils/typography";
 import { useUserStore } from "@/store/userStore";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 export default function FlowbiteUnifiedInbox() {
   const { channel } = useParams<{ channel?: string }>();
@@ -34,6 +35,7 @@ export default function FlowbiteUnifiedInbox() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [contactSheetOpen, setContactSheetOpen] = useState(false);
   const [filters, setFilters] = useState({
     status: 'all',
     channel: 'all',
@@ -263,14 +265,21 @@ export default function FlowbiteUnifiedInbox() {
               messages={transformedMessages}
               isOnline={selectedConversation.status === 'open'}
               clientId={selectedConversation.klant_id}
+              onProfileClick={() => setContactSheetOpen(true)}
             />
           )}
         </div>
       )}
 
-      {/* Customer Info Panel - Only on desktop */}
-      {!isMobile && !isTablet && (
-        <div className="w-80 bg-card border-l border-border overflow-y-auto">
+      {/* Create Conversation Dialog */}
+      <CreateConversationDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+      />
+
+      {/* Contact info popup (opens when profile is clicked) */}
+      <Sheet open={contactSheetOpen} onOpenChange={setContactSheetOpen}>
+        <SheetContent className="w-80 sm:max-w-sm p-0 overflow-y-auto">
           <div className="p-4 sm:p-6">
             {/* Customer Header */}
             <div className="text-center mb-4 sm:mb-6">
@@ -282,85 +291,87 @@ export default function FlowbiteUnifiedInbox() {
               <h3 className={`${responsiveHeading.h4} mb-2`}>
                 {selectedConversation?.klant_naam}
               </h3>
-              <Badge variant="secondary" className={`text-xs ${
-                selectedConversation?.status === 'open' 
-                  ? "bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]"
-                  : "bg-[hsl(var(--status-away)/0.1)] text-[hsl(var(--status-away))] border-[hsl(var(--status-away)/0.2)]"
-              }`}>
-                <span className={`w-2 h-2 mr-1.5 rounded-full ${
-                  selectedConversation?.status === 'open' ? 'bg-[hsl(var(--status-online))]' : 'bg-[hsl(var(--status-away))]'
-                }`}></span>
+              <Badge
+                variant="secondary"
+                className={`text-xs ${
+                  selectedConversation?.status === 'open'
+                    ? "bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]"
+                    : "bg-[hsl(var(--status-away)/0.1)] text-[hsl(var(--status-away))] border-[hsl(var(--status-away)/0.2)]"
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 mr-1.5 rounded-full ${
+                    selectedConversation?.status === 'open'
+                      ? 'bg-[hsl(var(--status-online))]'
+                      : 'bg-[hsl(var(--status-away))]'
+                  }`}
+                ></span>
                 {selectedConversation?.status === 'open' ? 'Actieve conversatie' : 'Gesloten'}
               </Badge>
             </div>
 
-          {/* Contact Info */}
-          <div className="mb-6">
-            <h4 className="text-sm font-semibold text-foreground mb-3">
-              Contact Informatie
-            </h4>
-            <dl className="text-sm text-foreground divide-y divide-border">
-              <div className="flex flex-col pb-3">
-                <dt className="mb-1 text-muted-foreground">Klant ID</dt>
-                <dd className="font-semibold">
-                  <Link 
-                    to={`/app/clients/${selectedConversation?.klant_id}`}
-                    className="hover:text-ka-green transition-colors hover:underline"
-                  >
-                    {selectedConversation?.klant_id}
-                  </Link>
-                </dd>
-              </div>
-              <div className="flex flex-col py-3">
-                <dt className="mb-1 text-muted-foreground">Primary Channel</dt>
-                <dd className="font-semibold">{selectedConversation?.primary_channel}</dd>
-              </div>
-              <div className="flex flex-col pt-3">
-                <dt className="mb-1 text-muted-foreground">Toegewezen aan</dt>
-                <dd className="font-semibold">{selectedConversation?.toegewezen_aan || 'Niet toegewezen'}</dd>
-              </div>
-            </dl>
-          </div>
+            {/* Contact Info */}
+            <div className="mb-6">
+              <h4 className="text-sm font-semibold text-foreground mb-3">
+                Contact Informatie
+              </h4>
+              <dl className="text-sm text-foreground divide-y divide-border">
+                <div className="flex flex-col pb-3">
+                  <dt className="mb-1 text-muted-foreground">Klant ID</dt>
+                  <dd className="font-semibold">
+                    <Link
+                      to={`/app/clients/${selectedConversation?.klant_id}`}
+                      className="hover:text-ka-green transition-colors hover:underline"
+                      onClick={() => setContactSheetOpen(false)}
+                    >
+                      {selectedConversation?.klant_id}
+                    </Link>
+                  </dd>
+                </div>
+                <div className="flex flex-col py-3">
+                  <dt className="mb-1 text-muted-foreground">Primary Channel</dt>
+                  <dd className="font-semibold">{selectedConversation?.primary_channel}</dd>
+                </div>
+                <div className="flex flex-col pt-3">
+                  <dt className="mb-1 text-muted-foreground">Toegewezen aan</dt>
+                  <dd className="font-semibold">{selectedConversation?.toegewezen_aan || 'Niet toegewezen'}</dd>
+                </div>
+              </dl>
+            </div>
 
-          {/* Stats */}
-          <div className="mb-6">
-            <h4 className="text-sm font-semibold text-foreground mb-3">
-              Statistieken
-            </h4>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-1">
-                <dt className="mb-1 text-xs text-muted-foreground">Berichten</dt>
-                <dd className="text-2xl font-bold text-foreground">{selectedConversation?.message_count || 0}</dd>
+            {/* Stats */}
+            <div className="mb-6">
+              <h4 className="text-sm font-semibold text-foreground mb-3">
+                Statistieken
+              </h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-1">
+                  <dt className="mb-1 text-xs text-muted-foreground">Berichten</dt>
+                  <dd className="text-2xl font-bold text-foreground">{selectedConversation?.message_count || 0}</dd>
+                </div>
+                <div className="col-span-1">
+                  <dt className="mb-1 text-xs text-muted-foreground">Prioriteit</dt>
+                  <dd className="text-2xl font-bold text-foreground capitalize">{selectedConversation?.priority || 'Normal'}</dd>
+                </div>
               </div>
-              <div className="col-span-1">
-                <dt className="mb-1 text-xs text-muted-foreground">Prioriteit</dt>
-                <dd className="text-2xl font-bold text-foreground capitalize">{selectedConversation?.priority || 'Normal'}</dd>
+            </div>
+
+            {/* Tags */}
+            <div>
+              <h4 className={`${responsiveBody.base} font-semibold text-foreground mb-3`}>Tags</h4>
+              <div className="flex flex-wrap gap-2">
+                {selectedConversation?.tags && selectedConversation.tags.length > 0 ? (
+                  selectedConversation.tags.map((tag, idx) => (
+                    <Badge key={idx} variant="secondary" className="text-xs">{tag}</Badge>
+                  ))
+                ) : (
+                  <p className={`${responsiveBody.small} text-muted-foreground`}>Geen tags</p>
+                )}
               </div>
             </div>
           </div>
-
-          {/* Tags */}
-          <div>
-            <h4 className={`${responsiveBody.base} font-semibold text-foreground mb-3`}>Tags</h4>
-            <div className="flex flex-wrap gap-2">
-              {selectedConversation?.tags && selectedConversation.tags.length > 0 ? (
-                selectedConversation.tags.map((tag, idx) => (
-                  <Badge key={idx} variant="secondary" className="text-xs">{tag}</Badge>
-                ))
-              ) : (
-                <p className={`${responsiveBody.small} text-muted-foreground`}>Geen tags</p>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-      )}
-
-      {/* Create Conversation Dialog */}
-      <CreateConversationDialog
-        open={createDialogOpen}
-        onOpenChange={setCreateDialogOpen}
-      />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
