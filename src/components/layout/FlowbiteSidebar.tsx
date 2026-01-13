@@ -10,9 +10,6 @@ import {
   Mail, 
   Phone, 
   Video, 
-  Facebook, 
-  Instagram, 
-  Linkedin, 
   MessageCircle,
   ChevronDown,
   X,
@@ -29,22 +26,19 @@ export function FlowbiteSidebar({ isOpen, onToggle }: FlowbiteSidebarProps) {
   const { t } = useTranslation();
 
   const translatedMainRoutes = [
-    { title: t('sidebar.dashboard'), url: "/", icon: Home },
-    { title: t('sidebar.unifiedInbox'), url: "/unified-inbox", icon: Inbox, badge: 8 },
-    { title: t('sidebar.analytics'), url: "/analytics", icon: BarChart3 },
-    { title: "Brand Guide", url: "/brand-guide-extended", icon: Palette },
-    { title: t('sidebar.settings'), url: "/settings", icon: Settings },
+    { title: t('sidebar.dashboard'), url: "/app/inbox", icon: Home },
+    { title: t('sidebar.unifiedInbox'), url: "/app/inbox", icon: Inbox, badge: 8 },
+    { title: t('sidebar.analytics'), url: "/app/analytics", icon: BarChart3 },
+    { title: "Brand Guide", url: "/app/docs/brand-guide-extended", icon: Palette },
+    { title: t('sidebar.settings'), url: "/app/settings", icon: Settings },
   ];
 
   const translatedChannelRoutes = [
-    { title: t('sidebar.whatsapp'), url: "/channels/whatsapp", icon: MessageSquare, badge: 3 },
-    { title: t('sidebar.email'), url: "/channels/email", icon: Mail, badge: 2 },
-    { title: t('sidebar.sms'), url: "/channels/sms", icon: MessageCircle, badge: 1 },
-    { title: t('sidebar.phone'), url: "/channels/phone", icon: Phone },
-    { title: "Video", url: "/channels/video", icon: Video },
-    { title: "Facebook", url: "/channels/facebook", icon: Facebook, badge: 5 },
-    { title: t('sidebar.instagram'), url: "/channels/instagram", icon: Instagram, badge: 2 },
-    { title: t('sidebar.linkedin'), url: "/channels/linkedin", icon: Linkedin },
+    { title: t('sidebar.whatsapp'), url: "/app/inbox/channels/whatsapp", icon: MessageSquare, badge: 3 },
+    { title: t('sidebar.email'), url: "/app/inbox/channels/email", icon: Mail, badge: 2 },
+    { title: t('sidebar.sms'), url: "/app/inbox/channels/sms", icon: MessageCircle, badge: 1 },
+    { title: t('sidebar.phone'), url: "/app/inbox/channels/phone", icon: Phone },
+    { title: "Video", url: "/app/inbox/channels/video", icon: Video },
   ];
 
   return (

@@ -162,7 +162,8 @@ export function FilterPopover({ open, onOpenChange, filters, onFiltersChange }: 
             <SelectItem value="whatsapp">WhatsApp</SelectItem>
             <SelectItem value="email">Email</SelectItem>
             <SelectItem value="phone">{t('inbox.filters.phone', 'Telefoon')}</SelectItem>
-            <SelectItem value="chat">Chat</SelectItem>
+            <SelectItem value="video">Video</SelectItem>
+            <SelectItem value="sms">SMS</SelectItem>
           </SelectContent>
         </Select>
       </div>
