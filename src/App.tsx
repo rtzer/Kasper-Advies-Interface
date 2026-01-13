@@ -2,9 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
-import { MessageSquare, MessageCircle, Phone, Video, Facebook, Instagram, Linkedin } from "lucide-react";
 import AppLayout from "./layouts/AppLayout";
 import BottomNav from "./layouts/BottomNav";
 import { useTheme } from "./hooks/useTheme";
@@ -41,9 +40,6 @@ import DienstenMKB from "./pages/DienstenMKB";
 import DienstenZZP from "./pages/DienstenZZP";
 import ContactKaspers from "./pages/ContactKaspers";
 import FlowbiteUnifiedInbox from "./pages/FlowbiteUnifiedInbox";
-import FlowbiteWhatsAppChannel from "./pages/channels/FlowbiteWhatsAppChannel";
-import FlowbiteEmailChannel from "./pages/channels/FlowbiteEmailChannel";
-import FlowbiteGenericChannel from "./pages/channels/FlowbiteGenericChannel";
 import FlowbiteConversationDetail from "./pages/FlowbiteConversationDetail";
 import FlowbiteCustomerDetail from "./pages/FlowbiteCustomerDetail";
 import FlowbiteSettings from "./pages/FlowbiteSettings";
@@ -61,6 +57,13 @@ const AppContent = () => {
   return null;
 };
 
+function ConditionalBottomNav() {
+  const location = useLocation();
+  // Only show bottom nav inside the employee app area
+  if (!location.pathname.startsWith('/app')) return null;
+  return <BottomNav />;
+}
+
 const App = () => {
   
   return (
@@ -73,71 +76,63 @@ const App = () => {
             <AuthProvider>
             <AppContent />
             <Routes>
-              {/* Public routes */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/client-login" element={<ClientLoginPage />} />
-              <Route path="/kaspers-advies" element={<HomePage />} />
+              {/* Marketing / public site */}
+              <Route path="/" element={<HomePage />} />
               <Route path="/diensten-mkb" element={<DienstenMKB />} />
               <Route path="/diensten-zzp" element={<DienstenZZP />} />
               <Route path="/contact-kaspers" element={<ContactKaspers />} />
               
-              {/* Protected routes - Inbox & Communication */}
-              <Route path="/" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
-              <Route path="/inbox/review" element={<ProtectedRoute><AppLayout><InboxReviewPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/unified-inbox/conversation/:id" element={<ProtectedRoute><AppLayout><FlowbiteConversationDetail /></AppLayout></ProtectedRoute>} />
-              <Route path="/customers/:id" element={<ProtectedRoute><AppLayout><FlowbiteCustomerDetail /></AppLayout></ProtectedRoute>} />
-              
-              {/* Prospects route */}
-              <Route path="/prospects" element={<ProtectedRoute><AppLayout><ProspectsPage /></AppLayout></ProtectedRoute>} />
-              
-              {/* Klanten routes */}
-              <Route path="/clients" element={<ProtectedRoute><AppLayout><ClientsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/clients/my" element={<ProtectedRoute><AppLayout><MyClientsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/clients/late-payers" element={<ProtectedRoute><AppLayout><LateClientsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/clients/:id" element={<ProtectedRoute><AppLayout><ClientDetailPage /></AppLayout></ProtectedRoute>} />
-              
-              {/* Projecten routes */}
-              <Route path="/projects" element={<ProtectedRoute><AppLayout><ProjectsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/my" element={<ProtectedRoute><AppLayout><MyProjectsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/bulk" element={<ProtectedRoute><AppLayout><BulkProjectsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/workload" element={<ProtectedRoute><AppLayout><TeamWorkloadPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/projects/:id" element={<ProtectedRoute><AppLayout><ProjectDetailPage /></AppLayout></ProtectedRoute>} />
-              
-              {/* Assignments (Opdrachten) routes */}
-              <Route path="/assignments" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/assignments/my" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/assignments/pending" element={<ProtectedRoute><AppLayout><AwaitingApprovalPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/assignments/by-type" element={<ProtectedRoute><AppLayout><ByTypePage /></AppLayout></ProtectedRoute>} />
-              <Route path="/assignments/:id" element={<ProtectedRoute><AppLayout><AssignmentDetailPage /></AppLayout></ProtectedRoute>} />
-              
-              {/* Tasks (Taken) routes */}
-              <Route path="/tasks" element={<ProtectedRoute><AppLayout><TasksPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/tasks/team" element={<ProtectedRoute><AppLayout><TeamTasksPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/tasks/review" element={<ProtectedRoute><AppLayout><ToReviewPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/tasks/:id" element={<ProtectedRoute><AppLayout><TaskDetailPage /></AppLayout></ProtectedRoute>} />
-              
-              {/* Other protected routes */}
-              <Route path="/settings" element={<ProtectedRoute><AppLayout><FlowbiteSettings /></AppLayout></ProtectedRoute>} />
-              <Route path="/settings/team" element={<ProtectedRoute><AppLayout><TeamPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/analytics" element={<ProtectedRoute><AppLayout><FlowbiteAnalytics /></AppLayout></ProtectedRoute>} />
-              <Route path="/channels/sms" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="SMS" icon={MessageCircle} color="text-blue-600" /></AppLayout></ProtectedRoute>} />
-              <Route path="/channels/facebook" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="Facebook" icon={Facebook} color="text-indigo-600" /></AppLayout></ProtectedRoute>} />
-              <Route path="/channels/instagram" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="Instagram" icon={Instagram} color="text-pink-600" /></AppLayout></ProtectedRoute>} />
-              <Route path="/channels/linkedin" element={<ProtectedRoute><AppLayout><FlowbiteGenericChannel channelName="LinkedIn" icon={Linkedin} color="text-blue-600" /></AppLayout></ProtectedRoute>} />
-              
+              {/* Auth */}
+              <Route path="/auth/login" element={<LoginPage />} />
+
               {/* Client Portal */}
-              <Route path="/client-portal" element={<ProtectedRoute><ClientPortalPage /></ProtectedRoute>} />
-              
-              {/* Project Info & Documentation */}
-              <Route path="/brand-guide" element={<ProtectedRoute><AppLayout><BrandGuidePage /></AppLayout></ProtectedRoute>} />
-              <Route path="/brand-audit" element={<ProtectedRoute><AppLayout><BrandAuditPage /></AppLayout></ProtectedRoute>} />
-              <Route path="/brand-guide-extended" element={<ProtectedRoute><ExtendedBrandGuidePage /></ProtectedRoute>} />
-              <Route path="/julien" element={<ProtectedRoute><AppLayout><JulienPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/portal/login" element={<ClientLoginPage />} />
+              <Route path="/portal" element={<ProtectedRoute><ClientPortalPage /></ProtectedRoute>} />
+
+              {/* Employee App (protected) */}
+              <Route path="/app/inbox" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/inbox/review" element={<ProtectedRoute><AppLayout><InboxReviewPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/inbox/channels/:channel" element={<ProtectedRoute><AppLayout><FlowbiteUnifiedInbox /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/inbox/conversations/:id" element={<ProtectedRoute><AppLayout><FlowbiteConversationDetail /></AppLayout></ProtectedRoute>} />
+
+              <Route path="/app/prospects" element={<ProtectedRoute><AppLayout><ProspectsPage /></AppLayout></ProtectedRoute>} />
+
+              <Route path="/app/clients" element={<ProtectedRoute><AppLayout><ClientsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/clients/mine" element={<ProtectedRoute><AppLayout><MyClientsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/clients/late-payers" element={<ProtectedRoute><AppLayout><LateClientsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/clients/:id" element={<ProtectedRoute><AppLayout><ClientDetailPage /></AppLayout></ProtectedRoute>} />
+
+              <Route path="/app/projects" element={<ProtectedRoute><AppLayout><ProjectsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/projects/mine" element={<ProtectedRoute><AppLayout><MyProjectsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/projects/bulk-import" element={<ProtectedRoute><AppLayout><BulkProjectsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/projects/workload" element={<ProtectedRoute><AppLayout><TeamWorkloadPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/projects/:id" element={<ProtectedRoute><AppLayout><ProjectDetailPage /></AppLayout></ProtectedRoute>} />
+
+              <Route path="/app/assignments" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/assignments/mine" element={<ProtectedRoute><AppLayout><AssignmentsPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/assignments/pending-approval" element={<ProtectedRoute><AppLayout><AwaitingApprovalPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/assignments/by-type" element={<ProtectedRoute><AppLayout><ByTypePage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/assignments/:id" element={<ProtectedRoute><AppLayout><AssignmentDetailPage /></AppLayout></ProtectedRoute>} />
+
+              <Route path="/app/tasks" element={<ProtectedRoute><AppLayout><TasksPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/tasks/team" element={<ProtectedRoute><AppLayout><TeamTasksPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/tasks/review" element={<ProtectedRoute><AppLayout><ToReviewPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/tasks/:id" element={<ProtectedRoute><AppLayout><TaskDetailPage /></AppLayout></ProtectedRoute>} />
+
+              <Route path="/app/settings" element={<ProtectedRoute><AppLayout><FlowbiteSettings /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/settings/team" element={<ProtectedRoute><AppLayout><TeamPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/analytics" element={<ProtectedRoute><AppLayout><FlowbiteAnalytics /></AppLayout></ProtectedRoute>} />
+
+              {/* Docs (employee app) */}
+              <Route path="/app/docs/brand-guide" element={<ProtectedRoute><AppLayout><BrandGuidePage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/docs/brand-audit" element={<ProtectedRoute><AppLayout><BrandAuditPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/docs/brand-guide-extended" element={<ProtectedRoute><AppLayout><ExtendedBrandGuidePage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/docs/julien" element={<ProtectedRoute><AppLayout><JulienPage /></AppLayout></ProtectedRoute>} />
               
               {/* 404 - Must be last */}
               <Route path="*" element={<FlowbiteNotFound />} />
             </Routes>
-            <BottomNav />
+            <ConditionalBottomNav />
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>

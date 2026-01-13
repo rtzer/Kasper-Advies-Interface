@@ -110,7 +110,7 @@ export const FlowbiteChatView = ({
             <div className="flex items-center gap-2">
               {clientId ? (
                 <Link 
-                  to={`/clients/${clientId}`}
+                  to={`/app/clients/${clientId}`}
                   className="text-sm font-semibold text-foreground hover:text-primary flex items-center gap-1 group"
                 >
                   {conversationName}

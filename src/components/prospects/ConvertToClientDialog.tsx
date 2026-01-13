@@ -47,7 +47,7 @@ export function ConvertToClientDialog({ open, onOpenChange, prospect }: ConvertT
       onOpenChange(false);
       
       // Optionally navigate to the new client
-      // navigate(`/clients/${result.newKlantId}`);
+      // navigate(`/app/clients/${result.newKlantId}`);
     } catch (error) {
       toast.error(t('common.error'));
     }

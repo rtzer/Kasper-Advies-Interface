@@ -95,7 +95,7 @@ export default function ProjectsCalendar({ filterStatus, filterCategory }: Proje
                   {projectsOnDate.map((project) => (
                     <Tooltip key={project.id}>
                       <TooltipTrigger asChild>
-                        <Link to={`/projects/${project.id}`}>
+                        <Link to={`/app/projects/${project.id}`}>
                           <div className="border rounded-lg p-3 hover:bg-muted/50 hover:shadow-md transition-all duration-200 cursor-pointer">
                             <div className="flex items-start justify-between mb-2">
                               {project.project_type?.value && (

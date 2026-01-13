@@ -76,7 +76,7 @@ export default function InlineSearch({ onOpenCommandPalette }: InlineSearchProps
             id: klant.id,
             name: klant.naam,
             description: `${klant.klant_nummer} • ${klant.plaats || 'Geen plaats'}`,
-            url: `/clients/${klant.id}`,
+            url: `/app/clients/${klant.id}`,
             icon: null,
           });
         }
@@ -94,7 +94,7 @@ export default function InlineSearch({ onOpenCommandPalette }: InlineSearchProps
             id: int.id,
             name: int.onderwerp,
             description: `${int.klant_naam} • ${int.kanaal}`,
-            url: `/clients/${int.klant_id}`,
+            url: `/app/clients/${int.klant_id}`,
             icon: null,
           });
         }
@@ -111,7 +111,7 @@ export default function InlineSearch({ onOpenCommandPalette }: InlineSearchProps
             id: opr.id,
             name: opr.opdracht_naam,
             description: `${opr.klant_naam} • ${opr.status}`,
-            url: `/assignments/${opr.id}`,
+            url: `/app/assignments/${opr.id}`,
             icon: null,
           });
         }

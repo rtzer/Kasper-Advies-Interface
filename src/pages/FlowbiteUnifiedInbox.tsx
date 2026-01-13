@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FilterPopover } from "@/components/inbox/FilterPopover";
 import { CreateConversationDialog } from "@/components/inbox/CreateConversationDialog";
@@ -21,6 +21,7 @@ import { responsiveHeading, responsiveBody } from "@/lib/utils/typography";
 import { useUserStore } from "@/store/userStore";
 
 export default function FlowbiteUnifiedInbox() {
+  const { channel } = useParams<{ channel?: string }>();
   const { t, i18n } = useTranslation('common');
   const currentLocale = i18n.language === 'en' ? enUS : nl;
   const { isMobile, isTablet } = useDeviceChecks();
@@ -41,6 +42,14 @@ export default function FlowbiteUnifiedInbox() {
     unreadOnly: false,
     missedCallsOnly: false,
   });
+
+  // Sync channel filter with /app/inbox/channels/:channel
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      channel: channel || 'all',
+    }));
+  }, [channel]);
   
   // Get messages for selected conversation
   const { data: messagesData } = useConversationMessages(selectedConversationId);
@@ -61,8 +70,9 @@ export default function FlowbiteUnifiedInbox() {
       const matchesStatus = filters.status === 'all' || conv.status === filters.status;
       
       // Channel filter
-      const matchesChannel = filters.channel === 'all' || 
-        conv.primary_channel.toLowerCase() === filters.channel.toLowerCase();
+      const matchesChannel =
+        filters.channel === 'all' ||
+        normalizeChannelForIcon(conv.primary_channel) === filters.channel;
       
       // Priority filter
       const matchesPriority = filters.priority === 'all' || conv.priority === filters.priority;
@@ -76,7 +86,7 @@ export default function FlowbiteUnifiedInbox() {
       const matchesUnread = !filters.unreadOnly || conv.is_unread;
       
       // Missed calls filter (simulated based on channel and some condition)
-      const isMissedCall = conv.primary_channel === 'Telefoon' && conv.status === 'pending';
+      const isMissedCall = normalizeChannelForIcon(conv.primary_channel) === 'phone' && conv.status === 'pending';
       const matchesMissed = !filters.missedCallsOnly || isMissedCall;
       
       return matchesSearch && matchesStatus && matchesChannel && matchesPriority && matchesAssigned && matchesUnread && matchesMissed;
@@ -123,7 +133,7 @@ export default function FlowbiteUnifiedInbox() {
             <div className="flex gap-1.5 xs:gap-2 flex-shrink-0">
               {/* Link to Inbox Review */}
               {inboxStats && inboxStats.nieuw > 0 && (
-                <Link to="/inbox/review">
+                <Link to="/app/inbox/review">
                   <Button 
                     variant="outline" 
                     size="sm"
@@ -209,7 +219,7 @@ export default function FlowbiteUnifiedInbox() {
               const isMissedCall = conversation.primary_channel === 'Telefoon' && conversation.status === 'pending';
               
               return (
-                <Link key={conversation.id} to={`/unified-inbox/conversation/${conversation.id}`}>
+                <Link key={conversation.id} to={`/app/inbox/conversations/${conversation.id}`}>
                   <FlowbiteConversationItem
                     id={conversation.id}
                     name={conversation.klant_naam}
@@ -294,7 +304,7 @@ export default function FlowbiteUnifiedInbox() {
                 <dt className="mb-1 text-muted-foreground">Klant ID</dt>
                 <dd className="font-semibold">
                   <Link 
-                    to={`/clients/${selectedConversation?.klant_id}`}
+                    to={`/app/clients/${selectedConversation?.klant_id}`}
                     className="hover:text-ka-green transition-colors hover:underline"
                   >
                     {selectedConversation?.klant_id}

@@ -81,7 +81,7 @@ export default function MyClientsPage() {
           </Card>
         ) : (
           myKlanten.map((klant) => (
-            <Link key={klant.id} to={`/clients/${klant.id}`}>
+            <Link key={klant.id} to={`/app/clients/${klant.id}`}>
               <Card className="p-4 hover:shadow-lg transition-all hover:border-primary cursor-pointer">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

@@ -35,7 +35,7 @@ export default function PartnerSection({ klant, partner }: PartnerSectionProps) 
       </div>
 
       {partner ? (
-        <Link to={`/clients/${partner.id}`}>
+        <Link to={`/app/clients/${partner.id}`}>
           <Card className="p-4 hover:shadow-lg transition-all cursor-pointer hover:border-rose-500 border-2 border-transparent">
             <div className="flex items-start space-x-4">
               <div className="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center flex-shrink-0">

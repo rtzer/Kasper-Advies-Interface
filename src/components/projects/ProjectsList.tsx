@@ -195,7 +195,7 @@ export default function ProjectsList({ filterStatus, filterCategory }: ProjectsL
               return (
                 <tr key={project.id} className="border-b hover:bg-muted/50 transition-colors">
                   <td className="py-3 px-4">
-                    <Link to={`/projects/${project.id}`} className="hover:underline">
+                    <Link to={`/app/projects/${project.id}`} className="hover:underline">
                       <div className="flex items-start">
                         <span className="font-medium text-sm text-foreground">{project.name}</span>
                         {isOverdue && (

@@ -106,7 +106,7 @@ export default function MyProjectsPage() {
           </Card>
         ) : (
           myProjects.map((project) => (
-            <Link key={project.id} to={`/projects/${project.id}`}>
+            <Link key={project.id} to={`/app/projects/${project.id}`}>
               <Card className="p-6 hover:shadow-lg transition-all hover:border-primary cursor-pointer">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">

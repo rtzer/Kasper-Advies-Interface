@@ -86,7 +86,7 @@ export default function HealthDonutChart({ data }: HealthDonutChartProps) {
                 >
                   <div className="flex-1 min-w-0">
                     <Link
-                      to={`/clients/${client.id}`}
+                      to={`/app/clients/${client.id}`}
                       className="text-xs xs:text-sm font-medium text-foreground hover:underline truncate block"
                     >
                       {client.name}

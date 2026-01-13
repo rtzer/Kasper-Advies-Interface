@@ -81,7 +81,7 @@ export default function TeamWorkloadPage() {
 
   return (
     <div className="px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6 max-w-screen-2xl mx-auto">
-      <Link to="/projects" className="inline-flex items-center text-xs xs:text-sm text-muted-foreground hover:text-foreground mb-3 xs:mb-4">
+      <Link to="/app/projects" className="inline-flex items-center text-xs xs:text-sm text-muted-foreground hover:text-foreground mb-3 xs:mb-4">
         <ArrowLeft className="w-3 h-3 xs:w-4 xs:h-4 mr-1" />
         {t('projects.backToProjects', 'Terug naar projecten')}
       </Link>
@@ -203,7 +203,7 @@ export default function TeamWorkloadPage() {
                     {member.projects.slice(0, 5).map((project: any) => (
                       <Link
                         key={project.id}
-                        to={`/projects/${project.id}`}
+                        to={`/app/projects/${project.id}`}
                         className="block text-xs xs:text-sm hover:bg-muted p-1.5 xs:p-2 rounded transition-colors"
                       >
                         <div className="flex items-center justify-between gap-2">

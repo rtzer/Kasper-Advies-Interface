@@ -97,7 +97,7 @@ export default function LateClientsPage() {
 
   return (
     <div className="p-6 max-w-screen-2xl mx-auto">
-      <Link to="/projects" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
+      <Link to="/app/projects" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
         <ArrowLeft className="w-4 h-4 mr-1" />
         Terug naar projecten
       </Link>
@@ -189,7 +189,7 @@ export default function LateClientsPage() {
                           <div className="flex items-start justify-between gap-4">
                             <div>
                               <Link 
-                                to={`/projects/${project.id}`}
+                                to={`/app/projects/${project.id}`}
                                 className="font-medium text-foreground hover:underline"
                               >
                                 {project.name}

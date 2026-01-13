@@ -143,7 +143,7 @@ export default function ClientDetailPage() {
     toast.success(t('clients.messages.archived', { name: klant.naam }));
     setIsArchiveDialogOpen(false);
     // Redirect to clients list
-    navigate('/clients');
+    navigate('/app/clients');
   }, [klant, t, navigate]);
 
   const handleDeleteClick = useCallback(() => {
@@ -162,7 +162,7 @@ export default function ClientDetailPage() {
     toast.success(t('clients.messages.deleted', { name: klant.naam }));
     setIsDeleteDialogOpen(false);
     // Redirect to clients list
-    navigate('/clients');
+    navigate('/app/clients');
   }, [klant, t, navigate]);
   
   if (isLoading) {

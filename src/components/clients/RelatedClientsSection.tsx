@@ -71,7 +71,7 @@ export default function RelatedClientsSection({ klant, relatedClients }: Related
 
       <div className="grid gap-4 md:grid-cols-2">
         {relatedClients.map((related) => (
-          <Link key={related.id} to={`/clients/${related.id}`}>
+          <Link key={related.id} to={`/app/clients/${related.id}`}>
             <Card className="p-4 hover:shadow-lg transition-all cursor-pointer hover:border-ka-green border-2 border-transparent">
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 rounded-full bg-ka-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">

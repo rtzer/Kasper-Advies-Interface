@@ -79,7 +79,7 @@ export default function FlowbiteAnalytics() {
     <div className="px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6 max-w-screen-2xl mx-auto">
       {/* Header */}
       <div className="mb-4 xs:mb-6">
-        <Link to="/" className="inline-flex items-center text-xs xs:text-sm text-muted-foreground hover:text-foreground mb-3">
+        <Link to="/app/inbox" className="inline-flex items-center text-xs xs:text-sm text-muted-foreground hover:text-foreground mb-3">
           <ArrowLeft className="w-3 h-3 xs:w-4 xs:h-4 mr-1" />
           {t('common.back', 'Terug')}
         </Link>
@@ -261,7 +261,7 @@ export default function FlowbiteAnalytics() {
                     </td>
                     <td className="py-2 xs:py-2.5">
                       <Link
-                        to={`/clients/${client.id}`}
+                        to={`/app/clients/${client.id}`}
                         className="text-xs xs:text-sm font-medium text-foreground hover:underline"
                       >
                         {client.name}

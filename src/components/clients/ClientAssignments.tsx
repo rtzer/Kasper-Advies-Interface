@@ -153,7 +153,7 @@ export default function ClientAssignments({ klantId }: { klantId: string }) {
           const daysUntil = getDaysUntilDeadline(opdracht.deadline);
           
           return (
-            <Link key={opdracht.id} to={`/projects/${opdracht.id}`}>
+            <Link key={opdracht.id} to={`/app/projects/${opdracht.id}`}>
               <Card className="p-6 hover:shadow-lg transition-all hover:scale-[1.01] border-2 border-transparent hover:border-ka-green cursor-pointer">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">

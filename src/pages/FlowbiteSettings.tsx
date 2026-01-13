@@ -7,7 +7,7 @@ export default function FlowbiteSettings() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <Link to="/">
+          <Link to="/app/inbox">
             <button className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Terug
