@@ -5,7 +5,7 @@ import { baserowClient, BaserowCustomer } from './baserowClient';
 const CUSTOMERS_TABLE_ID = import.meta.env.VITE_BASEROW_TABLE_CUSTOMERS;
 
 // Extract value from lookup field (can be array of objects or strings)
-function getLookupValue(lookup: any): string {
+function getLookupValue(lookup: unknown): string {
   if (!lookup || !Array.isArray(lookup) || lookup.length === 0) return '';
   const first = lookup[0];
   // If it's an object with a 'value' property (BaserowLinkRow format)
@@ -16,7 +16,7 @@ function getLookupValue(lookup: any): string {
 }
 
 // Alias for backwards compatibility
-function getAccountManagerName(lookup: any): string {
+function getAccountManagerName(lookup: unknown): string {
   return getLookupValue(lookup);
 }
 
@@ -159,7 +159,7 @@ function mapKlantToBaserow(klant: Partial<Klant>): Partial<BaserowCustomer> {
   };
 }
 
-export function useKlanten(filters?: Record<string, any>) {
+export function useKlanten(filters?: Record<string, string | boolean | undefined>) {
   return useQuery({
     queryKey: ['klanten', filters],
     queryFn: async () => {

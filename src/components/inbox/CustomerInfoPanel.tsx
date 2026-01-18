@@ -37,7 +37,7 @@ export const CustomerInfoPanel = ({ customer }: CustomerInfoPanelProps) => {
           <Badge variant="secondary" className="mb-3">
             Actieve klant
           </Badge>
-          <Link to="/customer/1">
+          <Link to="/app/clients/1">
             <Button variant="outline" size="sm" className="w-full">
               <ExternalLink className="h-3 w-3 mr-2" />
               Volledige Profiel

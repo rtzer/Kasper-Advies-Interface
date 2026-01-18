@@ -4,7 +4,7 @@ import { baserowClient, BaserowLinkRow, BaserowSelectOption } from './baserowCli
 
 const CONTACTS_TABLE_ID = 766;
 
-// Raw contact data from Baserow table 766
+// Raw contact data from Baserow table 766 (response format)
 export interface BaserowContact {
   id: number;
   order: string;
@@ -25,6 +25,12 @@ export interface BaserowContact {
   created_at: string;
   is_deleted: boolean;
 }
+
+// Input format for creating/updating contacts (link fields accept IDs)
+type BaserowContactInput = Omit<Partial<BaserowContact>, 'link_to_customers' | 'Interactions'> & {
+  link_to_customers?: number[];
+  Interactions?: number[];
+};
 
 // Map Baserow contact to our ContactPersoon type
 function mapBaserowToContactPersoon(contact: BaserowContact): ContactPersoon {
@@ -169,13 +175,13 @@ export function useCreateContactPersoon() {
 
   return useMutation({
     mutationFn: async (data: Partial<ContactPersoon> & { klant_id: string }) => {
-      const baserowData = {
+      const baserowData: BaserowContactInput = {
         ...mapContactPersoonToBaserow(data),
         link_to_customers: [parseInt(data.klant_id)],
       };
       const created = await baserowClient.createRow<BaserowContact>(
         CONTACTS_TABLE_ID,
-        baserowData as any
+        baserowData
       );
       return mapBaserowToContactPersoon(created);
     },
@@ -192,11 +198,11 @@ export function useUpdateContactPersoon() {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<ContactPersoon> }) => {
-      const baserowData = mapContactPersoonToBaserow(data);
+      const baserowData: BaserowContactInput = mapContactPersoonToBaserow(data);
       const updated = await baserowClient.updateRow<BaserowContact>(
         CONTACTS_TABLE_ID,
         parseInt(id),
-        baserowData as any
+        baserowData
       );
       return mapBaserowToContactPersoon(updated);
     },

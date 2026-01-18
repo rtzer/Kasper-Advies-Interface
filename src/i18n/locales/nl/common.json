@@ -6,6 +6,8 @@
   "actions": {
     "search": "Zoeken",
     "new": "Nieuw",
+    "apply": "Toepassen",
+    "reset": "Reset",
     "save": "Opslaan",
     "cancel": "Annuleren",
     "edit": "Bewerken",

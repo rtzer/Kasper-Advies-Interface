@@ -96,7 +96,7 @@ export default function ByTypePage() {
             </Card>
           ) : (
             filteredOpdrachten.map((opdracht) => (
-              <Link key={opdracht.id} to={`/assignments/${opdracht.id}`}>
+              <Link key={opdracht.id} to={`/app/assignments/${opdracht.id}`}>
                 <Card className="p-4 hover:shadow-lg transition-all hover:border-primary cursor-pointer">
                   <div className="flex items-start justify-between">
                     <div className="flex gap-3 flex-1">
@@ -137,7 +137,7 @@ export default function ByTypePage() {
           {filteredOpdrachten
             .filter(o => !['Afgerond', 'Ingediend'].includes(o.status))
             .map((opdracht) => (
-              <Link key={opdracht.id} to={`/assignments/${opdracht.id}`}>
+              <Link key={opdracht.id} to={`/app/assignments/${opdracht.id}`}>
                 <Card className="p-4 hover:shadow-lg transition-all hover:border-primary cursor-pointer">
                   <div className="flex items-start justify-between">
                     <div className="flex gap-3 flex-1">
@@ -166,7 +166,7 @@ export default function ByTypePage() {
           {filteredOpdrachten
             .filter(o => ['Afgerond', 'Ingediend'].includes(o.status))
             .map((opdracht) => (
-              <Link key={opdracht.id} to={`/assignments/${opdracht.id}`}>
+              <Link key={opdracht.id} to={`/app/assignments/${opdracht.id}`}>
                 <Card className="p-4 hover:shadow-lg transition-all hover:border-primary cursor-pointer">
                   <div className="flex items-start justify-between">
                     <div className="flex gap-3 flex-1">

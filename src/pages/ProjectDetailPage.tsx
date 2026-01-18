@@ -240,7 +240,7 @@ export default function ProjectDetailPage() {
         <div className="text-center py-8 xs:py-10 sm:py-12">
           <h2 className={`${responsiveHeading.h3} mb-2`}>{t('projects.detail.notFound')}</h2>
           <p className={`${responsiveBody.base} mb-3 xs:mb-4`}>{t('projects.detail.notFoundDescription')}</p>
-          <Link to="/projects">
+          <Link to="/app/projects">
             <Button className="h-9 xs:h-10">{t('projects.detail.backToProjects')}</Button>
           </Link>
         </div>
@@ -251,7 +251,7 @@ export default function ProjectDetailPage() {
   return (
     <div className="px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6 max-w-screen-xl mx-auto">
       {/* Back button */}
-      <Link to="/projects" className="inline-flex items-center text-xs xs:text-sm text-muted-foreground hover:text-foreground mb-3 xs:mb-4">
+      <Link to="/app/projects" className="inline-flex items-center text-xs xs:text-sm text-muted-foreground hover:text-foreground mb-3 xs:mb-4">
         <ArrowLeft className="w-3 h-3 xs:w-4 xs:h-4 mr-1" />
         {t('projects.detail.backToProjects')}
       </Link>
@@ -664,7 +664,7 @@ export default function ProjectDetailPage() {
             <h3 className={`${responsiveBody.base} font-semibold mb-2 xs:mb-3`}>{t('projects.detail.client')}</h3>
             <div className="space-y-1.5 xs:space-y-2 text-xs xs:text-sm">
               <Link 
-                to={`/clients/${project.client_id}`}
+                to={`/app/clients/${project.client_id}`}
                 className="font-medium text-foreground hover:underline block truncate"
               >
                 {project.client_name}

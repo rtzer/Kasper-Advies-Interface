@@ -96,7 +96,7 @@ export function getCategoryColor(category: string): string {
   return getProjectTypeColor(category);
 }
 
-export function calculateProgress(stages: any[]): number {
+export function calculateProgress(stages: Array<{ completed: boolean }>): number {
   if (!stages || stages.length === 0) return 0;
 
   const completedStages = stages.filter(s => s.completed).length;

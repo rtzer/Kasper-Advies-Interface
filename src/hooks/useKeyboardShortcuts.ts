@@ -28,22 +28,22 @@ export function useKeyboardShortcuts() {
 
       // I: Navigate to inbox
       if (e.key === 'i') {
-        navigate('/unified-inbox');
+        navigate('/app/inbox');
       }
       
       // C: Navigate to clients
       if (e.key === 'c') {
-        navigate('/');
+        navigate('/app/clients');
       }
       
       // T: Navigate to tasks
       if (e.key === 't') {
-        navigate('/taken');
+        navigate('/app/tasks');
       }
       
       // A: Navigate to assignments
       if (e.key === 'a') {
-        navigate('/opdrachten');
+        navigate('/app/assignments');
       }
       
       // ?: Show keyboard shortcuts help (future implementation)

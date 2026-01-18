@@ -5,6 +5,7 @@ import ConversationItem from '@/components/inbox/ConversationItem';
 import MessageThread from '@/components/inbox/MessageThread';
 import { useConversationStore } from '@/store/conversationStore';
 import { useConversations } from '@/lib/api/conversations';
+import { Conversation } from '@/types';
 
 export default function MobileInbox() {
   const { selectedConversation, setSelectedConversation } = useConversationStore();
@@ -16,7 +17,7 @@ export default function MobileInbox() {
     setSelectedConversation(null);
   };
   
-  const handleSelectConversation = (conv: any) => {
+  const handleSelectConversation = (conv: Conversation) => {
     setSelectedConversation(conv);
     setView('thread');
   };

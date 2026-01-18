@@ -19,7 +19,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      navigate('/'); // Redirect to unified inbox
+      navigate('/app/inbox'); // Redirect to employee app inbox
     }
   }, [user, navigate]);
 
@@ -137,7 +137,7 @@ export default function LoginPage() {
           <p className="text-sm text-ka-gray-600 dark:text-gray-400">
             Bent u een klant?{' '}
             <button
-              onClick={() => navigate('/client-login')}
+              onClick={() => navigate('/portal/login')}
               className="text-ka-green hover:text-ka-green/80 font-medium"
             >
               Klik hier om in te loggen

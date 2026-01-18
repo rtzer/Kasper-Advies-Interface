@@ -365,7 +365,7 @@ export default function ClientsPage() {
                       />
                     </TableCell>
                     <TableCell>
-                      <Link to={`/clients/${klant.id}`} className="block">
+                      <Link to={`/app/clients/${klant.id}`} className="block">
                         <div className="flex items-center gap-2">
                           {klant.focus_client && (
                             <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />

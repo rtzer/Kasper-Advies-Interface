@@ -4,7 +4,7 @@ import { mockTaken } from '@/lib/mockData';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export function useTaken(filters?: Record<string, any>) {
+export function useTaken(filters?: Record<string, string | undefined>) {
   return useQuery({
     queryKey: ['taken', filters],
     queryFn: async () => {

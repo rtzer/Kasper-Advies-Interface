@@ -52,7 +52,7 @@ export default function AssignmentDetailPage() {
         <div className="text-center py-8 xs:py-10 sm:py-12">
           <h2 className={`${responsiveHeading.h3} mb-2`}>Opdracht niet gevonden</h2>
           <p className={`${responsiveBody.base} mb-3 xs:mb-4`}>De opgevraagde opdracht bestaat niet.</p>
-          <Link to="/assignments">
+          <Link to="/app/assignments">
             <Button className="h-9 xs:h-10">Terug naar opdrachten</Button>
           </Link>
         </div>
@@ -62,7 +62,7 @@ export default function AssignmentDetailPage() {
 
   return (
     <div className="px-3 xs:px-4 sm:px-6 py-4 xs:py-5 sm:py-6 max-w-screen-xl mx-auto">
-      <Link to="/assignments" className="inline-flex items-center text-xs xs:text-sm text-muted-foreground hover:text-foreground mb-3 xs:mb-4">
+      <Link to="/app/assignments" className="inline-flex items-center text-xs xs:text-sm text-muted-foreground hover:text-foreground mb-3 xs:mb-4">
         <ArrowLeft className="w-3 h-3 xs:w-4 xs:h-4 mr-1" />
         Terug naar opdrachten
       </Link>
@@ -159,7 +159,7 @@ export default function AssignmentDetailPage() {
             <h3 className={`${responsiveBody.base} font-semibold mb-2 xs:mb-3`}>Klant</h3>
             <div className="space-y-1.5 xs:space-y-2 text-xs xs:text-sm">
               <Link 
-                to={`/clients/${opdracht.klant_id}`}
+                to={`/app/clients/${opdracht.klant_id}`}
                 className="font-medium text-foreground hover:underline block truncate"
               >
                 {opdracht.klant_naam}

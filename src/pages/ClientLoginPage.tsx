@@ -17,7 +17,7 @@ export default function ClientLoginPage() {
 
   useEffect(() => {
     if (user) {
-      navigate('/client-portal'); // Redirect to client portal
+      navigate('/portal'); // Redirect to client portal
     }
   }, [user, navigate]);
 
@@ -146,7 +146,7 @@ export default function ClientLoginPage() {
           <p className="text-sm text-ka-gray-600 dark:text-gray-400">
             Bent u een medewerker?{' '}
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/auth/login')}
               className="text-ka-green hover:text-ka-green/80 font-medium"
             >
               Klik hier om in te loggen

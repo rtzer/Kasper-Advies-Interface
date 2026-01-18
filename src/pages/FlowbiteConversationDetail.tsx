@@ -79,7 +79,7 @@ export default function FlowbiteConversationDetail() {
         <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 xs:px-4 sm:px-6 py-2 xs:py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 xs:gap-3 flex-1 min-w-0">
-              <Link to="/">
+              <Link to="/app/inbox">
                 <button className="p-1.5 xs:p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                   <ArrowLeft className="h-4 w-4 xs:h-5 xs:w-5" />
                 </button>
@@ -91,7 +91,7 @@ export default function FlowbiteConversationDetail() {
               />
               <div className="flex-1 min-w-0">
                 <Link 
-                  to={`/clients/${conversation.klant_id}`}
+                  to={`/app/clients/${conversation.klant_id}`}
                   className={`${responsiveBody.base} font-semibold text-gray-900 dark:text-white hover:text-ka-green transition-colors hover:underline block truncate`}
                 >
                   {conversation.klant_naam}

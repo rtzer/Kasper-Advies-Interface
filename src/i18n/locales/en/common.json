@@ -6,6 +6,8 @@
   "actions": {
     "search": "Search",
     "new": "New",
+    "apply": "Apply",
+    "reset": "Reset",
     "save": "Save",
     "cancel": "Cancel",
     "edit": "Edit",

@@ -58,7 +58,7 @@ export default function ClientContextPanel({ klantId }: ClientContextPanelProps)
         
         {/* Quick Actions */}
         <div className="flex flex-wrap gap-2 mb-4">
-          <Link to={`/clients/${klantId}`}>
+          <Link to={`/app/clients/${klantId}`}>
             <Button variant="outline" size="sm" className="text-xs">
               <ExternalLink className="w-3 h-3 mr-1" />
               {t('common:viewClient', 'Bekijk klant')}

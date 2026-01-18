@@ -190,7 +190,7 @@ function ProjectCardFromBaserow({ project }: { project: BaserowProject }) {
     : false;
 
   return (
-    <Link to={`/projects/${project.id}`}>
+    <Link to={`/app/projects/${project.id}`}>
       <div className="bg-card border rounded-lg p-3 xs:p-4 hover:shadow-md transition-shadow cursor-pointer">
         {/* Header with badges */}
         <div className="flex items-start justify-between gap-2 mb-2 xs:mb-3">

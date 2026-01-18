@@ -42,19 +42,19 @@ export default function ProjectsPage() {
 
         {/* Action buttons - Horizontal scroll on mobile */}
         <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
-          <Link to="/clients/late-payers" className="flex-shrink-0">
+          <Link to="/app/clients/late-payers" className="flex-shrink-0">
             <Button variant="outline" size="sm" className="h-8 xs:h-9 text-xs xs:text-sm whitespace-nowrap px-2 xs:px-3">
               <AlertCircle className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1.5 text-yellow-600" />
               <span className="hidden xs:inline">{t('projects.lateClients')}</span>
             </Button>
           </Link>
-          <Link to="/projects/workload" className="flex-shrink-0">
+          <Link to="/app/projects/workload" className="flex-shrink-0">
             <Button variant="outline" size="sm" className="h-8 xs:h-9 text-xs xs:text-sm whitespace-nowrap px-2 xs:px-3">
               <Users className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1.5" />
               <span className="hidden xs:inline">{t('projects.workload')}</span>
             </Button>
           </Link>
-          <Link to="/projects/bulk" className="flex-shrink-0">
+          <Link to="/app/projects/bulk-import" className="flex-shrink-0">
             <Button variant="outline" size="sm" className="h-8 xs:h-9 text-xs xs:text-sm whitespace-nowrap px-2 xs:px-3">
               <Zap className="w-3 h-3 xs:w-4 xs:h-4 xs:mr-1.5" />
               <span className="hidden sm:inline">{t('projects.bulkBTW')}</span>

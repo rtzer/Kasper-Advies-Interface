@@ -54,7 +54,7 @@ export default function AwaitingApprovalPage() {
           </Card>
         ) : (
           awaitingApproval.map((opdracht) => (
-            <Link key={opdracht.id} to={`/assignments/${opdracht.id}`}>
+            <Link key={opdracht.id} to={`/app/assignments/${opdracht.id}`}>
               <Card className="p-6 hover:shadow-lg transition-all hover:border-primary cursor-pointer">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

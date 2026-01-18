@@ -169,7 +169,15 @@ function ColorsSection() {
   );
 }
 
-function ColorCard({ name, variable, hex, hsl, usage }: any) {
+interface ColorCardProps {
+  name: string;
+  variable?: string;
+  hex: string;
+  hsl?: string;
+  usage?: string;
+}
+
+function ColorCard({ name, variable, hex, hsl, usage }: ColorCardProps) {
   return (
     <div className="bg-card rounded-lg shadow-sm border p-6">
       <div

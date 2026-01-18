@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FilterPopover } from "@/components/inbox/FilterPopover";
 import { CreateConversationDialog } from "@/components/inbox/CreateConversationDialog";
@@ -19,20 +19,23 @@ import { normalizeChannelForIcon } from "@/lib/utils/channelHelpers";
 import { useDeviceChecks } from "@/hooks/useBreakpoint";
 import { responsiveHeading, responsiveBody } from "@/lib/utils/typography";
 import { useUserStore } from "@/store/userStore";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 export default function FlowbiteUnifiedInbox() {
-  const { t, i18n } = useTranslation('common');
+  const { id } = useParams<{ id?: string }>();
+  const { t, i18n } = useTranslation(['common', 'translation']);
   const currentLocale = i18n.language === 'en' ? enUS : nl;
   const { isMobile, isTablet } = useDeviceChecks();
+  const navigate = useNavigate();
   const { currentUser } = useUserStore();
   const { data: conversationsData, isLoading } = useConversations();
   const { data: inboxStats } = useInboxStats();
   const conversations = conversationsData?.results || [];
   
-  const [selectedConversationId, setSelectedConversationId] = useState<string>(conversations[0]?.id || "1");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [contactSheetOpen, setContactSheetOpen] = useState(false);
   const [filters, setFilters] = useState({
     status: 'all',
     channel: 'all',
@@ -41,9 +44,18 @@ export default function FlowbiteUnifiedInbox() {
     unreadOnly: false,
     missedCallsOnly: false,
   });
+
+  const resolvedConversationId = useMemo(() => {
+    if (id && conversations.some((c) => c.id === id)) return id;
+    return conversations[0]?.id || "";
+  }, [conversations, id]);
+
+  const handleSelectConversation = (conversationId: string, options?: { replace?: boolean }) => {
+    navigate(`/app/inbox/conversations/${conversationId}`, { replace: options?.replace ?? false });
+  };
   
   // Get messages for selected conversation
-  const { data: messagesData } = useConversationMessages(selectedConversationId);
+  const { data: messagesData } = useConversationMessages(resolvedConversationId);
 
   // Calculate unread count
   const unreadCount = useMemo(() => {
@@ -61,8 +73,9 @@ export default function FlowbiteUnifiedInbox() {
       const matchesStatus = filters.status === 'all' || conv.status === filters.status;
       
       // Channel filter
-      const matchesChannel = filters.channel === 'all' || 
-        conv.primary_channel.toLowerCase() === filters.channel.toLowerCase();
+      const matchesChannel =
+        filters.channel === 'all' ||
+        normalizeChannelForIcon(conv.primary_channel) === filters.channel;
       
       // Priority filter
       const matchesPriority = filters.priority === 'all' || conv.priority === filters.priority;
@@ -76,14 +89,14 @@ export default function FlowbiteUnifiedInbox() {
       const matchesUnread = !filters.unreadOnly || conv.is_unread;
       
       // Missed calls filter (simulated based on channel and some condition)
-      const isMissedCall = conv.primary_channel === 'Telefoon' && conv.status === 'pending';
+      const isMissedCall = normalizeChannelForIcon(conv.primary_channel) === 'phone' && conv.status === 'pending';
       const matchesMissed = !filters.missedCallsOnly || isMissedCall;
       
       return matchesSearch && matchesStatus && matchesChannel && matchesPriority && matchesAssigned && matchesUnread && matchesMissed;
     });
   }, [conversations, searchQuery, filters, currentUser]);
 
-  const selectedConversation = conversations.find((c) => c.id === selectedConversationId);
+  const selectedConversation = conversations.find((c) => c.id === resolvedConversationId);
   
   // Transform messages to match FlowbiteChatView format
   const transformedMessages = (messagesData?.results || []).map((msg) => ({
@@ -100,7 +113,7 @@ export default function FlowbiteUnifiedInbox() {
     <div className="flex h-[calc(100vh-64px)]">
       {/* Conversation List - Always visible, responsive width */}
       <div className={`${
-        isMobile ? 'w-full' : isTablet ? 'w-80' : 'w-96'
+        isMobile ? 'w-72' : isTablet ? 'w-80' : 'w-96'
       } bg-card border-r border-border flex flex-col`}>
         {/* Header - Optimized for 360px */}
         <div className="px-3 xs:px-4 py-3 xs:py-4 border-b border-border">
@@ -123,7 +136,7 @@ export default function FlowbiteUnifiedInbox() {
             <div className="flex gap-1.5 xs:gap-2 flex-shrink-0">
               {/* Link to Inbox Review */}
               {inboxStats && inboxStats.nieuw > 0 && (
-                <Link to="/inbox/review">
+                <Link to="/app/inbox/review">
                   <Button 
                     variant="outline" 
                     size="sm"
@@ -158,18 +171,18 @@ export default function FlowbiteUnifiedInbox() {
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-xs">
                   <div className="text-xs space-y-1">
-                    <p className="font-semibold mb-2">{t('inbox.shortcuts.title', 'Sneltoetsen')}</p>
+                    <p className="font-semibold mb-2">{t('translation:inbox.shortcuts.title')}</p>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                       <span className="text-muted-foreground">Ctrl+K</span>
-                      <span>{t('inbox.shortcuts.search', 'Zoeken')}</span>
+                      <span>{t('translation:inbox.shortcuts.search')}</span>
                       <span className="text-muted-foreground">Ctrl+N</span>
-                      <span>{t('inbox.shortcuts.new', 'Nieuw gesprek')}</span>
+                      <span>{t('translation:inbox.shortcuts.new')}</span>
                       <span className="text-muted-foreground">Ctrl+Enter</span>
-                      <span>{t('inbox.shortcuts.send', 'Versturen')}</span>
+                      <span>{t('translation:inbox.shortcuts.send')}</span>
                       <span className="text-muted-foreground">↑/↓</span>
-                      <span>{t('inbox.shortcuts.navigate', 'Navigeren')}</span>
+                      <span>{t('translation:inbox.shortcuts.navigate')}</span>
                       <span className="text-muted-foreground">Esc</span>
-                      <span>{t('inbox.shortcuts.close', 'Sluiten')}</span>
+                      <span>{t('translation:inbox.shortcuts.close')}</span>
                     </div>
                   </div>
                 </TooltipContent>
@@ -185,7 +198,7 @@ export default function FlowbiteUnifiedInbox() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8 xs:pl-10 h-9 xs:h-10 text-xs xs:text-sm bg-[hsl(var(--conversation-hover))] border-primary/20 focus:border-primary focus:ring-primary/30"
-              placeholder={isMobile ? "Zoeken..." : t('inbox.searchPlaceholder')}
+              placeholder={t('inbox.searchPlaceholder')}
               title={t('inbox.searchTitle')}
             />
           </div>
@@ -209,7 +222,7 @@ export default function FlowbiteUnifiedInbox() {
               const isMissedCall = conversation.primary_channel === 'Telefoon' && conversation.status === 'pending';
               
               return (
-                <Link key={conversation.id} to={`/unified-inbox/conversation/${conversation.id}`}>
+                <div key={conversation.id} className="w-full">
                   <FlowbiteConversationItem
                     id={conversation.id}
                     name={conversation.klant_naam}
@@ -217,15 +230,15 @@ export default function FlowbiteUnifiedInbox() {
                     timestamp={lastMessageTime}
                     channel={normalizeChannelForIcon(conversation.primary_channel)}
                     unreadCount={conversation.is_unread ? 1 : 0}
-                    isActive={conversation.id === selectedConversationId}
-                    onClick={() => setSelectedConversationId(conversation.id)}
+                    isActive={conversation.id === resolvedConversationId}
+                    onClick={() => handleSelectConversation(conversation.id)}
                     avatarUrl={`https://api.dicebear.com/7.x/avataaars/svg?seed=${conversation.klant_naam}`}
                     priority={conversation.priority}
                     assignedTo={conversation.toegewezen_aan}
                     tags={conversation.tags}
                     isMissedCall={isMissedCall}
                   />
-                </Link>
+                </div>
               );
             })
           ) : (
@@ -242,25 +255,37 @@ export default function FlowbiteUnifiedInbox() {
         </div>
       </div>
 
-      {/* Chat View - Hidden on mobile (use conversation detail page instead) */}
-      {!isMobile && (
-        <div className="flex-1 flex flex-col">
-          {selectedConversation && (
-            <FlowbiteChatView
-              conversationName={selectedConversation.klant_naam}
-              conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation.klant_naam}`}
-              channel={normalizeChannelForIcon(selectedConversation.primary_channel)}
-              messages={transformedMessages}
-              isOnline={selectedConversation.status === 'open'}
-              clientId={selectedConversation.klant_id}
-            />
-          )}
-        </div>
-      )}
+      {/* Chat View (always visible as 2nd column) */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {selectedConversation ? (
+          <FlowbiteChatView
+            conversationName={selectedConversation.klant_naam}
+            conversationAvatar={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation.klant_naam}`}
+            channel={normalizeChannelForIcon(selectedConversation.primary_channel)}
+            messages={transformedMessages}
+            isOnline={selectedConversation.status === 'open'}
+            clientId={selectedConversation.klant_id}
+            onProfileClick={() => setContactSheetOpen(true)}
+          />
+        ) : (
+          <div className="flex-1 flex items-center justify-center bg-background text-muted-foreground">
+            <div className="max-w-sm text-center px-4">
+              <p className="text-sm font-medium text-foreground">{t('inbox.selectConversation', 'Selecteer een gesprek')}</p>
+              <p className="text-xs mt-1">{t('inbox.selectConversationHint', 'Kies links een gesprek om berichten te bekijken.')}</p>
+            </div>
+          </div>
+        )}
+      </div>
 
-      {/* Customer Info Panel - Only on desktop */}
-      {!isMobile && !isTablet && (
-        <div className="w-80 bg-card border-l border-border overflow-y-auto">
+      {/* Create Conversation Dialog */}
+      <CreateConversationDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+      />
+
+      {/* Contact info popup (opens when profile is clicked) */}
+      <Sheet open={contactSheetOpen} onOpenChange={setContactSheetOpen}>
+        <SheetContent className="w-80 sm:max-w-sm p-0 overflow-y-auto">
           <div className="p-4 sm:p-6">
             {/* Customer Header */}
             <div className="text-center mb-4 sm:mb-6">
@@ -272,85 +297,87 @@ export default function FlowbiteUnifiedInbox() {
               <h3 className={`${responsiveHeading.h4} mb-2`}>
                 {selectedConversation?.klant_naam}
               </h3>
-              <Badge variant="secondary" className={`text-xs ${
-                selectedConversation?.status === 'open' 
-                  ? "bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]"
-                  : "bg-[hsl(var(--status-away)/0.1)] text-[hsl(var(--status-away))] border-[hsl(var(--status-away)/0.2)]"
-              }`}>
-                <span className={`w-2 h-2 mr-1.5 rounded-full ${
-                  selectedConversation?.status === 'open' ? 'bg-[hsl(var(--status-online))]' : 'bg-[hsl(var(--status-away))]'
-                }`}></span>
+              <Badge
+                variant="secondary"
+                className={`text-xs ${
+                  selectedConversation?.status === 'open'
+                    ? "bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]"
+                    : "bg-[hsl(var(--status-away)/0.1)] text-[hsl(var(--status-away))] border-[hsl(var(--status-away)/0.2)]"
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 mr-1.5 rounded-full ${
+                    selectedConversation?.status === 'open'
+                      ? 'bg-[hsl(var(--status-online))]'
+                      : 'bg-[hsl(var(--status-away))]'
+                  }`}
+                ></span>
                 {selectedConversation?.status === 'open' ? 'Actieve conversatie' : 'Gesloten'}
               </Badge>
             </div>
 
-          {/* Contact Info */}
-          <div className="mb-6">
-            <h4 className="text-sm font-semibold text-foreground mb-3">
-              Contact Informatie
-            </h4>
-            <dl className="text-sm text-foreground divide-y divide-border">
-              <div className="flex flex-col pb-3">
-                <dt className="mb-1 text-muted-foreground">Klant ID</dt>
-                <dd className="font-semibold">
-                  <Link 
-                    to={`/clients/${selectedConversation?.klant_id}`}
-                    className="hover:text-ka-green transition-colors hover:underline"
-                  >
-                    {selectedConversation?.klant_id}
-                  </Link>
-                </dd>
-              </div>
-              <div className="flex flex-col py-3">
-                <dt className="mb-1 text-muted-foreground">Primary Channel</dt>
-                <dd className="font-semibold">{selectedConversation?.primary_channel}</dd>
-              </div>
-              <div className="flex flex-col pt-3">
-                <dt className="mb-1 text-muted-foreground">Toegewezen aan</dt>
-                <dd className="font-semibold">{selectedConversation?.toegewezen_aan || 'Niet toegewezen'}</dd>
-              </div>
-            </dl>
-          </div>
+            {/* Contact Info */}
+            <div className="mb-6">
+              <h4 className="text-sm font-semibold text-foreground mb-3">
+                Contact Informatie
+              </h4>
+              <dl className="text-sm text-foreground divide-y divide-border">
+                <div className="flex flex-col pb-3">
+                  <dt className="mb-1 text-muted-foreground">Klant ID</dt>
+                  <dd className="font-semibold">
+                    <Link
+                      to={`/app/clients/${selectedConversation?.klant_id}`}
+                      className="hover:text-ka-green transition-colors hover:underline"
+                      onClick={() => setContactSheetOpen(false)}
+                    >
+                      {selectedConversation?.klant_id}
+                    </Link>
+                  </dd>
+                </div>
+                <div className="flex flex-col py-3">
+                  <dt className="mb-1 text-muted-foreground">Primary Channel</dt>
+                  <dd className="font-semibold">{selectedConversation?.primary_channel}</dd>
+                </div>
+                <div className="flex flex-col pt-3">
+                  <dt className="mb-1 text-muted-foreground">Toegewezen aan</dt>
+                  <dd className="font-semibold">{selectedConversation?.toegewezen_aan || 'Niet toegewezen'}</dd>
+                </div>
+              </dl>
+            </div>
 
-          {/* Stats */}
-          <div className="mb-6">
-            <h4 className="text-sm font-semibold text-foreground mb-3">
-              Statistieken
-            </h4>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-1">
-                <dt className="mb-1 text-xs text-muted-foreground">Berichten</dt>
-                <dd className="text-2xl font-bold text-foreground">{selectedConversation?.message_count || 0}</dd>
+            {/* Stats */}
+            <div className="mb-6">
+              <h4 className="text-sm font-semibold text-foreground mb-3">
+                Statistieken
+              </h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-1">
+                  <dt className="mb-1 text-xs text-muted-foreground">Berichten</dt>
+                  <dd className="text-2xl font-bold text-foreground">{selectedConversation?.message_count || 0}</dd>
+                </div>
+                <div className="col-span-1">
+                  <dt className="mb-1 text-xs text-muted-foreground">Prioriteit</dt>
+                  <dd className="text-2xl font-bold text-foreground capitalize">{selectedConversation?.priority || 'Normal'}</dd>
+                </div>
               </div>
-              <div className="col-span-1">
-                <dt className="mb-1 text-xs text-muted-foreground">Prioriteit</dt>
-                <dd className="text-2xl font-bold text-foreground capitalize">{selectedConversation?.priority || 'Normal'}</dd>
+            </div>
+
+            {/* Tags */}
+            <div>
+              <h4 className={`${responsiveBody.base} font-semibold text-foreground mb-3`}>Tags</h4>
+              <div className="flex flex-wrap gap-2">
+                {selectedConversation?.tags && selectedConversation.tags.length > 0 ? (
+                  selectedConversation.tags.map((tag, idx) => (
+                    <Badge key={idx} variant="secondary" className="text-xs">{tag}</Badge>
+                  ))
+                ) : (
+                  <p className={`${responsiveBody.small} text-muted-foreground`}>Geen tags</p>
+                )}
               </div>
             </div>
           </div>
-
-          {/* Tags */}
-          <div>
-            <h4 className={`${responsiveBody.base} font-semibold text-foreground mb-3`}>Tags</h4>
-            <div className="flex flex-wrap gap-2">
-              {selectedConversation?.tags && selectedConversation.tags.length > 0 ? (
-                selectedConversation.tags.map((tag, idx) => (
-                  <Badge key={idx} variant="secondary" className="text-xs">{tag}</Badge>
-                ))
-              ) : (
-                <p className={`${responsiveBody.small} text-muted-foreground`}>Geen tags</p>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-      )}
-
-      {/* Create Conversation Dialog */}
-      <CreateConversationDialog
-        open={createDialogOpen}
-        onOpenChange={setCreateDialogOpen}
-      />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

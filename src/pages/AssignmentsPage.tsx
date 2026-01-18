@@ -174,7 +174,7 @@ export default function AssignmentsPage() {
         </div>
         
         <div className="flex items-center gap-3">
-          <Link to="/projects/bulk">
+          <Link to="/app/projects/bulk-import">
             <Button variant="outline" size="sm">
               <Calendar className="w-4 h-4 mr-2" />
               {t('assignments.bulkBTW')}
@@ -390,7 +390,7 @@ export default function AssignmentsPage() {
                 </div>
                 <div className="space-y-2">
                   {clientOpdrachten.map((opdracht) => (
-                    <Link key={opdracht.id} to={`/assignments/${opdracht.id}`}>
+                    <Link key={opdracht.id} to={`/app/assignments/${opdracht.id}`}>
                       <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
                         <div className="flex items-center gap-3">
                           <OpdrachtTypeBadge type={opdracht.type_opdracht} />
@@ -438,7 +438,7 @@ export default function AssignmentsPage() {
                 filteredOpdrachten.map((opdracht) => (
                   <TableRow key={opdracht.id} className="hover:bg-muted/50">
                     <TableCell>
-                      <Link to={`/assignments/${opdracht.id}`} className="hover:underline">
+                      <Link to={`/app/assignments/${opdracht.id}`} className="hover:underline">
                         <div>
                           <p className="font-medium text-foreground">{opdracht.opdracht_nummer}</p>
                           <p className="text-sm text-muted-foreground line-clamp-1">{opdracht.opdracht_naam}</p>
@@ -446,7 +446,7 @@ export default function AssignmentsPage() {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <Link to={`/clients/${opdracht.klant_id}`} className="text-sm hover:underline text-foreground">
+                      <Link to={`/app/clients/${opdracht.klant_id}`} className="text-sm hover:underline text-foreground">
                         {opdracht.klant_naam}
                       </Link>
                     </TableCell>

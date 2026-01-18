@@ -9,6 +9,7 @@ import { useKlanten } from '@/lib/api/klanten';
 import { useCreateConversation } from '@/lib/api/conversations';
 import { useToast } from '@/hooks/use-toast';
 import { Loader } from 'lucide-react';
+import { Channel } from '@/types';
 
 interface CreateConversationDialogProps {
   open: boolean;
@@ -113,7 +114,7 @@ export function CreateConversationDialog({ open, onOpenChange }: CreateConversat
             <Label htmlFor="channel">Kanaal *</Label>
             <Select 
               value={formData.primary_channel} 
-              onValueChange={(value: any) => setFormData({ ...formData, primary_channel: value })}
+              onValueChange={(value: string) => setFormData({ ...formData, primary_channel: value as Channel })}
             >
               <SelectTrigger id="channel">
                 <SelectValue />

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { OpdrachtType } from '@/types';
 
 interface CreateOpdrachtDialogProps {
   open: boolean;
@@ -22,7 +23,7 @@ export function CreateOpdrachtDialog({ open, onOpenChange }: CreateOpdrachtDialo
   const [formData, setFormData] = useState({
     opdracht_naam: '',
     klant_id: '',
-    type_opdracht: 'BTW-aangifte' as any,
+    type_opdracht: 'BTW-aangifte' as OpdrachtType,
     status: 'Intake' as const,
     deadline: '',
   });

@@ -31,6 +31,7 @@ interface FlowbiteChatViewProps {
   messages: Message[];
   isOnline?: boolean;
   clientId?: string;
+  onProfileClick?: () => void;
 }
 
 export const FlowbiteChatView = ({ 
@@ -39,7 +40,8 @@ export const FlowbiteChatView = ({
   channel, 
   messages,
   isOnline = false,
-  clientId
+  clientId,
+  onProfileClick,
 }: FlowbiteChatViewProps) => {
   const { t } = useTranslation();
   const [messageText, setMessageText] = useState("");
@@ -95,46 +97,95 @@ export const FlowbiteChatView = ({
     <div className="flex flex-col h-full bg-background">
       {/* Chat Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card">
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <img
-              className="w-10 h-10 rounded-full"
-              src={conversationAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${conversationName}`}
-              alt={`${conversationName} avatar`}
-            />
-            {isOnline && (
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-[hsl(var(--status-online))] border-2 border-card rounded-full"></span>
-            )}
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              {clientId ? (
-                <Link 
-                  to={`/clients/${clientId}`}
-                  className="text-sm font-semibold text-foreground hover:text-primary flex items-center gap-1 group"
-                >
-                  {conversationName}
-                  <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </Link>
-              ) : (
-                <h3 className="text-sm font-semibold text-foreground">
+        {onProfileClick ? (
+          <div className="flex items-center gap-2 min-w-0">
+            <button
+              type="button"
+              onClick={onProfileClick}
+              className="flex items-center gap-3 min-w-0 text-left rounded-lg p-2 -m-2 hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
+              aria-label={t("inbox.openContactInfo", "Open contactinformatie")}
+            >
+              <div className="relative flex-shrink-0">
+                <img
+                  className="w-10 h-10 rounded-full"
+                  src={conversationAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${conversationName}`}
+                  alt={`${conversationName} avatar`}
+                />
+                {isOnline && (
+                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-[hsl(var(--status-online))] border-2 border-card rounded-full"></span>
+                )}
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-sm font-semibold text-foreground truncate">
                   {conversationName}
                 </h3>
+                <div className="flex items-center gap-2 min-w-0">
+                  <ChannelIcon channel={channel} size="sm" />
+                  <span className="text-xs text-muted-foreground capitalize truncate">
+                    {channel}
+                  </span>
+                  {isOnline && (
+                    <Badge
+                      variant="secondary"
+                      className="text-xs bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]"
+                    >
+                      Online
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            </button>
+
+            {clientId && (
+              <Link to={`/app/clients/${clientId}`} aria-label={t("inbox.openClient", "Open klant")}>
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <ExternalLink className="w-4 h-4" />
+                </Button>
+              </Link>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <img
+                className="w-10 h-10 rounded-full"
+                src={conversationAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${conversationName}`}
+                alt={`${conversationName} avatar`}
+              />
+              {isOnline && (
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-[hsl(var(--status-online))] border-2 border-card rounded-full"></span>
               )}
             </div>
-            <div className="flex items-center gap-2">
-              <ChannelIcon channel={channel} size="sm" />
-              <span className="text-xs text-muted-foreground capitalize">
-                {channel}
-              </span>
-              {isOnline && (
-                <Badge variant="secondary" className="text-xs bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]">
-                  Online
-                </Badge>
-              )}
+            <div>
+              <div className="flex items-center gap-2">
+                {clientId ? (
+                  <Link 
+                    to={`/app/clients/${clientId}`}
+                    className="text-sm font-semibold text-foreground hover:text-primary flex items-center gap-1 group"
+                  >
+                    {conversationName}
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </Link>
+                ) : (
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {conversationName}
+                  </h3>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <ChannelIcon channel={channel} size="sm" />
+                <span className="text-xs text-muted-foreground capitalize">
+                  {channel}
+                </span>
+                {isOnline && (
+                  <Badge variant="secondary" className="text-xs bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]">
+                    Online
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon">

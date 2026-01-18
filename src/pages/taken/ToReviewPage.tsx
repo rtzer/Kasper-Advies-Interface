@@ -64,7 +64,7 @@ export default function ToReviewPage() {
           </Card>
         ) : (
           toReview.map((taak) => (
-            <Link key={taak.id} to={`/tasks/${taak.id}`}>
+            <Link key={taak.id} to={`/app/tasks/${taak.id}`}>
               <Card className="p-6 hover:shadow-lg transition-all hover:border-primary cursor-pointer">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

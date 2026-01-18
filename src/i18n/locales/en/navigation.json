@@ -21,5 +21,9 @@
     "phone": "Phone",
     "video": "Video",
     "sms": "SMS"
+  },
+  "sections": {
+    "daily": "Daily",
+    "other": "Other"
   }
 }

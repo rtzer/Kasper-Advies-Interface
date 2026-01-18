@@ -23,7 +23,7 @@ export default function TeamPage() {
   
   // Access control - redirect if not admin
   if (!isAdmin && !isLoading) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/app/inbox" replace />;
   }
   
   const handleEditUser = (user: User) => {

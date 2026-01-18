@@ -7,9 +7,9 @@
  */
 
 export const responsiveHeading = {
-  h1: "text-2xl sm:text-3xl lg:text-4xl font-bold text-ka-navy dark:text-white",
-  h2: "text-xl sm:text-2xl lg:text-3xl font-bold text-ka-navy dark:text-white",
-  h3: "text-lg sm:text-xl lg:text-2xl font-semibold text-ka-navy dark:text-white",
+  h1: "text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground",
+  h2: "text-xl sm:text-2xl lg:text-3xl font-bold text-foreground",
+  h3: "text-lg sm:text-xl lg:text-2xl font-semibold text-foreground",
   h4: "text-base sm:text-lg font-semibold text-foreground",
   h5: "text-sm sm:text-base font-semibold text-foreground",
 } as const;

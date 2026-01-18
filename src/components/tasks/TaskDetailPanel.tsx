@@ -153,12 +153,12 @@ export function TaskDetailPanel({ task, open, onClose, onUpdate }: TaskDetailPan
                 {t('tasks.links')}
               </Label>
               <div className="space-y-2">
-                <Link to={`/clients/${task.klant_id}`} className="flex items-center gap-2 text-sm text-ka-green hover:underline">
+                <Link to={`/app/clients/${task.klant_id}`} className="flex items-center gap-2 text-sm text-ka-green hover:underline">
                   <ExternalLink className="w-3 h-3" />
                   {task.klant_naam}
                 </Link>
                 {task.gerelateerde_opdracht_id && (
-                  <Link to={`/assignments/${task.gerelateerde_opdracht_id}`} className="flex items-center gap-2 text-sm text-ka-green hover:underline">
+                  <Link to={`/app/assignments/${task.gerelateerde_opdracht_id}`} className="flex items-center gap-2 text-sm text-ka-green hover:underline">
                     <ExternalLink className="w-3 h-3" />
                     {task.opdracht_naam}
                   </Link>

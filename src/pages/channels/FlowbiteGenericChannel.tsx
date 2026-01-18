@@ -2,7 +2,7 @@ import { MessageSquare } from "lucide-react";
 
 interface FlowbiteGenericChannelProps {
   channelName: string;
-  icon?: React.ComponentType<any>;
+  icon?: React.ComponentType<{ className?: string }>;
   color?: string;
 }
 

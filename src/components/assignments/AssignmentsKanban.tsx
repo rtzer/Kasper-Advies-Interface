@@ -136,7 +136,7 @@ export function AssignmentsKanban({
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                           >
-                            <Link to={`/assignments/${opdracht.id}`}>
+                            <Link to={`/app/assignments/${opdracht.id}`}>
                               <Card className={cn(
                                 'p-3 cursor-pointer hover:shadow-md transition-shadow',
                                 snapshot.isDragging && 'shadow-lg rotate-2'

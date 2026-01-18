@@ -176,7 +176,7 @@ export default function ProjectTimeline({ filterStatus, filterCategory }: Projec
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
-                        to={`/projects/${project.id}`}
+                        to={`/app/projects/${project.id}`}
                         className={`absolute h-8 rounded bg-${projectTypeColor} hover:opacity-80 transition-opacity flex items-center px-2 overflow-hidden`}
                         style={{
                           left: position.left,

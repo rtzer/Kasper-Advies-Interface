@@ -62,7 +62,7 @@ export default function InteractieDetailModal({ interactie, open, onOpenChange }
 
   const handleGoToInbox = () => {
     if (interactie.conversatie_id) {
-      navigate(`/inbox?conversation=${interactie.conversatie_id}&open=true`);
+      navigate(`/app/inbox?conversation=${interactie.conversatie_id}&open=true`);
       onOpenChange(false);
     }
   };

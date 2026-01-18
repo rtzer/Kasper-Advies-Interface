@@ -25,7 +25,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <Topbar onMenuClick={() => {}} onSearchClick={() => setCommandOpen(true)} />
           </header>
           
-          <main className="flex-1 overflow-y-auto overflow-x-hidden p-6 pb-16 lg:pb-6">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden">
             {children}
           </main>
         </div>

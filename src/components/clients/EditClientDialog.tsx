@@ -182,7 +182,7 @@ export default function EditClientDialog({ klant, open, onOpenChange }: EditClie
 
                 <div>
                   <Label htmlFor="voorkeur_kanaal">{t('editClient.fields.preferredChannel')}</Label>
-                  <Select value={formData.voorkeur_kanaal || ''} onValueChange={(value) => setFormData({ ...formData, voorkeur_kanaal: value as any })}>
+                  <Select value={formData.voorkeur_kanaal || ''} onValueChange={(value: Channel) => setFormData({ ...formData, voorkeur_kanaal: value })}>
                     <SelectTrigger>
                       <SelectValue placeholder={t('editClient.placeholders.selectChannel')} />
                     </SelectTrigger>

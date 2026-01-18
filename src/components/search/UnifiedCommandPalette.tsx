@@ -44,7 +44,7 @@ interface SearchResult {
   name: string;
   description: string;
   url: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 export default function UnifiedCommandPalette({ open, onOpenChange }: UnifiedCommandPaletteProps) {
@@ -107,7 +107,7 @@ export default function UnifiedCommandPalette({ open, onOpenChange }: UnifiedCom
             id: klant.id,
             name: klant.naam,
             description: `${klant.klant_nummer} • ${klant.plaats || 'Geen plaats'}`,
-            url: `/clients/${klant.id}`,
+            url: `/app/clients/${klant.id}`,
             icon: Users,
           });
         }
@@ -126,7 +126,7 @@ export default function UnifiedCommandPalette({ open, onOpenChange }: UnifiedCom
             id: opr.id,
             name: opr.opdracht_naam,
             description: `${opr.klant_naam} • ${opr.status}`,
-            url: `/assignments/${opr.id}`,
+            url: `/app/assignments/${opr.id}`,
             icon: FileText,
           });
         }
@@ -146,7 +146,7 @@ export default function UnifiedCommandPalette({ open, onOpenChange }: UnifiedCom
             id: int.id,
             name: int.onderwerp,
             description: `${int.klant_naam} • ${int.kanaal}`,
-            url: `/clients/${int.klant_id}`,
+            url: `/app/clients/${int.klant_id}`,
             icon: MessageSquare,
           });
         }
@@ -206,25 +206,33 @@ export default function UnifiedCommandPalette({ open, onOpenChange }: UnifiedCom
         {showNavigation && (
           <>
             <CommandGroup heading="Navigation">
-              <CommandItem onSelect={() => runCommand(() => navigate('/'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/inbox'))}>
                 <MessageSquare className="mr-2 h-4 w-4" />
                 <span>Inbox</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/clients'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/clients'))}>
                 <Users className="mr-2 h-4 w-4" />
                 <span>Klanten</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/projects'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/projects'))}>
                 <FolderKanban className="mr-2 h-4 w-4" />
                 <span>Projecten</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/assignments'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/assignments'))}>
                 <FileText className="mr-2 h-4 w-4" />
                 <span>Opdrachten</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/tasks'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/tasks'))}>
                 <CheckSquare className="mr-2 h-4 w-4" />
                 <span>Taken</span>
+              </CommandItem>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/analytics'))}>
+                <BarChart3 className="mr-2 h-4 w-4" />
+                <span>Analytics</span>
+              </CommandItem>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/settings'))}>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Instellingen</span>
               </CommandItem>
             </CommandGroup>
 
@@ -232,23 +240,23 @@ export default function UnifiedCommandPalette({ open, onOpenChange }: UnifiedCom
 
             {/* Quick Actions */}
             <CommandGroup heading="Quick Actions">
-              <CommandItem onSelect={() => runCommand(() => navigate('/clients?action=new'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/clients?action=new'))}>
                 <Plus className="mr-2 h-4 w-4" />
                 <span>Nieuwe klant</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/projects?action=new'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/projects?action=new'))}>
                 <Plus className="mr-2 h-4 w-4" />
                 <span>Nieuw project</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/assignments?action=new'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/assignments?action=new'))}>
                 <Plus className="mr-2 h-4 w-4" />
                 <span>Nieuwe opdracht</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/tasks?action=new'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/tasks?action=new'))}>
                 <Plus className="mr-2 h-4 w-4" />
                 <span>Nieuwe taak</span>
               </CommandItem>
-              <CommandItem onSelect={() => runCommand(() => navigate('/tasks'))}>
+              <CommandItem onSelect={() => runCommand(() => navigate('/app/tasks'))}>
                 <Clock className="mr-2 h-4 w-4" />
                 <span>Tijd registreren</span>
               </CommandItem>
@@ -259,29 +267,21 @@ export default function UnifiedCommandPalette({ open, onOpenChange }: UnifiedCom
               <>
                 <CommandSeparator />
                 <CommandGroup heading="Management (Harm-Jan)">
-                  <CommandItem onSelect={() => runCommand(() => navigate('/assignments/pending'))}>
+                  <CommandItem onSelect={() => runCommand(() => navigate('/app/assignments/pending-approval'))}>
                     <CheckCircle className="mr-2 h-4 w-4" />
                     <span>Opdrachten goedkeuren</span>
                   </CommandItem>
-                  <CommandItem onSelect={() => runCommand(() => navigate('/tasks/review'))}>
+                  <CommandItem onSelect={() => runCommand(() => navigate('/app/tasks/review'))}>
                     <CheckCircle className="mr-2 h-4 w-4" />
                     <span>Taken goedkeuren</span>
                   </CommandItem>
-                  <CommandItem onSelect={() => runCommand(() => navigate('/analytics'))}>
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    <span>Financiële rapportages</span>
-                  </CommandItem>
-                  <CommandItem onSelect={() => runCommand(() => navigate('/projects/workload'))}>
+                  <CommandItem onSelect={() => runCommand(() => navigate('/app/projects/workload'))}>
                     <Users className="mr-2 h-4 w-4" />
                     <span>Team workload</span>
                   </CommandItem>
-                  <CommandItem onSelect={() => runCommand(() => navigate('/clients/late-payers'))}>
+                  <CommandItem onSelect={() => runCommand(() => navigate('/app/clients/late-payers'))}>
                     <DollarSign className="mr-2 h-4 w-4" />
                     <span>Late betalers</span>
-                  </CommandItem>
-                  <CommandItem onSelect={() => runCommand(() => navigate('/settings'))}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Instellingen</span>
                   </CommandItem>
                 </CommandGroup>
               </>
