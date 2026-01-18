@@ -744,7 +744,21 @@
     "saved": "Opgeslagen",
     "back": "Terug",
     "next": "Volgende",
-    "filters": "Filters"
+    "filters": "Filters",
+    "today": "Vandaag",
+    "online": "Online",
+    "call": "Bellen",
+    "videoCall": "Videobellen",
+    "more": "Meer",
+    "conversation": "Gesprek",
+    "unread": "ongelezen",
+    "missedCall": "Gemiste oproep",
+    "priority": {
+      "urgent": "Urgent",
+      "high": "Hoog",
+      "normal": "Normaal",
+      "low": "Laag"
+    }
   },
   "createClient": {
     "title": "Nieuwe klant aanmaken",

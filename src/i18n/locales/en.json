@@ -348,6 +348,22 @@
       "close": "Close"
     },
     "newMessages": "New messages",
+    "emptyState": {
+      "title": "Kaspers Advies Messages",
+      "description": "Select a conversation from the list to view messages and respond to your clients.",
+      "securityNote": "Messages are secured and encrypted"
+    },
+    "activeConversation": "Active conversation",
+    "closedConversation": "Closed",
+    "viewClientProfile": "View client profile",
+    "messages": "Messages",
+    "channel": "Channel",
+    "assignedTo": "Assigned to",
+    "notAssigned": "Not assigned",
+    "clientId": "Client ID",
+    "conversationList": "Conversation list",
+    "messageHistory": "Message history",
+    "scrollToBottom": "Scroll to bottom",
     "quickReplies": {
       "title": "Quick replies",
       "greeting": {

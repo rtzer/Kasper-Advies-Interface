@@ -744,7 +744,21 @@
     "saved": "Saved",
     "back": "Back",
     "next": "Next",
-    "filters": "Filters"
+    "filters": "Filters",
+    "today": "Today",
+    "online": "Online",
+    "call": "Call",
+    "videoCall": "Video call",
+    "more": "More",
+    "conversation": "Conversation",
+    "unread": "unread",
+    "missedCall": "Missed call",
+    "priority": {
+      "urgent": "Urgent",
+      "high": "High",
+      "normal": "Normal",
+      "low": "Low"
+    }
   },
   "createClient": {
     "title": "Create new client",

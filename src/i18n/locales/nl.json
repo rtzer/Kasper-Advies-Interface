@@ -348,6 +348,22 @@
       "close": "Sluiten"
     },
     "newMessages": "Nieuwe berichten",
+    "emptyState": {
+      "title": "Kaspers Advies Berichten",
+      "description": "Selecteer een gesprek uit de lijst om berichten te bekijken en te reageren op uw klanten.",
+      "securityNote": "Berichten zijn beveiligd en versleuteld"
+    },
+    "activeConversation": "Actieve conversatie",
+    "closedConversation": "Gesloten",
+    "viewClientProfile": "Bekijk klantprofiel",
+    "messages": "Berichten",
+    "channel": "Kanaal",
+    "assignedTo": "Toegewezen aan",
+    "notAssigned": "Niet toegewezen",
+    "clientId": "Klant ID",
+    "conversationList": "Gesprekkenlijst",
+    "messageHistory": "Berichtgeschiedenis",
+    "scrollToBottom": "Scroll naar beneden",
     "quickReplies": {
       "title": "Snelle antwoorden",
       "greeting": {

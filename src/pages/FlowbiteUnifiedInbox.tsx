@@ -5,11 +5,12 @@ import { FilterPopover } from "@/components/inbox/FilterPopover";
 import { CreateConversationDialog } from "@/components/inbox/CreateConversationDialog";
 import { FlowbiteConversationItem } from "@/components/inbox/FlowbiteConversationItem";
 import { FlowbiteChatView } from "@/components/inbox/FlowbiteChatView";
-import { Search, Plus, Inbox, HelpCircle, X } from "lucide-react";
+import { Search, Plus, Inbox, HelpCircle, X, MessageSquare, Lock, User, MessageCircle, Hash, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useConversations, useConversationMessages } from "@/lib/api/conversations";
 import { useInboxStats } from "@/lib/api/inboxItems";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,7 +20,55 @@ import { normalizeChannelForIcon } from "@/lib/utils/channelHelpers";
 import { useDeviceChecks } from "@/hooks/useBreakpoint";
 import { responsiveHeading, responsiveBody } from "@/lib/utils/typography";
 import { useUserStore } from "@/store/userStore";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+
+// WhatsApp-style empty state when no conversation is selected
+function EmptyInboxState() {
+  const { t } = useTranslation(['common', 'translation']);
+  
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center bg-[hsl(var(--muted)/0.3)] relative overflow-hidden">
+      {/* Subtle pattern background */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.02]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}
+      />
+      
+      {/* Content */}
+      <div className="relative z-10 max-w-md text-center px-6">
+        {/* Illustration */}
+        <div className="mb-8 relative">
+          <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-[hsl(var(--ka-green)/0.15)] to-[hsl(var(--ka-green)/0.05)] flex items-center justify-center">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[hsl(var(--ka-green)/0.3)] to-[hsl(var(--ka-green)/0.1)] flex items-center justify-center">
+              <MessageSquare className="w-16 h-16 text-[hsl(var(--ka-green))]" strokeWidth={1.5} />
+            </div>
+          </div>
+          {/* Decorative elements */}
+          <div className="absolute top-4 right-16 w-3 h-3 rounded-full bg-[hsl(var(--ka-green)/0.4)] animate-pulse" />
+          <div className="absolute bottom-8 left-20 w-2 h-2 rounded-full bg-[hsl(var(--ka-green)/0.3)] animate-pulse delay-150" />
+          <div className="absolute top-12 left-12 w-2.5 h-2.5 rounded-full bg-[hsl(var(--ka-green)/0.25)] animate-pulse delay-300" />
+        </div>
+
+        {/* Text content */}
+        <h2 className="text-2xl font-semibold text-foreground mb-3">
+          {t('translation:inbox.emptyState.title', 'Kaspers Advies Berichten')}
+        </h2>
+        <p className="text-muted-foreground leading-relaxed mb-6">
+          {t('translation:inbox.emptyState.description', 'Selecteer een gesprek uit de lijst om berichten te bekijken en te reageren op uw klanten.')}
+        </p>
+
+        {/* Security note - WhatsApp style */}
+        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground/70 bg-[hsl(var(--muted))] px-4 py-2 rounded-full">
+          <Lock className="w-3.5 h-3.5" />
+          <span>{t('translation:inbox.emptyState.securityNote', 'Berichten zijn beveiligd en versleuteld')}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function FlowbiteUnifiedInbox() {
   const { id } = useParams<{ id?: string }>();
@@ -46,17 +95,18 @@ export default function FlowbiteUnifiedInbox() {
     missedCallsOnly: false,
   });
 
+  // Only resolve to an ID if the user has explicitly selected a conversation via URL param
   const resolvedConversationId = useMemo(() => {
     if (id && conversations.some((c) => c.id === id)) return id;
-    return conversations[0]?.id || "";
+    return null; // Don't auto-select first conversation
   }, [conversations, id]);
 
   const handleSelectConversation = (conversationId: string, options?: { replace?: boolean }) => {
     navigate(`/app/inbox/conversations/${conversationId}`, { replace: options?.replace ?? false });
   };
   
-  // Get messages for selected conversation
-  const { data: messagesData } = useConversationMessages(resolvedConversationId);
+  // Get messages for selected conversation (only if one is selected)
+  const { data: messagesData } = useConversationMessages(resolvedConversationId || '');
 
   // Calculate unread count
   const unreadCount = useMemo(() => {
@@ -111,64 +161,78 @@ export default function FlowbiteUnifiedInbox() {
   }));
 
   return (
-    <div className="flex h-[calc(100vh-64px)]">
-      {/* Conversation List - Always visible, responsive width */}
-      <div className={`${
-        isMobile ? 'w-72' : isTablet ? 'w-80' : 'w-96'
-      } bg-card border-r border-border flex flex-col`}>
-        {/* Header - Optimized for 360px */}
-        <div className="px-3 xs:px-4 py-3 xs:py-4 border-b border-border">
-          {/* Row 1: Title and action buttons */}
-          <div className="flex items-center gap-2 mb-1">
-            {/* Title section - takes available space */}
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <h2 className={`${responsiveHeading.h4} truncate`}>
+    <div className="flex h-[calc(100vh-64px)] bg-background">
+      {/* Conversation List Sidebar */}
+      <aside className={cn(
+        "flex flex-col bg-card border-r border-border",
+        isMobile ? 'w-72' : isTablet ? 'w-80' : 'w-[360px] lg:w-[400px]',
+      )}>
+        {/* Header */}
+        <header className="px-3 sm:px-4 py-3 sm:py-4 border-b border-border/50 bg-card/95 backdrop-blur-sm sticky top-0 z-10">
+          {/* Title row */}
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <h1 className="text-lg sm:text-xl font-semibold text-foreground truncate">
                 {t('inbox.conversations')}
-              </h2>
+              </h1>
               {unreadCount > 0 && (
-                <Badge variant="default" className="bg-primary text-primary-foreground flex-shrink-0">
+                <Badge 
+                  variant="default" 
+                  className="bg-[hsl(var(--ka-green))] text-white h-5 min-w-[20px] px-1.5 text-xs font-semibold"
+                >
                   {unreadCount}
                 </Badge>
               )}
             </div>
             
-            {/* Action buttons - compact group */}
-            <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* Action buttons */}
+            <div className="flex items-center gap-1 flex-shrink-0">
               <FilterPopover
                 open={filterDialogOpen}
                 onOpenChange={setFilterDialogOpen}
                 filters={filters}
                 onFiltersChange={setFilters}
               />
-              <Button 
-                size="icon"
-                title={t('inbox.newConversation')}
-                onClick={() => setCreateDialogOpen(true)}
-                className="h-9 w-9 xs:h-10 xs:w-10"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    size="icon"
+                    onClick={() => setCreateDialogOpen(true)}
+                    className="h-9 w-9 rounded-full bg-[hsl(var(--ka-green))] hover:bg-[hsl(var(--ka-green-dark))] shadow-sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t('inbox.newConversation')}</TooltipContent>
+              </Tooltip>
+              
               {/* Keyboard shortcuts help */}
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 xs:h-10 xs:w-10 hidden sm:flex">
-                    <HelpCircle className="w-4 h-4" />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-9 w-9 rounded-full hidden sm:flex hover:bg-[hsl(var(--muted))]"
+                  >
+                    <HelpCircle className="w-4 h-4 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="max-w-xs">
-                  <div className="text-xs space-y-1">
-                    <p className="font-semibold mb-2">{t('translation:inbox.shortcuts.title')}</p>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                      <span className="text-muted-foreground">Ctrl+K</span>
+                <TooltipContent side="bottom" align="end" className="max-w-xs p-3">
+                  <div className="text-xs space-y-2">
+                    <p className="font-semibold text-sm">{t('translation:inbox.shortcuts.title')}</p>
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+                      <span className="text-muted-foreground">
+                        <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">Ctrl</kbd>+<kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">K</kbd>
+                      </span>
                       <span>{t('translation:inbox.shortcuts.search')}</span>
-                      <span className="text-muted-foreground">Ctrl+N</span>
+                      <span className="text-muted-foreground">
+                        <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">Ctrl</kbd>+<kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">N</kbd>
+                      </span>
                       <span>{t('translation:inbox.shortcuts.new')}</span>
-                      <span className="text-muted-foreground">Ctrl+Enter</span>
-                      <span>{t('translation:inbox.shortcuts.send')}</span>
-                      <span className="text-muted-foreground">↑/↓</span>
+                      <span className="text-muted-foreground">
+                        <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">↑</kbd>/<kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">↓</kbd>
+                      </span>
                       <span>{t('translation:inbox.shortcuts.navigate')}</span>
-                      <span className="text-muted-foreground">Esc</span>
-                      <span>{t('translation:inbox.shortcuts.close')}</span>
                     </div>
                   </div>
                 </TooltipContent>
@@ -176,70 +240,81 @@ export default function FlowbiteUnifiedInbox() {
             </div>
           </div>
           
-          {/* Subtitle - shows active status */}
-          <p className={`${responsiveBody.tiny} text-muted-foreground mb-2 xs:mb-3`}>
-            {t('inbox.allConversations')}
-          </p>
-          
-          {/* Row 2: Inbox review button (if needed) - full width for better visibility */}
+          {/* Inbox review banner */}
           {inboxStats && inboxStats.nieuw > 0 && !reviewBannerDismissed && (
-            <div className="flex items-center gap-1 mb-2 xs:mb-3">
-              <Link to="/app/inbox/review" className="flex-1">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full h-8 text-xs gap-1.5 justify-start border-orange-300 text-orange-600 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-950"
-                >
-                  <Inbox className="w-4 h-4 flex-shrink-0" />
-                  <span>{inboxStats.nieuw} {t('inbox.toReview', 'to review')}</span>
-                </Button>
+            <div className="flex items-center gap-2 mb-3 p-2 rounded-lg bg-[hsl(var(--priority-high)/0.1)] border border-[hsl(var(--priority-high)/0.2)]">
+              <Link to="/app/inbox/review" className="flex-1 flex items-center gap-2 group">
+                <div className="p-1.5 rounded-full bg-[hsl(var(--priority-high)/0.15)]">
+                  <Inbox className="w-4 h-4 text-[hsl(var(--priority-high))]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-[hsl(var(--priority-high))] group-hover:underline">
+                    {inboxStats.nieuw} {t('inbox.toReview', 'berichten te beoordelen')}
+                  </p>
+                </div>
               </Link>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 flex-shrink-0 text-muted-foreground hover:text-foreground"
+                className="h-7 w-7 rounded-full hover:bg-[hsl(var(--priority-high)/0.15)]"
                 onClick={() => setReviewBannerDismissed(true)}
-                title={t('actions.close', 'Close')}
+                aria-label={t('actions.close', 'Sluiten')}
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5 text-[hsl(var(--priority-high))]" />
               </Button>
             </div>
           )}
 
-          {/* Search - Compact on mobile */}
+          {/* Search */}
           <div className="relative">
-            <Search className="absolute left-2.5 xs:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 xs:w-4 xs:h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <Input
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 xs:pl-10 h-9 xs:h-10 text-xs xs:text-sm bg-[hsl(var(--conversation-hover))] border-primary/20 focus:border-primary focus:ring-primary/30"
+              className={cn(
+                "pl-10 h-10 text-sm",
+                "bg-[hsl(var(--muted)/0.5)] border-transparent",
+                "placeholder:text-muted-foreground/60",
+                "focus:bg-background focus:border-[hsl(var(--ka-green)/0.3)] focus:ring-[hsl(var(--ka-green)/0.2)]",
+                "rounded-xl transition-all",
+              )}
               placeholder={t('inbox.searchPlaceholder')}
-              title={t('inbox.searchTitle')}
+              aria-label={t('inbox.searchTitle')}
             />
           </div>
-        </div>
+        </header>
 
-        {/* Conversations - More compact on mobile */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Conversation list */}
+        <nav 
+          className="flex-1 overflow-y-auto scrollbar-hide"
+          role="listbox"
+          aria-label={t('inbox.conversationList', 'Gesprekkenlijst')}
+        >
           {isLoading ? (
-            <div className="p-2 xs:p-3 sm:p-4 space-y-2 xs:space-y-3">
-              {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-16 xs:h-20 w-full" />
+            <div className="p-3 space-y-2">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="flex items-center gap-3 p-3">
+                  <Skeleton className="h-12 w-12 rounded-full flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                  </div>
+                </div>
               ))}
             </div>
           ) : filteredConversations.length > 0 ? (
-            filteredConversations.map((conversation) => {
-              const lastMessageTime = conversation.last_message_at 
-                ? formatDistanceToNow(new Date(conversation.last_message_at), { addSuffix: true, locale: currentLocale })
-                : '';
-              
-              // Check if this is a missed call
-              const isMissedCall = conversation.primary_channel === 'Telefoon' && conversation.status === 'pending';
-              
-              return (
-                <div key={conversation.id} className="w-full">
+            <div className="py-1">
+              {filteredConversations.map((conversation) => {
+                const lastMessageTime = conversation.last_message_at 
+                  ? formatDistanceToNow(new Date(conversation.last_message_at), { addSuffix: true, locale: currentLocale })
+                  : '';
+                
+                const isMissedCall = conversation.primary_channel === 'Telefoon' && conversation.status === 'pending';
+                
+                return (
                   <FlowbiteConversationItem
+                    key={conversation.id}
                     id={conversation.id}
                     name={conversation.klant_naam}
                     lastMessage={conversation.onderwerp || t('inbox.noSubject')}
@@ -254,22 +329,24 @@ export default function FlowbiteUnifiedInbox() {
                     tags={conversation.tags}
                     isMissedCall={isMissedCall}
                   />
-                </div>
-              );
-            })
+                );
+              })}
+            </div>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full px-4 py-8 text-center">
-              <Search className="w-10 h-10 xs:w-12 xs:h-12 text-muted-foreground mb-2 xs:mb-3" />
-              <h3 className={`${responsiveBody.base} font-medium text-foreground mb-1`}>
+            <div className="flex flex-col items-center justify-center h-full px-6 py-12 text-center">
+              <div className="w-16 h-16 rounded-full bg-[hsl(var(--muted))] flex items-center justify-center mb-4">
+                <Search className="w-7 h-7 text-muted-foreground" />
+              </div>
+              <h3 className="text-base font-medium text-foreground mb-1">
                 {t('inbox.noConversations')}
               </h3>
-              <p className={responsiveBody.small}>
+              <p className="text-sm text-muted-foreground max-w-[200px]">
                 {t('inbox.tryDifferentSearch')}
               </p>
             </div>
           )}
-        </div>
-      </div>
+        </nav>
+      </aside>
 
       {/* Chat View (always visible as 2nd column) */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -284,12 +361,7 @@ export default function FlowbiteUnifiedInbox() {
             onProfileClick={() => setContactSheetOpen(true)}
           />
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-background text-muted-foreground">
-            <div className="max-w-sm text-center px-4">
-              <p className="text-sm font-medium text-foreground">{t('inbox.selectConversation', 'Selecteer een gesprek')}</p>
-              <p className="text-xs mt-1">{t('inbox.selectConversationHint', 'Kies links een gesprek om berichten te bekijken.')}</p>
-            </div>
-          </div>
+          <EmptyInboxState />
         )}
       </div>
 
@@ -299,95 +371,165 @@ export default function FlowbiteUnifiedInbox() {
         onOpenChange={setCreateDialogOpen}
       />
 
-      {/* Contact info popup (opens when profile is clicked) */}
+      {/* Contact info sheet - Modern WhatsApp-style design */}
       <Sheet open={contactSheetOpen} onOpenChange={setContactSheetOpen}>
-        <SheetContent className="w-80 sm:max-w-sm p-0 overflow-y-auto">
-          <div className="p-4 sm:p-6">
-            {/* Customer Header */}
-            <div className="text-center mb-4 sm:mb-6">
-              <img
-                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto mb-3 sm:mb-4"
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation?.klant_naam}`}
-                alt={selectedConversation?.klant_naam}
-              />
-              <h3 className={`${responsiveHeading.h4} mb-2`}>
+        <SheetContent className="w-[340px] sm:w-[380px] p-0 overflow-y-auto">
+          <SheetHeader className="sr-only">
+            <SheetTitle>{t('inbox.contactInfo', 'Contactinformatie')}</SheetTitle>
+          </SheetHeader>
+          
+          {/* Header with gradient background */}
+          <div className="relative bg-gradient-to-b from-[hsl(var(--ka-green)/0.15)] to-transparent pt-6 pb-4 px-6">
+            <div className="flex flex-col items-center text-center">
+              <Avatar className="w-24 h-24 ring-4 ring-white dark:ring-gray-900 shadow-lg mb-4">
+                <AvatarImage 
+                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedConversation?.klant_naam}`}
+                  alt=""
+                />
+                <AvatarFallback className="text-2xl bg-[hsl(var(--ka-green)/0.2)] text-[hsl(var(--ka-green))]">
+                  {selectedConversation?.klant_naam?.substring(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              
+              <h2 className="text-xl font-semibold text-foreground mb-2">
                 {selectedConversation?.klant_naam}
-              </h3>
+              </h2>
+              
               <Badge
                 variant="secondary"
-                className={`text-xs ${
+                className={cn(
+                  "text-xs font-medium",
                   selectedConversation?.status === 'open'
-                    ? "bg-[hsl(var(--status-online)/0.1)] text-[hsl(var(--status-online))] border-[hsl(var(--status-online)/0.2)]"
-                    : "bg-[hsl(var(--status-away)/0.1)] text-[hsl(var(--status-away))] border-[hsl(var(--status-away)/0.2)]"
-                }`}
+                    ? "bg-[hsl(var(--status-online)/0.15)] text-[hsl(var(--status-online))] border-0"
+                    : "bg-[hsl(var(--muted))] text-muted-foreground border-0"
+                )}
               >
                 <span
-                  className={`w-2 h-2 mr-1.5 rounded-full ${
+                  className={cn(
+                    "w-1.5 h-1.5 mr-1.5 rounded-full",
                     selectedConversation?.status === 'open'
                       ? 'bg-[hsl(var(--status-online))]'
-                      : 'bg-[hsl(var(--status-away))]'
-                  }`}
-                ></span>
-                {selectedConversation?.status === 'open' ? 'Actieve conversatie' : 'Gesloten'}
+                      : 'bg-muted-foreground'
+                  )}
+                />
+                {selectedConversation?.status === 'open' 
+                  ? t('inbox.activeConversation', 'Actieve conversatie') 
+                  : t('inbox.closedConversation', 'Gesloten')}
               </Badge>
+              
+              {/* Quick action */}
+              {selectedConversation?.klant_id && (
+                <Link
+                  to={`/app/clients/${selectedConversation.klant_id}`}
+                  onClick={() => setContactSheetOpen(false)}
+                  className="mt-4"
+                >
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="gap-2 rounded-full hover:bg-[hsl(var(--ka-green)/0.1)] hover:text-[hsl(var(--ka-green))] hover:border-[hsl(var(--ka-green)/0.3)]"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    {t('inbox.viewClientProfile', 'Bekijk klantprofiel')}
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* Content sections */}
+          <div className="px-6 pb-6 space-y-6">
+            {/* Stats cards */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-4 rounded-xl bg-[hsl(var(--muted)/0.5)] text-center">
+                <MessageCircle className="w-5 h-5 mx-auto mb-2 text-[hsl(var(--ka-green))]" />
+                <p className="text-2xl font-bold text-foreground tabular-nums">
+                  {selectedConversation?.message_count || 0}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t('inbox.messages', 'Berichten')}
+                </p>
+              </div>
+              <div className="p-4 rounded-xl bg-[hsl(var(--muted)/0.5)] text-center">
+                <Hash className="w-5 h-5 mx-auto mb-2 text-[hsl(var(--ka-green))]" />
+                <p className={cn(
+                  "text-lg font-bold capitalize",
+                  selectedConversation?.priority === 'urgent' && "text-[hsl(var(--priority-urgent))]",
+                  selectedConversation?.priority === 'high' && "text-[hsl(var(--priority-high))]",
+                  (!selectedConversation?.priority || selectedConversation?.priority === 'normal') && "text-foreground",
+                )}>
+                  {selectedConversation?.priority || 'Normal'}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t('inbox.priority', 'Prioriteit')}
+                </p>
+              </div>
             </div>
 
-            {/* Contact Info */}
-            <div className="mb-6">
-              <h4 className="text-sm font-semibold text-foreground mb-3">
-                Contact Informatie
-              </h4>
-              <dl className="text-sm text-foreground divide-y divide-border">
-                <div className="flex flex-col pb-3">
-                  <dt className="mb-1 text-muted-foreground">Klant ID</dt>
-                  <dd className="font-semibold">
-                    <Link
-                      to={`/app/clients/${selectedConversation?.klant_id}`}
-                      className="hover:text-ka-green transition-colors hover:underline"
-                      onClick={() => setContactSheetOpen(false)}
-                    >
-                      {selectedConversation?.klant_id}
-                    </Link>
-                  </dd>
+            {/* Contact info */}
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                {t('inbox.contactInfo', 'Contactinformatie')}
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-[hsl(var(--muted)/0.3)] hover:bg-[hsl(var(--muted)/0.5)] transition-colors">
+                  <div className="p-2 rounded-full bg-[hsl(var(--ka-green)/0.1)]">
+                    <User className="w-4 h-4 text-[hsl(var(--ka-green))]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-muted-foreground">{t('inbox.clientId', 'Klant ID')}</p>
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {selectedConversation?.klant_id || '-'}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex flex-col py-3">
-                  <dt className="mb-1 text-muted-foreground">Primary Channel</dt>
-                  <dd className="font-semibold">{selectedConversation?.primary_channel}</dd>
+                
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-[hsl(var(--muted)/0.3)] hover:bg-[hsl(var(--muted)/0.5)] transition-colors">
+                  <div className="p-2 rounded-full bg-[hsl(var(--ka-green)/0.1)]">
+                    <MessageSquare className="w-4 h-4 text-[hsl(var(--ka-green))]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-muted-foreground">{t('inbox.channel', 'Kanaal')}</p>
+                    <p className="text-sm font-medium text-foreground capitalize truncate">
+                      {selectedConversation?.primary_channel || '-'}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex flex-col pt-3">
-                  <dt className="mb-1 text-muted-foreground">Toegewezen aan</dt>
-                  <dd className="font-semibold">{selectedConversation?.toegewezen_aan || 'Niet toegewezen'}</dd>
-                </div>
-              </dl>
-            </div>
-
-            {/* Stats */}
-            <div className="mb-6">
-              <h4 className="text-sm font-semibold text-foreground mb-3">
-                Statistieken
-              </h4>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-1">
-                  <dt className="mb-1 text-xs text-muted-foreground">Berichten</dt>
-                  <dd className="text-2xl font-bold text-foreground">{selectedConversation?.message_count || 0}</dd>
-                </div>
-                <div className="col-span-1">
-                  <dt className="mb-1 text-xs text-muted-foreground">Prioriteit</dt>
-                  <dd className="text-2xl font-bold text-foreground capitalize">{selectedConversation?.priority || 'Normal'}</dd>
+                
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-[hsl(var(--muted)/0.3)] hover:bg-[hsl(var(--muted)/0.5)] transition-colors">
+                  <div className="p-2 rounded-full bg-[hsl(var(--ka-green)/0.1)]">
+                    <User className="w-4 h-4 text-[hsl(var(--ka-green))]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-muted-foreground">{t('inbox.assignedTo', 'Toegewezen aan')}</p>
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {selectedConversation?.toegewezen_aan || t('inbox.notAssigned', 'Niet toegewezen')}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Tags */}
             <div>
-              <h4 className={`${responsiveBody.base} font-semibold text-foreground mb-3`}>Tags</h4>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                {t('inbox.tags', 'Tags')}
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {selectedConversation?.tags && selectedConversation.tags.length > 0 ? (
                   selectedConversation.tags.map((tag, idx) => (
-                    <Badge key={idx} variant="secondary" className="text-xs">{tag}</Badge>
+                    <Badge 
+                      key={idx} 
+                      variant="secondary" 
+                      className="text-xs px-2.5 py-1 rounded-full bg-[hsl(var(--muted))] hover:bg-[hsl(var(--ka-green)/0.1)] hover:text-[hsl(var(--ka-green))] transition-colors"
+                    >
+                      {tag}
+                    </Badge>
                   ))
                 ) : (
-                  <p className={`${responsiveBody.small} text-muted-foreground`}>Geen tags</p>
+                  <p className="text-sm text-muted-foreground italic">
+                    {t('inbox.noTags', 'Geen tags toegevoegd')}
+                  </p>
                 )}
               </div>
             </div>
