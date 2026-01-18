@@ -86,6 +86,7 @@
     "searchTitle": "Filter gesprekken op naam of onderwerp",
     "noSubject": "Geen onderwerp",
     "tryDifferentSearch": "Probeer een andere zoekterm",
+    "toReview": "te reviewen",
     "conversationArchived": "Conversatie gearchiveerd",
     "conversationArchivedDesc": "Conversatie met {{name}} is gearchiveerd.",
     "conversationDeleted": "Conversatie verwijderd",
@@ -743,7 +744,21 @@
     "saved": "Opgeslagen",
     "back": "Terug",
     "next": "Volgende",
-    "filters": "Filters"
+    "filters": "Filters",
+    "today": "Vandaag",
+    "online": "Online",
+    "call": "Bellen",
+    "videoCall": "Videobellen",
+    "more": "Meer",
+    "conversation": "Gesprek",
+    "unread": "ongelezen",
+    "missedCall": "Gemiste oproep",
+    "priority": {
+      "urgent": "Urgent",
+      "high": "Hoog",
+      "normal": "Normaal",
+      "low": "Laag"
+    }
   },
   "createClient": {
     "title": "Nieuwe klant aanmaken",

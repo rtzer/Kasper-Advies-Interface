@@ -76,13 +76,13 @@ export function AppSidebar() {
     active ? 'bg-ka-green/20 text-ka-navy dark:text-ka-green font-medium' : 'hover:bg-muted/50';
 
   return (
-    <Sidebar collapsible="icon"  className={collapsed ? 'w-16' : 'w-64'}>
+    <Sidebar collapsible="icon"  className={collapsed ? 'w-16 pt-1' : 'w-64'}>
       <SidebarContent>
         {/* Hoofdmenu */}
         <SidebarGroup>
           <SidebarGroupLabel>{t('common:common.navigation', 'Navigation')}</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-3">
               {/* Inbox */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
@@ -97,8 +97,16 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <NavLink to="/app/inbox/review" className={`${getNavCls(isActive('/app/inbox/review'))} flex items-center justify-between`}>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 relative">
                       <Inbox className="h-4 w-4" />
+                      {collapsed && nieuwInbox > 0 && (
+                        <Badge 
+                          variant="destructive" 
+                          className={`absolute -top-2 -right-2 h-4 min-w-4 px-1 text-[10px] flex items-center justify-center ${nieuwInbox > 5 ? 'animate-pulse' : ''}`}
+                        >
+                          {nieuwInbox}
+                        </Badge>
+                      )}
                       {!collapsed && <span>{t('navigation:menu.inboxReview')}</span>}
                     </div>
                     {!collapsed && nieuwInbox > 0 && (
@@ -415,7 +423,7 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupLabel>{t('common:common.management', 'Management')}</SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="space-y-3">
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <NavLink to="/app/clients/late-payers" className={getNavCls(isActive('/app/clients/late-payers'))}>

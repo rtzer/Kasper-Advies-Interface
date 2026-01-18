@@ -86,6 +86,7 @@
     "searchTitle": "Filter conversations by name or subject",
     "noSubject": "No subject",
     "tryDifferentSearch": "Try a different search term",
+    "toReview": "to review",
     "conversationArchived": "Conversation archived",
     "conversationArchivedDesc": "Conversation with {{name}} has been archived.",
     "conversationDeleted": "Conversation deleted",
@@ -743,7 +744,21 @@
     "saved": "Saved",
     "back": "Back",
     "next": "Next",
-    "filters": "Filters"
+    "filters": "Filters",
+    "today": "Today",
+    "online": "Online",
+    "call": "Call",
+    "videoCall": "Video call",
+    "more": "More",
+    "conversation": "Conversation",
+    "unread": "unread",
+    "missedCall": "Missed call",
+    "priority": {
+      "urgent": "Urgent",
+      "high": "High",
+      "normal": "Normal",
+      "low": "Low"
+    }
   },
   "createClient": {
     "title": "Create new client",
