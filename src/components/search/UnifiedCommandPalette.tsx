@@ -44,7 +44,7 @@ interface SearchResult {
   name: string;
   description: string;
   url: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 export default function UnifiedCommandPalette({ open, onOpenChange }: UnifiedCommandPaletteProps) {

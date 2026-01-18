@@ -8,6 +8,22 @@ import { useTaken } from '@/lib/api/taken';
 import WorkloadIndicator from '@/components/projects/WorkloadIndicator';
 import { useTranslation } from 'react-i18next';
 import { responsiveHeading, responsiveBody } from '@/lib/utils/typography';
+import { Project, Taak } from '@/types';
+
+interface TeamMemberWorkload {
+  name: string;
+  initials: string;
+  projects: Project[];
+  tasks: Taak[];
+  total: number;
+  activeProjects: number;
+  'niet-gestart': number;
+  'in-uitvoering': number;
+  'wacht-op-klant': number;
+  'in-review': number;
+  'geblokkeerd': number;
+  'afgerond': number;
+}
 
 export default function TeamWorkloadPage() {
   const { t } = useTranslation();
@@ -49,7 +65,7 @@ export default function TeamWorkloadPage() {
     }
     
     return acc;
-  }, {} as Record<string, any>);
+  }, {} as Record<string, TeamMemberWorkload>);
 
   // Add tasks to team workload
   taken.forEach(taak => {
@@ -59,7 +75,7 @@ export default function TeamWorkloadPage() {
     }
   });
 
-  const teamMembers = Object.values(teamWorkload).sort((a: any, b: any) => b.activeProjects - a.activeProjects);
+  const teamMembers = Object.values(teamWorkload).sort((a, b) => b.activeProjects - a.activeProjects);
 
   const isOverloaded = (projects: number, tasks: number) => projects > 10 || tasks > 15;
   const isLoading = projectsLoading || takenLoading;
@@ -96,7 +112,7 @@ export default function TeamWorkloadPage() {
       </div>
 
       {/* Warning banner if someone is overloaded */}
-      {teamMembers.some((m: any) => isOverloaded(m.activeProjects, m.tasks.filter((t: any) => t.status !== 'Afgerond').length)) && (
+      {teamMembers.some((m) => isOverloaded(m.activeProjects, m.tasks.filter((t) => t.status !== 'Afgerond').length)) && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 xs:p-4 mb-4 xs:mb-6">
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 xs:w-5 xs:h-5 text-red-600" />
@@ -108,8 +124,8 @@ export default function TeamWorkloadPage() {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-6">
-        {teamMembers.map((member: any) => {
-          const activeTasks = member.tasks.filter((t: any) => t.status !== 'Afgerond').length;
+        {teamMembers.map((member) => {
+          const activeTasks = member.tasks.filter((t) => t.status !== 'Afgerond').length;
           const memberOverloaded = isOverloaded(member.activeProjects, activeTasks);
           
           return (
@@ -200,7 +216,7 @@ export default function TeamWorkloadPage() {
                     {t('projects.recentProjects', 'Recente projecten')}
                   </h4>
                   <div className="space-y-1.5 xs:space-y-2 max-h-36 xs:max-h-40 overflow-y-auto">
-                    {member.projects.slice(0, 5).map((project: any) => (
+                    {member.projects.slice(0, 5).map((project) => (
                       <Link
                         key={project.id}
                         to={`/app/projects/${project.id}`}

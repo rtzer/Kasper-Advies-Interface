@@ -52,7 +52,7 @@ export function ProspectDetailPanel({
 
   const displayName = prospect.bedrijfsnaam || [prospect.voornaam, prospect.achternaam].filter(Boolean).join(' ') || '-';
 
-  const handleFieldChange = (field: keyof Prospect, value: any) => {
+  const handleFieldChange = <K extends keyof Prospect>(field: K, value: Prospect[K]) => {
     setEditedProspect(prev => ({ ...prev, [field]: value }));
     setHasChanges(true);
   };

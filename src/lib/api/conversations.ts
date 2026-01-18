@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Conversation, Message } from '@/types';
+import { Conversation, Message, Channel } from '@/types';
 import { mockConversations, mockMessages } from '@/lib/mockData';
 
 // Mock API calls - will be replaced with real Baserow API later
@@ -235,8 +235,8 @@ export function useCreateConversation() {
         status: 'open',
         klant_id,
         klant_naam,
-        primary_channel: primary_channel as any,
-        all_channels: [primary_channel as any],
+        primary_channel: primary_channel as Channel,
+        all_channels: [primary_channel as Channel],
         onderwerp,
         tags: [],
         created_at: new Date().toISOString(),
@@ -260,7 +260,7 @@ export function useCreateConversation() {
           conversation_id: newConversation.id,
           content: initial_message,
           timestamp: new Date().toISOString(),
-          channel: primary_channel as any,
+          channel: primary_channel as Channel,
           direction: 'outbound',
           from: {
             id: 'team1',
@@ -273,7 +273,7 @@ export function useCreateConversation() {
             type: 'client',
           },
           channel_metadata: {
-            channel: primary_channel as any,
+            channel: primary_channel as Channel,
             whatsapp_message_id: `wa_${Date.now()}`,
             status: 'sent',
           },

@@ -159,7 +159,7 @@ class BaserowClient {
       size?: number;
       search?: string;
       orderBy?: string;
-      filters?: Record<string, any>;
+      filters?: Record<string, string | number | boolean>;
       bustCache?: boolean;
     }
   ): Promise<BaserowResponse<T>> {

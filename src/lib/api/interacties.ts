@@ -4,7 +4,7 @@ import { mockInteracties } from '@/lib/mockData';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export function useInteracties(filters?: Record<string, any>) {
+export function useInteracties(filters?: Record<string, string | undefined>) {
   return useQuery({
     queryKey: ['interacties', filters],
     queryFn: async () => {

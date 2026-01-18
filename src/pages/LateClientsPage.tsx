@@ -9,6 +9,7 @@ import { useProjects, useSendReminder } from '@/lib/api/projects';
 import { toast } from 'sonner';
 import { formatDeadline, getStatusColor, getStatusLabel } from '@/lib/utils/projectHelpers';
 import { differenceInDays } from 'date-fns';
+import { Project } from '@/types';
 
 export default function LateClientsPage() {
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
@@ -79,7 +80,7 @@ export default function LateClientsPage() {
     setSelectedProjects([]);
   };
 
-  const getDaysWaiting = (project: any) => {
+  const getDaysWaiting = (project: Project) => {
     const referenceDate = project.last_reminder_sent || project.start_date;
     return differenceInDays(new Date(), new Date(referenceDate));
   };

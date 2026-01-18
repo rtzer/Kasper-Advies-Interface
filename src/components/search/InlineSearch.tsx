@@ -16,7 +16,7 @@ interface SearchResult {
   name: string;
   description: string;
   url: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 interface InlineSearchProps {

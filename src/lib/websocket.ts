@@ -1,4 +1,9 @@
-type MessageHandler = (data: any) => void;
+interface WebSocketMessage {
+  type: string;
+  [key: string]: unknown;
+}
+
+type MessageHandler = (data: WebSocketMessage) => void;
 
 export class WebSocketManager {
   private ws: WebSocket | null = null;
@@ -40,7 +45,7 @@ export class WebSocketManager {
     };
   }
   
-  private handleMessage(data: any) {
+  private handleMessage(data: WebSocketMessage) {
     const { type } = data;
     
     // Call registered handlers for this message type
@@ -95,7 +100,7 @@ export class WebSocketManager {
     }
   }
   
-  send(data: any) {
+  send(data: Record<string, unknown>) {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data));
     } else {
