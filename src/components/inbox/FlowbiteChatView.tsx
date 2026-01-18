@@ -34,6 +34,7 @@ interface FlowbiteChatViewProps {
   isOnline?: boolean;
   clientId?: string;
   onProfileClick?: () => void;
+  onSendMessage?: (text: string) => void;
 }
 
 // WhatsApp-style chat background pattern
@@ -55,17 +56,24 @@ export const FlowbiteChatView = ({
   isOnline = false,
   clientId,
   onProfileClick,
+  onSendMessage,
 }: FlowbiteChatViewProps) => {
   const { t } = useTranslation();
   const [messageText, setMessageText] = useState("");
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+
+  // Combine server messages with local optimistic messages
+  const allMessages = useMemo(() => {
+    return [...messages, ...localMessages];
+  }, [messages, localMessages]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [allMessages]);
 
   // Handle scroll to show/hide scroll-to-bottom button
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -91,6 +99,22 @@ export const FlowbiteChatView = ({
 
   const handleSend = () => {
     if (messageText.trim() && !isOverLimit) {
+      const newMessage: Message = {
+        id: `local-${Date.now()}`,
+        text: messageText.trim(),
+        time: new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }),
+        isOwn: true,
+        status: 'sent',
+      };
+      
+      // Add to local messages for optimistic UI
+      setLocalMessages(prev => [...prev, newMessage]);
+      
+      // Call the callback if provided
+      if (onSendMessage) {
+        onSendMessage(messageText.trim());
+      }
+      
       toast.success(t('inbox.messageSent', 'Bericht verzonden'));
       setMessageText("");
     }
@@ -115,13 +139,13 @@ export const FlowbiteChatView = ({
 
   // Find index of first unread message
   const unreadDividerIndex = useMemo(() => {
-    const nonOwnMessages = messages.filter(m => !m.isOwn);
+    const nonOwnMessages = allMessages.filter(m => !m.isOwn);
     if (nonOwnMessages.length >= 2) {
       const targetMessage = nonOwnMessages[nonOwnMessages.length - 2];
-      return messages.findIndex(m => m.id === targetMessage.id);
+      return allMessages.findIndex(m => m.id === targetMessage.id);
     }
     return -1;
-  }, [messages]);
+  }, [allMessages]);
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -285,7 +309,7 @@ export const FlowbiteChatView = ({
         
         <div className="relative z-10 p-3 sm:p-4 space-y-3">
           {/* Date separator for first message */}
-          {messages.length > 0 && (
+          {allMessages.length > 0 && (
             <div className="flex justify-center mb-4">
               <span className="text-xs font-medium text-muted-foreground bg-card/80 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
                 {t('common:today', 'Vandaag')}
@@ -293,7 +317,7 @@ export const FlowbiteChatView = ({
             </div>
           )}
           
-          {messages.map((message, index) => (
+          {allMessages.map((message, index) => (
             <div key={message.id}>
               {/* Unread divider */}
               {index === unreadDividerIndex && unreadDividerIndex > 0 && (
