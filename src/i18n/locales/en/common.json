@@ -86,6 +86,7 @@
     "searchTitle": "Filter conversations by name or subject",
     "noSubject": "No subject",
     "tryDifferentSearch": "Try a different search term",
+    "toReview": "to review",
     "conversationArchived": "Conversation archived",
     "conversationArchivedDesc": "Conversation with {{name}} has been archived.",
     "conversationDeleted": "Conversation deleted",

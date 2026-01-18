@@ -5,7 +5,7 @@ import { FilterPopover } from "@/components/inbox/FilterPopover";
 import { CreateConversationDialog } from "@/components/inbox/CreateConversationDialog";
 import { FlowbiteConversationItem } from "@/components/inbox/FlowbiteConversationItem";
 import { FlowbiteChatView } from "@/components/inbox/FlowbiteChatView";
-import { Search, Plus, Inbox, HelpCircle } from "lucide-react";
+import { Search, Plus, Inbox, HelpCircle, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +36,7 @@ export default function FlowbiteUnifiedInbox() {
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [contactSheetOpen, setContactSheetOpen] = useState(false);
+  const [reviewBannerDismissed, setReviewBannerDismissed] = useState(false);
   const [filters, setFilters] = useState({
     status: 'all',
     channel: 'all',
@@ -117,37 +118,22 @@ export default function FlowbiteUnifiedInbox() {
       } bg-card border-r border-border flex flex-col`}>
         {/* Header - Optimized for 360px */}
         <div className="px-3 xs:px-4 py-3 xs:py-4 border-b border-border">
-          <div className="flex items-center justify-between mb-2 xs:mb-3">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <h2 className={`${responsiveHeading.h4} truncate`}>
-                  {t('inbox.conversations')}
-                </h2>
-                {unreadCount > 0 && (
-                  <Badge variant="default" className="bg-primary text-primary-foreground">
-                    {unreadCount}
-                  </Badge>
-                )}
-              </div>
-              <p className={`${responsiveBody.tiny} mt-0.5 truncate`}>
-                {t('inbox.allConversations')}
-              </p>
-            </div>
-            <div className="flex gap-1.5 xs:gap-2 flex-shrink-0">
-              {/* Link to Inbox Review */}
-              {inboxStats && inboxStats.nieuw > 0 && (
-                <Link to="/app/inbox/review">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="h-9 xs:h-10 text-xs gap-1.5 border-orange-300 text-orange-600 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-950"
-                  >
-                    <Inbox className="w-4 h-4" />
-                    <span className="hidden xs:inline">{inboxStats.nieuw} te reviewen</span>
-                    <span className="xs:hidden">{inboxStats.nieuw}</span>
-                  </Button>
-                </Link>
+          {/* Row 1: Title and action buttons */}
+          <div className="flex items-center gap-2 mb-1">
+            {/* Title section - takes available space */}
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <h2 className={`${responsiveHeading.h4} truncate`}>
+                {t('inbox.conversations')}
+              </h2>
+              {unreadCount > 0 && (
+                <Badge variant="default" className="bg-primary text-primary-foreground flex-shrink-0">
+                  {unreadCount}
+                </Badge>
               )}
+            </div>
+            
+            {/* Action buttons - compact group */}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
               <FilterPopover
                 open={filterDialogOpen}
                 onOpenChange={setFilterDialogOpen}
@@ -189,6 +175,36 @@ export default function FlowbiteUnifiedInbox() {
               </Tooltip>
             </div>
           </div>
+          
+          {/* Subtitle - shows active status */}
+          <p className={`${responsiveBody.tiny} text-muted-foreground mb-2 xs:mb-3`}>
+            {t('inbox.allConversations')}
+          </p>
+          
+          {/* Row 2: Inbox review button (if needed) - full width for better visibility */}
+          {inboxStats && inboxStats.nieuw > 0 && !reviewBannerDismissed && (
+            <div className="flex items-center gap-1 mb-2 xs:mb-3">
+              <Link to="/app/inbox/review" className="flex-1">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="w-full h-8 text-xs gap-1.5 justify-start border-orange-300 text-orange-600 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-950"
+                >
+                  <Inbox className="w-4 h-4 flex-shrink-0" />
+                  <span>{inboxStats.nieuw} {t('inbox.toReview', 'to review')}</span>
+                </Button>
+              </Link>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 flex-shrink-0 text-muted-foreground hover:text-foreground"
+                onClick={() => setReviewBannerDismissed(true)}
+                title={t('actions.close', 'Close')}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
 
           {/* Search - Compact on mobile */}
           <div className="relative">
